@@ -9,16 +9,29 @@ jobs:
       - uses: actions/checkout@v2
         with:
           clean: false
-      - name: Hi
-        run: |
-          echo "Hello World"
       - name: Get latest cargo-edit version
         id: cargo-edit-version
         run:
-          echo "CARGO_EDIT_API_RESPONSE=$( 
+          echo "::set-output name=CARGO_EDIT_API_RESPONSE::$( 
             curl https://formulae.brew.sh/api/formula/cargo-edit.json
-          )" >> $GITHUB_ENV
-      - name: Show response
+          )"
+        shell: bash
+      - uses: actions/cache@v3
+        id: cache-cargo-edit
+        with:
+          path: ~/home/linuxbrew/.linuxbrew/
+          key: |
+            ${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}
+      - name: Install cargo edit
+        if: steps.cache-cargo-edit.outputs.cache-hit != 'true'
         run: |
-          echo "Response = ${{ env.CARGO_EDIT_API_RESPONSE }}"
-          echo "Latest version = ${{ fromJSON(env.CARGO_EDIT_API_RESPONSE).versions.stable }}"
+          echo "::group::Installing cargo edit"
+          brew install cargo-edit
+          echo "::endgroup::"
+        shell: bash
+      - name: Show cache hit
+        if: steps.cache-cargo-edit.outputs.cache-hit == 'true'
+        run: |
+          echo "cache hit! :)"
+          cargo set-version -V
+        shell: bash
