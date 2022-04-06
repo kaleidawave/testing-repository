@@ -19,9 +19,16 @@ jobs:
       - uses: actions/cache@v3
         id: cache-cargo-edit
         with:
-          path: ~/home/linuxbrew/.linuxbrew/
+          path: ~/home/linuxbrew/.linuxbrew/Cellar
           key: |
-            ${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}
+            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}
+      - name: Show cache hit
+        if: steps.cache-cargo-edit.outputs.cache-hit == 'true'
+        run: |
+          echo "cache hit! :)"
+          cargo set-version -V
+          cd ~/home/linuxbrew/.linuxbrew/Cellar
+          ls
       - name: Install cargo edit
         if: steps.cache-cargo-edit.outputs.cache-hit != 'true'
         run: |
@@ -29,9 +36,26 @@ jobs:
           brew install cargo-edit
           echo "::endgroup::"
         shell: bash
-      - name: Show cache hit
-        if: steps.cache-cargo-edit.outputs.cache-hit == 'true'
-        run: |
-          echo "cache hit! :)"
-          cargo set-version -V
+      - name: Show install
+        run: 
+          which cargo
+          cd ~/home/linuxbrew/.linuxbrew/Cellar
+          ls
         shell: bash
+      - name: Change version
+        working-directory: cargo-testing-version
+        run: |
+          cargo set-version --bump minor
+          echo "NEW_CRATE_VERSION=$( 
+            cargo set-version --bump minor | awk 'NR==1 {print $NF}' 
+          )" >> $GITHUB_ENV
+      - name: Check version set
+        if: env.NEW_CRATE_VERSION == ''
+        run:
+          echo "Empty version :(" >&2
+        shell: bash
+      - name: Show new version
+        run: echo "New version ${{ env.NEW_CRATE_VERSION }}"
+        shell: bash
+      - name: bye
+        run: echo bye

@@ -1,0 +1,9 @@
+[package]
+name = "cargo-testing-version"
+version = "0.3.0"
+edition = "2021"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
