@@ -23,12 +23,12 @@ jobs:
             /home/linuxbrew/.linuxbrew/Cellar
             /usr/share/rust/.cargo/bin
           key: |
-            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}-2
+            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}-3
       - name: Show cache hit
         if: steps.cache-cargo-edit.outputs.cache-hit == 'true'
         run: |
           echo "cache hit! :)"
-          cargo set-version -V
+          cargo --list
       - name: Install cargo edit
         if: steps.cache-cargo-edit.outputs.cache-hit != 'true'
         run: |
