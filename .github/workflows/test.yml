@@ -37,7 +37,7 @@ jobs:
           echo "::endgroup::"
         shell: bash
       - name: Show install
-        run: 
+        run: |
           which cargo
           cd /home/linuxbrew/.linuxbrew/bin/cargo
           pwd
