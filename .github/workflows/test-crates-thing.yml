@@ -17,18 +17,18 @@ jobs:
           )"
         shell: bash
       - name: test1
-        if: ${{ contains(fromJSON("['major','minor','patch','release','rc','beta','alpha']"), "minor") }}
+        if: ${{ contains(fromJSON('["major","minor","patch","release","rc","beta","alpha"]'), 'minor') }}
         run: >
           echo a
         shell: bash
       - name: test2
-        if: ${{ contains(fromJSON("['major','minor','patch','release','rc','beta','alpha']"), 23) }}
+        if: ${{ contains(fromJSON('["major","minor","patch","release","rc","beta","alpha"]'), 23) }}
         run: >
           echo b
         shell: bash
       - name: test3
         run: >
-          echo ${{ toJSON(fromJSON("['major','minor','patch','release','rc','beta','alpha']")) }}
+          echo ${{ toJSON(fromJSON('["major","minor","patch","release","rc","beta","alpha"]')) }}
         shell: bash
       - uses: actions/cache@v3
         id: cache-cargo-edit
