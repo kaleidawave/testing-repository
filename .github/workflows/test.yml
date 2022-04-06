@@ -39,7 +39,7 @@ jobs:
       - name: Show install
         run: |
           which cargo
-          cd /home/linuxbrew/.linuxbrew/bin/cargo
+          cd ~/home/linuxbrew/.linuxbrew/bin/cargo
           pwd
           ls
         shell: bash
@@ -52,8 +52,7 @@ jobs:
           )" >> $GITHUB_ENV
       - name: Check version set
         if: env.NEW_CRATE_VERSION == ''
-        run:
-          echo "Empty version :(" >&2
+        run: echo "Empty version :(" >&2
         shell: bash
       - name: Show new version
         run: echo "New version ${{ env.NEW_CRATE_VERSION }}"
