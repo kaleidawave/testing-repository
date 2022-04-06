@@ -19,9 +19,11 @@ jobs:
       - uses: actions/cache@v3
         id: cache-cargo-edit
         with:
-          path: /home/linuxbrew/.linuxbrew/Cellar
+          path: |
+            /home/linuxbrew/.linuxbrew/Cellar
+            /usr/share/rust/.cargo/bin
           key: |
-            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}
+            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}2
       - name: Show cache hit
         if: steps.cache-cargo-edit.outputs.cache-hit == 'true'
         run: |
@@ -38,6 +40,7 @@ jobs:
         run: |
           which cargo
           ls /home/linuxbrew/.linuxbrew/bin/cargo
+          ls /usr/share/rust/.cargo/bin
         shell: bash
       - name: Change version
         working-directory: cargo-testing-version
