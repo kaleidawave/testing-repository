@@ -1,0 +1,24 @@
+name: GitHub Actions Demo
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          clean: false
+      - name: Hi
+        run: |
+          echo "Hello World"
+      - name: Get latest cargo-edit version
+        id: cargo-edit-version
+        run:
+          echo "CARGO_EDIT_API_RESPONSE=$( 
+            curl https://formulae.brew.sh/api/formula/cargo-edit.json
+          )" >> $GITHUB_ENV
+      - name: Show response
+        run: |
+          echo "Response = ${{ env.CARGO_EDIT_API_RESPONSE }}"
+          echo "Latest version = ${{ fromJSON(env.CARGO_EDIT_API_RESPONSE).versions.stable }}"
