@@ -19,7 +19,7 @@ jobs:
       - uses: actions/cache@v3
         id: cache-cargo-edit
         with:
-          path: ~/home/linuxbrew/.linuxbrew/Cellar
+          path: /home/linuxbrew/.linuxbrew/Cellar
           key: |
             cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}
       - name: Show cache hit
@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "cache hit! :)"
           cargo set-version -V
-          cd ~/home/linuxbrew/.linuxbrew/Cellar
+          cd /home/linuxbrew/.linuxbrew/Cellar
           ls
       - name: Install cargo edit
         if: steps.cache-cargo-edit.outputs.cache-hit != 'true'
@@ -39,9 +39,7 @@ jobs:
       - name: Show install
         run: |
           which cargo
-          cd ~/home/linuxbrew/.linuxbrew/bin/cargo
-          pwd
-          ls
+          ls /home/linuxbrew/
         shell: bash
       - name: Change version
         working-directory: cargo-testing-version
