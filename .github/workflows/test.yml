@@ -23,7 +23,7 @@ jobs:
             /home/linuxbrew/.linuxbrew/Cellar
             /usr/share/rust/.cargo/bin
           key: |
-            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}2
+            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}-2
       - name: Show cache hit
         if: steps.cache-cargo-edit.outputs.cache-hit == 'true'
         run: |
@@ -39,8 +39,9 @@ jobs:
       - name: Show install
         run: |
           which cargo
+          echo "::group::LS thingy"
           ls /home/linuxbrew/.linuxbrew/bin/cargo
-          ls /usr/share/rust/.cargo/bin
+          echo "::endgroup::"
         shell: bash
       - name: Change version
         working-directory: cargo-testing-version
