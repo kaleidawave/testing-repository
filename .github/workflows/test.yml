@@ -47,7 +47,7 @@ jobs:
           echo "$( 
             cargo set-version --bump minor
           )";
-          version = $( 
+          version=$( 
             cargo set-version --bump minor
           );
           echo "Reponse was $version";
@@ -59,9 +59,10 @@ jobs:
             cargo set-version --bump minor | awk 'NR==1 {print $NF}' 
           )" >> $GITHUB_ENV;
           echo "${{ toJSON(env) }}";
+        shell: bash
       - name: Check version set
         if: env.NEW_CRATE_VERSION == ''
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             core.setFailed('Error with version')

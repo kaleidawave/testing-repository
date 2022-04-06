@@ -1,0 +1,16 @@
+name: Rust warning thing
+
+on: [push]
+
+jobs:
+  show_error:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: "github-actions",
+              repo: context.repo.repo,
+              title: `Issue for: ${context.sha}`,
+            });
