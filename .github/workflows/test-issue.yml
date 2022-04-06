@@ -1,6 +1,9 @@
 name: Issue create
 
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - "**"
 
 jobs:
   show_error:

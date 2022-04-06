@@ -45,11 +45,11 @@ jobs:
         working-directory: cargo-testing-version
         run: |
           version=$( 
-            cargo set-version --bump minor > file 2>&1 | awk 'NR==1 {print $NF}' 
+            (cargo set-version --bump minor 2>&1) | awk 'NR==1 {print $NF}' 
           );
           echo "Version='$version'";
           echo "NEW_CRATE_VERSION=$( 
-            cargo set-version --bump minor > file 2>&1 | awk 'NR==1 {print $NF}'
+            (cargo set-version --bump minor 2>&1) | awk 'NR==1 {print $NF}'
           )" >> $GITHUB_ENV;
           echo "'${{ toJSON(env.NEW_CRATE_VERSION) }}'"
           echo "'${{ toJSON(env) }}'";
