@@ -23,7 +23,8 @@ jobs:
             /home/linuxbrew/.linuxbrew/Cellar
             /usr/share/rust/.cargo/bin
           key: |
-            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}-3
+            # ${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}
+            cargo-edit-${{ runner.os }}-0.8.0-3
       - name: Show cache hit
         if: steps.cache-cargo-edit.outputs.cache-hit == 'true'
         run: |
@@ -33,7 +34,7 @@ jobs:
         if: steps.cache-cargo-edit.outputs.cache-hit != 'true'
         run: |
           echo "::group::Installing cargo edit"
-          brew install cargo-edit
+          brew install cargo-edit@0.8.0
           echo "::endgroup::"
         shell: bash
       - name: Show install
