@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Crates release thingy
 
 on: [push]
 
@@ -44,21 +44,21 @@ jobs:
       - name: Change version
         working-directory: cargo-testing-version
         run: |
-          echo "$( 
-            cargo set-version --bump minor
-          )";
-          version=$( 
+          echo "::group::Simple set"
+          cargo set-version --bump minor
+          echo "::endgroup::"
+          version1=$( 
             cargo set-version --bump minor
           );
-          echo "Reponse was $version";
-          echo "NEW_CRATE_VERSION_VERBOSE=$( 
-            cargo set-version --bump minor
-          )" >> $GITHUB_ENV;
-          echo "${{ toJSON(env.NEW_CRATE_VERSION_VERBOSE) }}"
-          echo "NEW_CRATE_VERSION=$( 
+          version2=$( 
             cargo set-version --bump minor | awk 'NR==1 {print $NF}' 
+          );
+          echo "Version1='$version1', version2='$version2'";
+          echo "NEW_CRATE_VERSION=$( 
+            cargo set-version --bump minor | awk 'NR==1 {print $NF}'
           )" >> $GITHUB_ENV;
-          echo "${{ toJSON(env) }}";
+          echo "'${{ toJSON(env.NEW_CRATE_VERSION) }}'"
+          echo "'${{ toJSON(env) }}'";
         shell: bash
       - name: Check version set
         if: env.NEW_CRATE_VERSION == ''

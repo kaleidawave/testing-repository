@@ -1,4 +1,4 @@
-name: Rust warning thing
+name: Issue create
 
 on: [push]
 
@@ -9,8 +9,9 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
+            console.log(context);
             github.rest.issues.create({
-              owner: "github-actions",
+              owner: context.repo.owner,
               repo: context.repo.repo,
               title: `Issue for: ${context.sha}`,
             });
