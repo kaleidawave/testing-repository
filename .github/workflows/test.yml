@@ -44,15 +44,9 @@ jobs:
       - name: Change version
         working-directory: cargo-testing-version
         run: |
-          version=$( 
-            (cargo set-version --bump minor 2>&1) | awk 'NR==1 {print $NF}' 
-          );
-          echo "Version='$version'";
           echo "NEW_CRATE_VERSION=$( 
             (cargo set-version --bump minor 2>&1) | awk 'NR==1 {print $NF}'
-          )" >> $GITHUB_ENV;
-          echo "'${{ toJSON(env.NEW_CRATE_VERSION) }}'"
-          echo "'${{ toJSON(env) }}'";
+          )" >> $GITHUB_ENV
         shell: bash
       - name: Check version set
         if: env.NEW_CRATE_VERSION == ''
@@ -63,5 +57,3 @@ jobs:
       - name: Show new version
         run: echo "New version ${{ env.NEW_CRATE_VERSION }}"
         shell: bash
-      - name: bye
-        run: echo bye
