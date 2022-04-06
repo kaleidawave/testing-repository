@@ -39,9 +39,6 @@ jobs:
       - name: Show install
         run: |
           which cargo
-          echo "::group::LS thingy"
-          ls /home/linuxbrew/.linuxbrew/bin/cargo
-          echo "::endgroup::"
         shell: bash
       - name: Change version
         working-directory: cargo-testing-version
@@ -49,6 +46,10 @@ jobs:
           echo "$( 
             cargo set-version --bump minor
           )"
+          version = $( 
+            cargo set-version --bump minor
+          )
+          echo "Reponse was $version"
           echo "NEW_CRATE_VERSION_VERBOSE=$( 
             cargo set-version --bump minor
           )" >> $GITHUB_ENV
@@ -56,10 +57,13 @@ jobs:
           echo "NEW_CRATE_VERSION=$( 
             cargo set-version --bump minor | awk 'NR==1 {print $NF}' 
           )" >> $GITHUB_ENV
+          echo "${{ toJSON(env) }}"
       - name: Check version set
         if: env.NEW_CRATE_VERSION == ''
-        run: ">&2 echo 'error no version'"
-        shell: bash
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Error with version')
       - name: Show new version
         run: echo "New version ${{ env.NEW_CRATE_VERSION }}"
         shell: bash

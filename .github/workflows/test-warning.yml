@@ -1,0 +1,12 @@
+name: GitHub Actions Demo
+
+on: [push]
+
+jobs:
+  show_error:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Show error
+        run: |
+          echo "::warning file=cargo-testing-version/src/main.rs,line=2,col=5,endColumn=32::Print statment"
+          echo "::warning file=cargo-testing-version/src/main.rs,line=4,col=5,endLine=6,endColumn=13::Print statment"
