@@ -23,8 +23,7 @@ jobs:
             /home/linuxbrew/.linuxbrew/Cellar
             /usr/share/rust/.cargo/bin
           key: |
-            # ${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}
-            cargo-edit-${{ runner.os }}-0.8.0-3
+            cargo-edit-${{ runner.os }}-${{ fromJSON(steps.cargo-edit-version.outputs.CARGO_EDIT_API_RESPONSE).versions.stable }}-3
       - name: Show cache hit
         if: steps.cache-cargo-edit.outputs.cache-hit == 'true'
         run: |
@@ -34,7 +33,7 @@ jobs:
         if: steps.cache-cargo-edit.outputs.cache-hit != 'true'
         run: |
           echo "::group::Installing cargo edit"
-          brew install cargo-edit@0.8.0
+          brew install cargo-edit
           echo "::endgroup::"
         shell: bash
       - name: Show install
@@ -45,18 +44,12 @@ jobs:
       - name: Change version
         working-directory: cargo-testing-version
         run: |
-          echo "::group::Simple set"
-          cargo set-version --bump minor
-          echo "::endgroup::"
-          version1=$( 
-            cargo set-version --bump minor
+          version=$( 
+            cargo set-version --bump minor > file 2>&1 | awk 'NR==1 {print $NF}' 
           );
-          version2=$( 
-            cargo set-version --bump minor | awk 'NR==1 {print $NF}' 
-          );
-          echo "Version1='$version1', version2='$version2'";
+          echo "Version='$version'";
           echo "NEW_CRATE_VERSION=$( 
-            cargo set-version --bump minor | awk 'NR==1 {print $NF}'
+            cargo set-version --bump minor > file 2>&1 | awk 'NR==1 {print $NF}'
           )" >> $GITHUB_ENV;
           echo "'${{ toJSON(env.NEW_CRATE_VERSION) }}'"
           echo "'${{ toJSON(env) }}'";
@@ -66,7 +59,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            core.setFailed('Error with version')
+            core.setFailed('Error with the output of the new version')
       - name: Show new version
         run: echo "New version ${{ env.NEW_CRATE_VERSION }}"
         shell: bash
