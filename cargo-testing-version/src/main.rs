@@ -4,4 +4,6 @@ fn main() {
     // Comment here
     // that goes over multiple
     // lines
+
+    // HI
 }

@@ -39,25 +39,26 @@ jobs:
       - name: Show install
         run: |
           which cargo
+          cargo --list
         shell: bash
       - name: Change version
         working-directory: cargo-testing-version
         run: |
           echo "$( 
             cargo set-version --bump minor
-          )"
+          )";
           version = $( 
             cargo set-version --bump minor
-          )
-          echo "Reponse was $version"
+          );
+          echo "Reponse was $version";
           echo "NEW_CRATE_VERSION_VERBOSE=$( 
             cargo set-version --bump minor
-          )" >> $GITHUB_ENV
+          )" >> $GITHUB_ENV;
           echo "${{ toJSON(env.NEW_CRATE_VERSION_VERBOSE) }}"
           echo "NEW_CRATE_VERSION=$( 
             cargo set-version --bump minor | awk 'NR==1 {print $NF}' 
-          )" >> $GITHUB_ENV
-          echo "${{ toJSON(env) }}"
+          )" >> $GITHUB_ENV;
+          echo "${{ toJSON(env) }}";
       - name: Check version set
         if: env.NEW_CRATE_VERSION == ''
         uses: actions/github-script@v3

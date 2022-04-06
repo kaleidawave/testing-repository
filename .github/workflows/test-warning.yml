@@ -1,6 +1,9 @@
-name: GitHub Actions Demo
+name: Rust warning thing
 
-on: [push]
+on:
+  push:
+    paths:
+      - "**.rs"
 
 jobs:
   show_error:
@@ -9,4 +12,4 @@ jobs:
       - name: Show error
         run: |
           echo "::warning file=cargo-testing-version/src/main.rs,line=2,col=5,endColumn=32::Print statment"
-          echo "::warning file=cargo-testing-version/src/main.rs,line=4,col=5,endLine=6,endColumn=13::Print statment"
+          echo "::warning file=cargo-testing-version/src/main.rs,line=4,col=5,endLine=6,endColumn=13::Big comment"
