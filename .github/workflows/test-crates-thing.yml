@@ -6,16 +6,21 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: Check status
+        run: git remote -v
       - uses: actions/checkout@v3
         with:
           clean: false
       - name: Edit 
+        id: checkout
         run: | 
           echo "// Some comment" >> cargo-testing-version/src/main.rs
           cat cargo-testing-version/src/main.rs
           git diff
           git status
+          echo "::set-output name=checkout::$( git remote -v )"
       - uses: actions/checkout@v3
+        if: ${{ !constains(steps.checkout.outputs.checkout, github.repository) }}
         with:
           clean: false
       - name: check still valid 
