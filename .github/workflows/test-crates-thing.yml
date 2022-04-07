@@ -20,7 +20,7 @@ jobs:
           git status
           echo "::set-output name=checkout::$( git remote -v )"
       - uses: actions/checkout@v3
-        if: ${{ !constains(steps.checkout.outputs.checkout, github.repository) }}
+        if: ${{ !contains(steps.checkout.outputs.checkout, github.repository) }}
         with:
           clean: false
       - name: check still valid 
