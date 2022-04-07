@@ -13,13 +13,16 @@ jobs:
         run: | 
           echo "// Some comment" >> cargo-testing-version/src/main.rs
           cat cargo-testing-version/src/main.rs
+          git diff
+          git status
       - uses: actions/checkout@v3
         with:
           clean: false
       - name: check still valid 
         run: |
           cat cargo-testing-version/src/main.rs
-          exit 0
+          git diff
+          git status
       - name: Get latest cargo-edit version
         id: cargo-edit-version
         run:
