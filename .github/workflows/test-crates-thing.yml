@@ -6,9 +6,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: Whats here 1
+        run: | 
+          ls
+          echo "LS=$(ls)"
       - uses: actions/checkout@v2
         with:
           clean: false
+      - name: Whats here 2
+        run: | 
+          ls
+          echo "LS2=$(ls)"
       - name: Get latest cargo-edit version
         id: cargo-edit-version
         run:
@@ -28,7 +36,7 @@ jobs:
         shell: bash
       - name: test3
         run: >
-          echo ${{ toJSON(fromJSON('["major","minor","patch","release","rc","beta","alpha"]')) }}
+          echo "${{ join(fromJSON('["major","minor","patch","release","rc","beta","alpha"]'), ',') }}"
         shell: bash
       - uses: actions/cache@v3
         id: cache-cargo-edit
