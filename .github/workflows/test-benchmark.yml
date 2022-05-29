@@ -39,6 +39,7 @@ jobs:
 
           items=$(join_by , ${!aa[@]})
           echo "::set-output name=paths::[$items]"
+        shell: bash
 
   run-benchmarks:
     needs: find-paths
@@ -46,7 +47,7 @@ jobs:
     timeout-minutes: 10
     strategy:
       matrix: 
-        path: ${{fromJSON(needs.find-paths.outputs.paths)}}
+        path: ${{ fromJSON(needs.find-paths.outputs.paths) }}
     steps:
       - run: brew install wrk
       - name: build
