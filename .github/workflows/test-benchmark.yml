@@ -11,11 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          # todo temp 
+          fetch-depth: 5
       - run: git status
       - name: Read changes
         run: |
           # todo HEAD~1
-          changed_file_paths="$(git diff --name-only HEAD HEAD~10)"
+          changed_file_paths="$(git diff --name-only HEAD HEAD~5)"
           readarray -t changed_file_paths_array <<< "$changed_file_paths"
           declare -A aa
           for element in "${changed_file_paths_array[@]}"
