@@ -40,17 +40,14 @@ jobs:
             fi
           }
 
-          echo 2
-
           items=$(join_by , ${!aa[@]})
           echo "::set-output name=paths::[$items]"
-
-          echo 3
 
   run-benchmarks:
     needs: find-paths
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    if: ${{ !contains(needs.find-paths.outputs.paths, '[]') }}
     strategy:
       matrix: 
         path: ${{ fromJSON(needs.find-paths.outputs.paths) }}
