@@ -54,15 +54,17 @@ jobs:
         path: ${{ fromJSON(needs.find-paths.outputs.paths) }}
     steps:
       - run: brew install wrk
+      - run: git status
+      - uses: actions/checkout@v3
       - name: build
         run: |
           # TODO timings
           cargo build
-        working-directory: ${{ format('./rust-http-benchmark/{0}', matrix.path) }}
+        working-directory: ${{ format('rust-http-benchmark/{0}', matrix.path) }}
       - name: benchmark
         run: |
           ./target/debug/${{ matrix.path }} &
           wrk -t12 -c200 -d30s http://127.0.0.1:3000
-        working-directory: ${{ format('./rust-http-benchmark/{0}', matrix.path) }}
+        working-directory: ${{ format('rust-http-benchmark/{0}', matrix.path) }}
 
       
