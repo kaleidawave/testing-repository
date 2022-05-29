@@ -17,17 +17,22 @@ jobs:
       - run: |
           git status
           git diff --name-only HEAD HEAD~5
+          echo $BASH_VERSION
       - name: Read changes
         run: |
+          echo 2
+          echo $BASH_VERSION
+
           # todo HEAD~1
           changed_file_paths="$(git diff --name-only HEAD HEAD~5)"
           readarray -t changed_file_paths_array <<< "$changed_file_paths"
           declare -A aa
           for element in "${changed_file_paths_array[@]}"
           do
-              # also enclose in quotes
-              path="'$(echo $element | grep -oP "(?<=rust-http-benchmark\/)[^\/]*")'"
-              aa[$path]=1
+            echo $element
+            # also enclose in quotes
+            path="'$(echo $element | grep -oP "(?<=rust-http-benchmark\/)[^\/]*")'"
+            aa[$path]=1
           done
 
           function join_by {
