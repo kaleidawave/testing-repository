@@ -41,12 +41,12 @@ jobs:
     steps:
       - run: brew install wrk
       - name: build
-      - run: |
+        run: |
           # TODO timings
           cargo build
         working-directory: format('rust-http-benchmark/{0}', inputs.path)
       - name: benchmark
-      - run: |
+        run: |
           ./target/debug/${{ matrix.path }} &
           wrk -t12 -c200 -d30s http://127.0.0.1:3000
 
