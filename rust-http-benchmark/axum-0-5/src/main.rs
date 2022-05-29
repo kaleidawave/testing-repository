@@ -1,6 +1,5 @@
 use axum::{
     routing::get,
-    http::StatusCode,
     response::IntoResponse,
     Router,
 };
@@ -8,7 +7,7 @@ use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/", get(root))
+    let app = Router::new().route("/", get(root));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     axum::Server::bind(&addr)
