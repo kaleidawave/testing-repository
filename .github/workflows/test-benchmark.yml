@@ -9,6 +9,8 @@ on:
 jobs:
   find-paths:
     runs-on: ubuntu-latest
+    outputs:
+      paths: ${{ steps.read-change.outputs.paths }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -19,13 +21,12 @@ jobs:
           git diff --name-only HEAD HEAD~5
           echo $BASH_VERSION
       - name: Read changes
+        id: read-change
         run: |
-          echo 2
-          echo $BASH_VERSION
-
           # todo HEAD~1
           changed_file_paths="$(git diff --name-only HEAD HEAD~5)"
           readarray -t changed_file_paths_array <<< "$changed_file_paths"
+
           declare -A aa
           for element in "${changed_file_paths_array[@]}"
           do
