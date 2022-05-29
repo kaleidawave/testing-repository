@@ -1,9 +1,5 @@
 use rocket::Config;
 
-fn hello() -> &'static str {
-    "Hello World"
-}
-
 fn main() {
     let config = Config {
         port: 3000,
@@ -11,4 +7,8 @@ fn main() {
     };
 
     rocket::custom(&config).mount("/", routes![hello]).launch();
+}
+
+fn hello() -> &'static str {
+    "Hello World"
 }

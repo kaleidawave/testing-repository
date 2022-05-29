@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "rust-http-benchmark/**"
+      - ".github/workflows/test-benchmark.yml"
 
 jobs:
   find-paths:
@@ -35,6 +36,7 @@ jobs:
   run-benchmarks:
     needs: find-paths
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       matrix: 
         path: ${{fromJSON(needs.find-paths.outputs.paths)}}
@@ -44,10 +46,11 @@ jobs:
         run: |
           # TODO timings
           cargo build
-        working-directory: format('rust-http-benchmark/{0}', inputs.path)
+        working-directory: format('rust-http-benchmark/{0}', matrix.path)
       - name: benchmark
         run: |
           ./target/debug/${{ matrix.path }} &
           wrk -t12 -c200 -d30s http://127.0.0.1:3000
+        working-directory: format('rust-http-benchmark/{0}', matrix.path)
 
       
