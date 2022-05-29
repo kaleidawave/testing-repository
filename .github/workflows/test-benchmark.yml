@@ -1,0 +1,53 @@
+name: Rust http benchmark
+
+on:
+  push:
+    paths:
+      - "rust-http-benchmark/**"
+
+jobs:
+  find-paths:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Read changes
+        run: >
+          changed_file_paths="$(git diff --name-only HEAD HEAD~10)"
+          readarray -t y <<< "$changed_file_paths"
+          declare -A aa
+          for element in "${y[@]}"
+          do
+              # also enclose in quotes
+              path="'$(echo $element | grep -oP "(?<=.github\/)[^\/]*")'"
+              aa[$path]=1
+          done
+
+          function join_by {
+            local d=${1-} f=${2-}
+            if shift 2; then
+              printf %s "$f" "${@/#/$d}"
+            fi
+          }
+
+          items=$(join_by , ${!aa[@]})
+          echo "::set-output name=paths::[$items]"
+
+  run-benchmarks:
+    needs: find-paths
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        path: ${{fromJSON(needs.find-paths.outputs.paths)}}
+    steps:
+      - run: brew install wrk
+      - name: build
+      - run: |
+          # TODO timings
+          cargo build
+        working-directory: format('rust-http-benchmark/{0}', inputs.path)
+      - name: benchmark
+      - run: |
+          ./target/debug/${{ matrix.path }} &
+          wrk -t12 -c200 -d30s http://127.0.0.1:3000
+
+      
