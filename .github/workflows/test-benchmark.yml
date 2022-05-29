@@ -13,18 +13,12 @@ jobs:
       paths: ${{ steps.read-change.outputs.paths }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          # todo temp 
-          fetch-depth: 0
-      - run: |
-          git status
-          git diff --name-only HEAD HEAD~5
-          echo $BASH_VERSION
       - name: Read changes
         id: read-change
+        shell: bash
         run: |
           # todo HEAD~1
-          changed_file_paths="$(git diff --name-only HEAD HEAD~5)"
+          changed_file_paths="$(git diff --name-only HEAD HEAD~1)"
           readarray -t changed_file_paths_array <<< "$changed_file_paths"
 
           declare -A aa
@@ -36,6 +30,8 @@ jobs:
             aa[$path]=1
           done
 
+          echo 1
+
           function join_by {
             local d=${1-} f=${2-}
             if shift 2; then
@@ -43,9 +39,12 @@ jobs:
             fi
           }
 
+          echo 2
+
           items=$(join_by , ${!aa[@]})
           echo "::set-output name=paths::[$items]"
-        shell: bash
+
+          echo 3
 
   run-benchmarks:
     needs: find-paths
