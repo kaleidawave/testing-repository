@@ -26,13 +26,12 @@ jobs:
           declare -A aa
           for element in "${changed_file_paths_array[@]}"
           do
-            echo $element
-            # also enclose in quotes
-            path="'$(echo $element | grep -oP "(?<=rust-http-benchmark\/)[^\/]*")'"
-            aa[$path]=1
+            path=$(echo $element | grep -oP "(?<=rust-http-benchmark\/)[^\/]*" || true)
+            if [ -n "$path" ]; then
+              # enclose in quotes here
+              aa["'$path'"]=1
+            fi
           done
-
-          echo 1
 
           function join_by {
             local d=${1-} f=${2-}
