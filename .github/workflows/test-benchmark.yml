@@ -14,18 +14,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          # Needs two versions to tell difference in change
           fetch-depth: 2
       - name: Read changes
         id: read-change
         shell: bash
         run: |
-          # todo HEAD~1
-          changed_file_paths="$(git diff --name-only HEAD HEAD~1)"
+          # "--no-renames --diff-filter=MCD" ensures only new or modified files. Its a bit weird
+          changed_file_paths="$(git diff --no-renames --diff-filter=MCD --name-only HEAD HEAD~1)"
           readarray -t changed_file_paths_array <<< "$changed_file_paths"
 
           declare -A aa
           for element in "${changed_file_paths_array[@]}"
           do
+            # "|| true" to prevent exiting if can't find match then don't exit code 1
             path=$(echo $element | grep -oP "(?<=rust-http-benchmark\/)[^\/]*" || true)
             if [ -n "$path" ]; then
               # enclose in quotes here
@@ -33,6 +35,7 @@ jobs:
             fi
           done
 
+          # thanks https://stackoverflow.com/a/17841619/10048799
           function join_by {
             local d=${1-} f=${2-}
             if shift 2; then
