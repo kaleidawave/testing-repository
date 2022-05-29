@@ -10,5 +10,5 @@ fn main() {
 }
 
 fn hello() -> &'static str {
-    "Hello World!"
+    "Hello World"
 }

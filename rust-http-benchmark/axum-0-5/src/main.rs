@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post},
+    routing::get,
     http::StatusCode,
     response::IntoResponse,
     Router,
@@ -18,5 +18,5 @@ async fn main() {
 }
 
 async fn root() -> &'static str {
-    "Hello World!"
+    "Hello World"
 }

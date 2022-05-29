@@ -49,6 +49,7 @@ jobs:
     timeout-minutes: 10
     if: ${{ !contains(needs.find-paths.outputs.paths, '[]') }}
     strategy:
+      fail-fast: false
       matrix: 
         path: ${{ fromJSON(needs.find-paths.outputs.paths) }}
     steps:
@@ -57,11 +58,11 @@ jobs:
         run: |
           # TODO timings
           cargo build
-        working-directory: format('rust-http-benchmark/{0}', matrix.path)
+        working-directory: ${{ format('./rust-http-benchmark/{0}', matrix.path) }}
       - name: benchmark
         run: |
           ./target/debug/${{ matrix.path }} &
           wrk -t12 -c200 -d30s http://127.0.0.1:3000
-        working-directory: format('rust-http-benchmark/{0}', matrix.path)
+        working-directory: ${{ format('./rust-http-benchmark/{0}', matrix.path) }}
 
       
