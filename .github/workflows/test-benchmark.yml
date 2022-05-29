@@ -13,6 +13,8 @@ jobs:
       paths: ${{ steps.read-change.outputs.paths }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
       - name: Read changes
         id: read-change
         shell: bash
