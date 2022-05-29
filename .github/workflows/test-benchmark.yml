@@ -54,7 +54,6 @@ jobs:
         path: ${{ fromJSON(needs.find-paths.outputs.paths) }}
     steps:
       - run: brew install wrk
-      - run: git status
       - uses: actions/checkout@v3
       - name: build
         run: |
