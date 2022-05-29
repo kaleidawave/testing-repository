@@ -58,6 +58,10 @@ jobs:
     steps:
       - run: brew install wrk
       - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ${{ format('rust-http-benchmark/{0}/target', matrix.path) }}
+          key: ${{ runner.os }}-${{ format('rust-http-benchmark/{0}/Cargo.lock', matrix.path) }}
       - name: build
         run: |
           # TODO timings
@@ -65,7 +69,11 @@ jobs:
         working-directory: ${{ format('rust-http-benchmark/{0}', matrix.path) }}
       - name: benchmark
         run: |
+          ls ./target/debug/${{ matrix.path }}
+          # todo `debug` path
           ./target/debug/${{ matrix.path }} &
+          # pause for it to startup
+          sleep 5
           wrk -t12 -c200 -d30s http://127.0.0.1:3000
         working-directory: ${{ format('rust-http-benchmark/{0}', matrix.path) }}
 
