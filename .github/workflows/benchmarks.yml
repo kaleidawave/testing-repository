@@ -1,13 +1,13 @@
-name: Rust http benchmark
+name: Benchmark things in benchmark folder
 
 on:
   push:
     paths:
-      - "rust-http-benchmark/**"
-      - ".github/workflows/test-benchmark.yml"
+      - "benchmarks/**"
+      - ".github/workflows/benchmarks.yml"
 
 jobs:
-  find-paths:
+  find-changed-paths:
     runs-on: ubuntu-latest
     outputs:
       paths: ${{ steps.read-change.outputs.paths }}
@@ -28,7 +28,7 @@ jobs:
           for element in "${changed_file_paths_array[@]}"
           do
             # "|| true" to prevent exiting if can't find match then don't exit code 1
-            path=$(echo $element | grep -oP "(?<=rust-http-benchmark\/)[^\/]*" || true)
+            path=$(echo $element | grep -oP "(?<=benchmarks\/)[^\/]*" || true)
             if [ -n "$path" ]; then
               # enclose in quotes here
               aa["'$path'"]=1
@@ -53,27 +53,17 @@ jobs:
     if: ${{ !contains(needs.find-paths.outputs.paths, '[]') }}
     strategy:
       fail-fast: false
-      matrix: 
+      matrix:
         path: ${{ fromJSON(needs.find-paths.outputs.paths) }}
     steps:
-      - run: brew install wrk
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - run: mkdir -p artifacts
+        working-directory: ${{ format('benchmarks/{0}', matrix.path) }}
+      - name: Run benchmark
+        run: ./run.sh
+        working-directory: ${{ format('benchmarks/{0}', matrix.path) }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
         with:
-          path: ${{ format('rust-http-benchmark/{0}/target', matrix.path) }}
-          key: ${{ runner.os }}-${{ format('rust-http-benchmark/{0}/Cargo.lock', matrix.path) }}
-      - name: build
-        run: |
-          # TODO timings
-          cargo build
-        working-directory: ${{ format('rust-http-benchmark/{0}', matrix.path) }}
-      - name: benchmark
-        run: |
-          # todo `debug` path
-          ./target/debug/${{ matrix.path }} &
-          # pause for server to startup
-          sleep 5
-          wrk -t12 -c200 -d30s http://127.0.0.1:3000
-        working-directory: ${{ format('rust-http-benchmark/{0}', matrix.path) }}
-
-      
+          name: artifacts
+          path: ${{ format('benchmarks/{0}', matrix.path) }}/artifacts/

@@ -9,6 +9,7 @@ fn main() {
     rocket::custom(&config).mount("/", routes![hello]).launch();
 }
 
+#[get("/")]
 fn hello() -> &'static str {
     "Hello World"
 }
