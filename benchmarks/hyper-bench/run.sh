@@ -1,8 +1,11 @@
-brew install wrk
+brew install wrk &&
 
-cargo build --timings=html 
+rustup toolchain install nightly &&
+rustup default nightly &&
 
-mv target/cargo-timings/* artifacts
+cargo build --timings=html &&
+
+mv target/cargo-timings/* artifacts &&
 
 ./target/debug/hyper-bench &
 
@@ -10,5 +13,4 @@ mv target/cargo-timings/* artifacts
 sleep 5
 
 wrk -t12 -c200 -d30s http://127.0.0.1:3000
-
 wrk -t12 -c200 -d30s http://127.0.0.1:3000 > artifacts/wrk.output.txt

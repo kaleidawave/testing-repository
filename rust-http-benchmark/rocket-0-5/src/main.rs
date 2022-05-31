@@ -1,4 +1,4 @@
-use rocket::{Config, routes};
+use rocket::{Config, routes, get};
 
 fn main() {
     let config = Config {
