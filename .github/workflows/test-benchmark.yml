@@ -72,7 +72,7 @@ jobs:
           # todo `debug` path
           ./target/debug/${{ matrix.path }} &
           # pause for server to startup
-          sleep 5
+          sleep 10
           wrk -t12 -c200 -d30s http://127.0.0.1:3000
         working-directory: ${{ format('rust-http-benchmark/{0}', matrix.path) }}
 

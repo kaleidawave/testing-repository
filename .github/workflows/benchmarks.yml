@@ -57,6 +57,15 @@ jobs:
         path: ${{ fromJSON(needs.find-changed-paths.outputs.paths) }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ${{ format('benchmarks/{0}/target/', matrix.path) }}/
+          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
       - run: mkdir -p artifacts
         working-directory: ${{ format('benchmarks/{0}', matrix.path) }}
       - name: Run benchmark

@@ -1,16 +1,1 @@
-brew install wrk
-
-rustup toolchain install nightly
-rustup default nightly
-
-cargo build -Z unstable-options --timings=html
-
-mv target/cargo-timings/* artifacts
-
-./target/debug/hyper-bench &
-
-# pause for server to startup
-sleep 10
-
-wrk -t12 -c200 -d30s http://127.0.0.1:3000
-wrk -t12 -c200 -d30s http://127.0.0.1:3000 > artifacts/wrk.output.txt
+../../shared/rust-http.sh
