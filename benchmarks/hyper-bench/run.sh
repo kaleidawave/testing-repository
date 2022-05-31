@@ -1,10 +1,10 @@
 brew install wrk
 
-cargo build --timings=html
+cargo build --timings=html 
 
 mv target/cargo-timings/* artifacts
 
-./target/debug/rocket-bench &
+./target/debug/hyper-bench &
 
 # pause for server to startup
 sleep 5

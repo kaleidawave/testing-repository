@@ -47,14 +47,14 @@ jobs:
           echo "::set-output name=paths::[$items]"
 
   run-benchmarks:
-    needs: find-paths
+    needs: find-changed-paths
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ !contains(needs.find-paths.outputs.paths, '[]') }}
+    if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
     strategy:
       fail-fast: false
       matrix:
-        path: ${{ fromJSON(needs.find-paths.outputs.paths) }}
+        path: ${{ fromJSON(needs.find-changed-paths.outputs.paths) }}
     steps:
       - uses: actions/checkout@v3
       - run: mkdir -p artifacts
