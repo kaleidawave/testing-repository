@@ -3,7 +3,7 @@ brew install wrk
 rustup toolchain install nightly
 rustup default nightly
 
-cargo build --timings=html
+cargo build -Z unstable-options --timings=html
 
 mv target/cargo-timings/* artifacts
 
