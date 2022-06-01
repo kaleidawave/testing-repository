@@ -89,4 +89,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifacts-${{ matrix.path }}
-          path: ${{ env.ARTIFACTS_FOLDER }}
+          path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}
+      - name: Upload artifacts2
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts-${{ matrix.path }}-2
+          path: | 
+            *.html
+            *.json
+            *.txt
