@@ -77,8 +77,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-      - run: ls
+          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock', 'index.js') }}
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
       - name: Run benchmark
         run: ./run.sh
