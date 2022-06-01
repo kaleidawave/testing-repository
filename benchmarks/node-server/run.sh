@@ -1,13 +1,12 @@
 # Installation
 brew install wrk
-brew install deno
 
 mkdir $ARTIFACTS_FOLDER/wrk
 
-deno run --allow-net index.js & 
+node index.js & 
 
 # Wait for server to start up
-sleep 20
+sleep 10
 
 # Run benchmark 3x
 wrk -t12 -c200 -d30s http://127.0.0.1:3000 > "$ARTIFACTS_FOLDER/wrk/output.1.txt"
