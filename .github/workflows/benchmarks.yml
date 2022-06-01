@@ -59,6 +59,12 @@ jobs:
   
     env:
       cache: true
+      ARTIFACTS_FOLDER: artifacts
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: benchmarks/${{ matrix.path }}
 
     steps:
       - uses: actions/checkout@v3
@@ -70,15 +76,14 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            ${{ format('benchmarks/{0}/target/', matrix.path) }}/
+            target/
           key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-      - run: mkdir -p artifacts
-        working-directory: ${{ format('benchmarks/{0}', matrix.path) }}
+      - run: ls
+      - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
       - name: Run benchmark
         run: ./run.sh
-        working-directory: ${{ format('benchmarks/{0}', matrix.path) }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: artifacts
-          path: ${{ format('benchmarks/{0}', matrix.path) }}/artifacts/
+          name: artifacts-${{ matrix.path }}
+          path: ${{ env.ARTIFACTS_FOLDER }}
