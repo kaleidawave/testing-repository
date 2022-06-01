@@ -16,7 +16,7 @@ struct AppContext {
 fn rocket() -> _ {
     let config = Config {
         port: 3000,
-        // Disable logs for this demo as might interfere with perf
+        // Disable logs for this demo as might interfere with performance
         log_level: LogLevel::Off,
         ..Config::debug_default()
     };

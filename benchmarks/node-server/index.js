@@ -1,7 +1,17 @@
 const http = require('http');
 
-//create a server object:
-http.createServer(function (req, res) {
-  res.write('Hello World!'); //write a response to the client
-  res.end(); //end the response
-}).listen(3000); //the server object listens on port 8080
+let counter = 0;
+
+http.createServer(function (request, response) {
+    counter += 1;
+    const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+    if (pathname === "/") {
+        response.write('Hello World!'); 
+    } else if (pathname === "/counter.json") {
+        response.setHeader('Content-Type', 'application/json');
+        response.write(`{"counter":${counter}}`); 
+    } else {
+        response.statusCode = 404;
+    }
+    response.end();
+}).listen(3000);
