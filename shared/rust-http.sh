@@ -20,7 +20,7 @@ cargo -Z unstable-options build --timings=html
 cargo -Z unstable-options build --release --timings=html
 
 artifacts="artifacts/$folder"
-mkdir "$artifacts $artifacts/build-timings $artifacts/wrk"
+mkdir $artifacts $artifacts/build-timings $artifacts/wrk
 
 mv target/cargo-timings/* "$artifacts/build-timings"
 

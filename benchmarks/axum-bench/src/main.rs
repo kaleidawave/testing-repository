@@ -16,7 +16,6 @@ async fn main() {
         .unwrap();
 }
 
-// le root
 async fn root() -> &'static str {
     "Hello World"
 }
