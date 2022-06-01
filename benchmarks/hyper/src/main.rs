@@ -23,6 +23,7 @@ async fn handle(context: AppContext, req: Request<Body>) -> Result<Response<Body
     let response = if path == "/" {
         Response::new(Body::from("Hello World"))
     } else if path == "/counter.json" {
+        // Manual serialization here
         Response::new(Body::from(format!("{{\"counter\":{}}}", new_count)))
     } else if let Some(user) = path.strip_prefix("/hello/") {
         Response::new(Body::from(format!("Hello, {}!", user)))

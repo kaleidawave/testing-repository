@@ -31,6 +31,7 @@ fn rocket() -> _ {
         .mount("/", routes![hello1, hello2, counter])
 }
 
+/// Counts incoming requests
 struct CounterFairing;
 
 #[rocket::async_trait]

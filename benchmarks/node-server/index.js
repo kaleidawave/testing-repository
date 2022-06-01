@@ -4,6 +4,12 @@ let counter = 0;
 
 http.createServer(function (request, response) {
     counter += 1;
+    if (request.method !== "GET") {
+        response.statusCode = 406;
+        response.end();
+        return;
+    }
+
     const { pathname } = new URL(request.url, `http://${request.headers.host}`);
     if (pathname === "/") {
         response.write('Hello World!'); 

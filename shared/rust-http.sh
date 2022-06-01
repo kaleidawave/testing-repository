@@ -13,7 +13,7 @@ cargo -Z unstable-options build --timings=html
 mv target/cargo-timings/cargo-timing.html "$ARTIFACTS_FOLDER/build-timings/cold-build-timing.html"
 
 # Replace string literals
-sed 's/"Hello World"/"Hello Planet"/' src/main.rs > src/main.rs
+sed -i 's/"Hello World"/"Hello Planet"/' src/main.rs
 # Incremental build (right?)
 cargo -Z unstable-options build --timings=html
 

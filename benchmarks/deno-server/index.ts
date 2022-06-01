@@ -9,7 +9,11 @@ const headers = new Headers({
 
 const handler = (request: Request): Response => {
     counter += 1;
-    const { pathname } = request.url;
+    if (request.method !== "GET") {
+        return new Response("", { status: 406 });
+    }
+
+    const { pathname } = new Url(request.url);
     if (pathname === "/") {
         return new Response("Hello World");
     } else if (pathname === "/counter.json") {
