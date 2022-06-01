@@ -10,7 +10,7 @@ struct AppContext {
 }
 
 async fn handle(context: AppContext, req: Request<Body>) -> Result<Response<Body>, Infallible> {
-    // Increment the visit count
+    // Increment the visit count atomically
     let new_count = context
         .counter
         .fetch_add(1, std::sync::atomic::Ordering::SeqCst);

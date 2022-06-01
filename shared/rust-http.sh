@@ -25,11 +25,8 @@ cargo -Z unstable-options build --release --timings=html
 mv target/cargo-timings/cargo-timing.html "$ARTIFACTS_FOLDER/build-timings/debug-to-release-build.html"
 
 # Execute server
-ls target/release
 server_binary=$(find target/release -maxdepth 1 -type f -not -name "*.*")
-echo $server_binary
-
-cr --release &
+$server_binary &
 
 # pause for server to startup
 sleep 10
