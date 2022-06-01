@@ -13,7 +13,7 @@ const handler = (request: Request): Response => {
         return new Response("", { status: 406 });
     }
 
-    const { pathname } = new Url(request.url);
+    const { pathname } = new URL(request.url);
     if (pathname === "/") {
         return new Response("Hello World");
     } else if (pathname === "/counter.json") {
