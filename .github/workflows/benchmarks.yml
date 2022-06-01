@@ -81,7 +81,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock', 'index.js') }}
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
       - name: Run benchmark
-        run: ./run.sh
+        run: |
+          # run.sh might not be executable
+          chmod +x run.sh
+          ./run.sh
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
