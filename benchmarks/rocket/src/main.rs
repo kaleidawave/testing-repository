@@ -44,12 +44,12 @@ impl Fairing for CounterFairing {
     }
 
     async fn on_request(&self, request: &mut Request<'_>, _: &mut Data<'_>) {
-        request
-            .rocket()
-            .state::<AppContext>()
-            .unwrap()
-            .counter
-            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        let state = request.rocket().state::<AppContext>();
+        unsafe {
+            state.unwrap_unchecked()
+                .counter
+                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        }
     }
 }
 
