@@ -21,7 +21,7 @@ fn rocket() -> _ {
     };
 
     let context = AppContext {
-        counter: AtomicUsize::new(0),
+        counter: AtomicUsize::new(1),
     };
 
     rocket::custom(&config)

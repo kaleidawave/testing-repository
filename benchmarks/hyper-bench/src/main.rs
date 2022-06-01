@@ -36,7 +36,7 @@ async fn handle(context: AppContext, req: Request<Body>) -> Result<Response<Body
 #[tokio::main]
 async fn main() {
     let context = AppContext {
-        counter: Arc::new(AtomicUsize::new(0)),
+        counter: Arc::new(AtomicUsize::new(1)),
     };
 
     // A `MakeService` that produces a `Service` to handle each connection.

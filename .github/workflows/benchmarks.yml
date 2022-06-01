@@ -50,14 +50,20 @@ jobs:
     needs: find-changed-paths
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
     strategy:
       fail-fast: false
       matrix:
         path: ${{ fromJSON(needs.find-changed-paths.outputs.paths) }}
+  
+    env:
+      cache: true
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
+        if: env.cache
         with:
           path: |
             ~/.cargo/bin/
