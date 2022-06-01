@@ -39,7 +39,6 @@ async fn main() {
         counter: Arc::new(AtomicUsize::new(0)),
     };
 
-    // A `MakeService` that produces a `Service` to handle each connection.
     let make_service = make_service_fn(move |_conn: &AddrStream| {
         let context = context.clone();
         let service = service_fn(move |req| handle(context.clone(), req));
