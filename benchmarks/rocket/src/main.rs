@@ -2,11 +2,11 @@ use rocket::{
     fairing::{Fairing, Info, Kind},
     get, launch, routes,
     serde::{json::Json, Serialize},
-    Config, Data, Request, State, log::LogLevel,
+    Config, Data, Request, State,
 };
 use std::sync::atomic::AtomicUsize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Default)]
 #[serde(crate = "rocket::serde")]
 struct AppContext {
     pub counter: AtomicUsize,
@@ -16,22 +16,15 @@ struct AppContext {
 fn rocket() -> _ {
     let config = Config {
         port: 3000,
-        // Disable logs for this demo as might interfere with performance + don't need them
-        log_level: LogLevel::Off,
         ..Config::debug_default()
-    };
-
-    let context = AppContext {
-        counter: AtomicUsize::new(0),
     };
 
     rocket::custom(&config)
         .attach(CounterFairing)
-        .manage(context)
+        .manage(AppContext::default())
         .mount("/", routes![hello1, hello2, counter])
 }
 
-/// Counts incoming requests
 struct CounterFairing;
 
 #[rocket::async_trait]
@@ -44,12 +37,12 @@ impl Fairing for CounterFairing {
     }
 
     async fn on_request(&self, request: &mut Request<'_>, _: &mut Data<'_>) {
-        let state = request.rocket().state::<AppContext>();
-        unsafe {
-            state.unwrap_unchecked()
-                .counter
-                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
-        }
+        request
+            .rocket()
+            .state::<AppContext>()
+            .unwrap()
+            .counter
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
     }
 }
 

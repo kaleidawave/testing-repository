@@ -4,18 +4,18 @@ use hyper::{Body, Request, Response, Server};
 use std::convert::Infallible;
 use std::sync::{atomic::AtomicUsize, Arc};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct AppContext {
     pub counter: Arc<AtomicUsize>,
 }
 
 async fn handle(context: AppContext, req: Request<Body>) -> Result<Response<Body>, Infallible> {
-    // Increment the visit count atomically
+    // Increment the visit count
     let new_count = context
         .counter
         .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
 
-    if req.method().as_str() == "POST" {
+    if req.method().as_str() != "GET" {
         return Ok(Response::builder().status(406).body(Body::empty()).unwrap());
     }
 
@@ -23,10 +23,13 @@ async fn handle(context: AppContext, req: Request<Body>) -> Result<Response<Body
     let response = if path == "/" {
         Response::new(Body::from("Hello World"))
     } else if path == "/counter.json" {
-        // Doing manual serialization here
-        Response::new(Body::from(format!("{{\"counter\":{}}}", new_count)))
-    } else if let Some(user) = path.strip_prefix("/hello/") {
-        Response::new(Body::from(format!("Hello, {}!", user)))
+        let data = format!("{{\"counter\":{}}}", new_count);
+        Response::builder()
+            .header("Content-Type", "application/json")
+            .body(Body::from(data))
+	        .unwrap()
+    } else if let Some(name) = path.strip_prefix("/hello/") {
+        Response::new(Body::from(format!("Hello, {}!", name)))
     } else {
         Response::builder().status(404).body(Body::empty()).unwrap()
     };
@@ -35,11 +38,8 @@ async fn handle(context: AppContext, req: Request<Body>) -> Result<Response<Body
 
 #[tokio::main]
 async fn main() {
-    let context = AppContext {
-        counter: Arc::new(AtomicUsize::new(0)),
-    };
+    let context = AppContext::default();
 
-    // A `MakeService` that produces a `Service` to handle each connection.
     let make_service = make_service_fn(move |_conn: &AddrStream| {
         let context = context.clone();
         let service = service_fn(move |req| handle(context.clone(), req));
@@ -49,6 +49,7 @@ async fn main() {
     let server = Server::bind(&"127.0.0.1:3000".parse().unwrap())
         .serve(make_service)
         .await;
+
     if let Err(e) = server {
         eprintln!("server error: {}", e);
     }
