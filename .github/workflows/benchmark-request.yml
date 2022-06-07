@@ -1,0 +1,16 @@
+name: Request benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      benchmarks:
+        description: "paths"
+        required: true
+
+jobs:
+  run-benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/benchmark
+        with:
+          benchmarks: ${{ format('[{0}]', github.event.inputs.benchmarks) }}

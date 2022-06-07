@@ -47,46 +47,10 @@ jobs:
           echo "::set-output name=paths::[$items]"
 
   run-benchmarks:
-    needs: find-changed-paths
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    needs: find-changed-paths
     if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
-    strategy:
-      fail-fast: false
-      matrix:
-        path: ${{ fromJSON(needs.find-changed-paths.outputs.paths) }}
-  
-    env:
-      cache: true
-      ARTIFACTS_FOLDER: artifacts
-
-    defaults:
-      run:
-        shell: bash
-        working-directory: benchmarks/${{ matrix.path }}
-
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        if: env.cache
+      - uses: ./.github/workflows/benchmark
         with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/home/linuxbrew/
-            target/
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock', 'index.js') }}
-      - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
-      - name: Run benchmark
-        run: |
-          # run.sh might not be executable
-          chmod +x run.sh
-          ./run.sh
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts-${{ matrix.path }}
-          path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}
+          benchmarks: ${{ needs.find-changed-paths.outputs.paths }}

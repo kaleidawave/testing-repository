@@ -1,0 +1,52 @@
+on:
+  workflow_call:
+    inputs:
+      benchmarks:
+        description: "paths"
+        type: string
+        required: true
+
+jobs:
+  run-benchmarks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    if: ${{ github.event.inputs.benchmarks == '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        path: ${{ fromJSON(inputs.benchmarks) }}
+  
+    env:
+      cache: true
+      ARTIFACTS_FOLDER: artifacts
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: benchmarks/${{ matrix.path }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        if: env.cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ~/home/linuxbrew/
+            target/
+          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock', 'run.sh') }}
+      - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
+      - name: Run benchmark
+        run: |
+          # run.sh might not be executable
+          chmod +x run.sh
+          ./run.sh
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts-${{ matrix.path }}
+          path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}
