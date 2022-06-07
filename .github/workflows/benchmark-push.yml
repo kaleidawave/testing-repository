@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "benchmarks/**"
-      - ".github/workflows/benchmarks.yml"
+      - ".github/workflows/benchmark-push.yml"
 
 jobs:
   find-changed-paths:
@@ -52,6 +52,7 @@ jobs:
     if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
     steps:
       - uses: actions/checkout@v3
+      - run: ls -R
       - uses: ./.github/workflows/benchmark.yml
         with:
           benchmarks: ${{ needs.find-changed-paths.outputs.paths }}

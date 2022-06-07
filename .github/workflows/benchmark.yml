@@ -2,7 +2,7 @@ on:
   workflow_call:
     inputs:
       benchmarks:
-        description: "paths"
+        description: "paths to benchmarks, comma seperated"
         type: string
         required: true
 
