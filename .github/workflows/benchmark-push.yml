@@ -52,7 +52,7 @@ jobs:
     if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
     steps:
       - uses: actions/checkout@v3
-      - run: ls -R
+      - run: ls .github -R
       - uses: ./.github/workflows/benchmark.yml
         with:
           benchmarks: ${{ needs.find-changed-paths.outputs.paths }}
