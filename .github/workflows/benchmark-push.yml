@@ -51,6 +51,7 @@ jobs:
     needs: find-changed-paths
     if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/workflows/benchmark
         with:
           benchmarks: ${{ needs.find-changed-paths.outputs.paths }}
