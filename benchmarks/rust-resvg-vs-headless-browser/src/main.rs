@@ -1,7 +1,7 @@
-use std::{error::Error, fs, time::Instant};
+use std::{error::Error, fs, time::Instant, env, path::Path};
 use resvg::render;
-use tiny_skia::{Pixmap, PixmapMut, Transform};
-use usvg::{Options, OptionsRef, Tree};
+use tiny_skia::{Pixmap, Transform};
+use usvg::{Options, Tree};
 
 const WIDTH: u32 = 1200;
 const HEIGHT: u32 = 628;
@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     );
     eprintln!("render {:?}", instant.elapsed());
     let png = t.encode_png()?;
-    eprintln!("encode {:?}", , instant.elapsed());
+    eprintln!("encode {:?}", instant.elapsed());
     fs::write(Path::new(&artifact_folder).join("demo.png"), png)?;
     eprintln!("writing {:?}", instant.elapsed());
 
