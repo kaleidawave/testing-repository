@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let svg = fs::read_to_string("demo.svg")?;
     let mut t = Pixmap::new(WIDTH, HEIGHT).ok_or("pixmap allocation error")?;
     let mut options = Options { ..Default::default()};
-    options.fontdb.load_font_file("Inter-Regular.ttf");
+    options.fontdb.load_font_file("Inter-Regular.ttf")?;
     let instant = Instant::now();
     render(
         &Tree::from_str(&svg, &options.to_ref()).unwrap(),
