@@ -5,7 +5,7 @@ cargo build --release
 
 for i in {1..5}
 do
-  ./target/release/image-generation 2>&1 >> "$ARTIFACTS_FOLDER/resvg-output.txt"
+  ./target/release/image-generation 2> >(tee "$ARTIFACTS_FOLDER/resvg-output.txt")
 done
 
 npm ci || npm install
