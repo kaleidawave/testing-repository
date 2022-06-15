@@ -51,6 +51,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         body: test
+        tag_name: "v${{ github.run_id }}"
         files: |
           README.md
           builds/*
