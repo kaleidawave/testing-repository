@@ -1,0 +1,53 @@
+on:
+  push:
+    paths:
+      - "hello-test/**"
+      - ".github/workflows/matrix-build.yml"
+
+jobs:
+  builds:
+    needs: crates-release
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            executable-extension: .exe
+            platform_name: x86_64-pc-windows
+          - os: ubuntu-latest
+            platform_name: x86_64-unknown-linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo ${{ matrix.os }} ${{ matrix.executable-extension }} ${{ matrix.platform_name }}
+      - run: rustup show
+      - name: Build release assets
+        run: cargo build
+        working-directory: hello-test
+      - name: Rename and move release assets
+        run: |
+          mkdir artifacts
+          mv hello-test/target/debug/hello-test${{ matrix.executable-extension }} artifacts/hello-test-version-${{ matrix.platform_name }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test
+          path: artifacts/*
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.os }}
+          path: artifacts/*
+  github-release:
+    needs: builds
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v3
+      with:
+        path: artifacts
+    - run: ls artifacts -R
+    - name: GitHub release
+      uses: softprops/action-gh-release@v1
+      with:
+        body: test
+        files: |
+          README.md
