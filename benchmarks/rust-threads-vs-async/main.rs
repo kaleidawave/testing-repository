@@ -39,10 +39,10 @@ async fn main() {
     use hyper::client::{Client, connect::Connect};
     use hyper::{Uri, body::HttpBody};
 
-    async fn async_connect_and_read<C, B>(client: Client<C, B>)
+    async fn async_connect_and_read<C, B>(client: &Client<C, B>)
     where
         C: Connect + Clone + Send + Sync + 'static,
-        B: HttpBody + Send + 'static,
+        B: HttpBody + Send + 'static + std::default::Default,
         B::Data: Send,
         B::Error: Into<Box<dyn std::error::Error + Send + Sync>>,
     {
