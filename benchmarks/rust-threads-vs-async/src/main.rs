@@ -19,7 +19,7 @@ fn main() {
 #[cfg_attr(feature = "threads", tokio::main)]
 #[cfg_attr(not(feature = "threads"), tokio::main(flavor = "current_thread"))]
 async fn main() {
-    async read_file(path: &str) {
+    async fn read_file(path: &str) {
         let _x = tokio::fs::read(path).await.unwrap();
     }
 
