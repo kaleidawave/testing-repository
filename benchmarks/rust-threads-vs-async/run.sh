@@ -3,7 +3,7 @@ brew install hyperfine
 
 # Make some files
 mkdir files
-for i in `seq 1 $((10**5))`
+for i in {1..10000}
 do
   cp run.sh "files/$i" 
 done
@@ -20,4 +20,11 @@ mv target/release/rust-threads-vs-async async
 cargo build --release --features async,threads
 mv target/release/rust-threads-vs-async async_threads
 
-hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output.txt"
+export NUM_FILES = 100
+hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
+
+export NUM_FILES = 1000
+hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
+
+export NUM_FILES = 10000
+hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
