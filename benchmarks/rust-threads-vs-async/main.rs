@@ -5,7 +5,7 @@
 //         .expect("Expected 'NUM_FILES' env variable to be integer")
 // }
 
-const SERVER: &str = "localhost:8080";
+const SERVER: &str = "http://localhost:8080";
 
 #[cfg(not(feature = "async"))]
 fn main() {
