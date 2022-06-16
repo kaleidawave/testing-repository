@@ -21,13 +21,13 @@ mv target/release/rust-threads-vs-async async
 cargo build --release --features async,threads
 mv target/release/rust-threads-vs-async async_threads
 
-export NUM_FILES = 100
+export NUM_FILES=100
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
 
-export NUM_FILES = 1000
+export NUM_FILES=1000
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
 
-export NUM_FILES = 10000
+export NUM_FILES=10000
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
 
 cat ./out/1 > "$ARTIFACTS_FOLDER/output.txt"

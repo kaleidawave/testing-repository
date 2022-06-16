@@ -16,12 +16,12 @@ fn main() {
         if cfg!(feature = "threads") {
             let handle = thread::spawn(move || {
                 let content = std::fs::read_to_string(&read_path).unwrap();
-                std::fs::write(write_path, content);
+                std::fs::write(write_path, content).unwrap();
             });
             handles.push(handle);
         } else {
             let content = std::fs::read_to_string(&read_path).unwrap();
-            std::fs::write(write_path, content);
+            std::fs::write(write_path, content).unwrap();
         }
     }
     handles.into_iter().for_each(|handle| handle.join().unwrap());
