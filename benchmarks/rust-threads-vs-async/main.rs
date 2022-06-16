@@ -5,15 +5,16 @@
 //         .expect("Expected 'NUM_FILES' env variable to be integer")
 // }
 
-const SERVER: &str = "127.0.0.1:8080";
+const SERVER: &str = "localhost:8080";
 
 #[cfg(not(feature = "async"))]
 fn main() {
     fn sync_connect_and_read() {
-        use std::net::TcpStream;
-        let mut stream = TcpStream::connect(SERVER).unwrap();
-        stream.write(&[1]).unwrap();
-        stream.read(&mut [0; 128]).unwrap();
+        let _body: String = ureq::get(SERVER)
+            .call()
+            .unwrap()
+            .into_string()
+            .unwrap();
     }
 
     let mut handles = Vec::new();
@@ -22,10 +23,12 @@ fn main() {
             let handle = std::thread::spawn(sync_connect_and_read);
             handles.push(handle);
         } else {
-            sync_connect_and_read()
+            sync_connect_and_read();
         }
     }
-    handles.into_iter().for_each(|handle| handle.join().unwrap());
+    handles
+        .into_iter()
+        .for_each(|handle| handle.join().unwrap());
 }
 
 #[cfg(feature = "async")]
@@ -33,15 +36,21 @@ fn main() {
 #[cfg_attr(not(feature = "threads"), tokio::main(flavor = "current_thread"))]
 async fn main() {
     use futures::future::join_all;
-    use tokio::net::TcpStream;
-    use tokio::io::AsyncReadExt;
+    use hyper::client::Client;
+    use hyper::Uri;
 
-    async fn async_connect_and_read() {
-        let mut stream = TcpStream::connect(SERVER).await.unwrap();
-        let mut buffer = String::new();
-        stream.read_to_string(&mut buffer).await.unwrap();
+    async fn async_connect_and_read<C, B>(client: Client<C, B>)
+    where
+        C: Connect + Clone + Send + Sync + 'static,
+        B: HttpBody + Send + 'static,
+        B::Data: Send,
+        B::Error: Into<Box<dyn StdError + Send + Sync>>,
+    {
+        let future = client.get(Uri::from_static(SERVER)).await.unwrap();
     }
 
-    let request_futures = (1..100).map(|_| async_connect_and_read());
+    let client = Client::new();
+
+    let request_futures = (1..100).map(|_| async_connect_and_read(&client));
     join_all(request_futures).await;
 }

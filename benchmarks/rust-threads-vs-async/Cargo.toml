@@ -9,10 +9,12 @@ publish = false
 [dependencies]
 tokio = { version = "1.19.2", features = ["full"], optional = true }
 futures = { version = "0.3.21", optional = true }
+hyper = { version = "0.14.19", features = ["http1"], optional = true }
+ureq = "2.4.0"
 
 [features]
 threads = []
-async = ["dep:tokio", "dep:futures"]
+async = ["dep:tokio", "dep:futures", "dep:futures"]
 
 [[bin]]
 name = "bin"

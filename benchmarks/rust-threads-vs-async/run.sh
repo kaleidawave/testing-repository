@@ -14,6 +14,8 @@ mv target/release/bin async
 cargo build --release --features async,threads
 mv target/release/bin async_threads
 
-caddy start &
+caddy start
 
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output.txt"
+
+caddy stop
