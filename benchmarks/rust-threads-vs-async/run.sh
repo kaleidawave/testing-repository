@@ -3,6 +3,7 @@ brew install hyperfine
 
 # Make some files
 mkdir files
+mkdir out
 for i in {1..10000}
 do
   cp run.sh "files/$i" 
@@ -28,3 +29,6 @@ hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLD
 
 export NUM_FILES = 10000
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
+
+cat ./out/1 > "$ARTIFACTS_FOLDER/output.txt"
+cat ./out/1
