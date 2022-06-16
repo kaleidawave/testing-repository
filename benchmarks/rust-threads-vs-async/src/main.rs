@@ -6,7 +6,7 @@ fn main() {
     for i in 1..100 {
         let path = format!("files/{}", i);
         if cfg!(feature = "threads") {
-            let handle = thread::spawn(|| {
+            let handle = thread::spawn(move || {
                 let _x = std::fs::read_to_string(&path);
             });
             handles.push(handle);
@@ -23,10 +23,10 @@ fn main() {
 async fn main() {
     use futures::future::join_all;
 
-    async fn read_file(path: &str) {
-        let _x = tokio::fs::read(path).await.unwrap();
+    async fn read_file(path: String) {
+        let _x = tokio::fs::read(&path).await.unwrap();
     }
 
-    let file_read_futures = (1..100).map(|i| read_file(&format!("files/{}", i)));
+    let file_read_futures = (1..100).map(|i| read_file(format!("files/{}", i)));
     join_all(file_read_futures).await;
 }
