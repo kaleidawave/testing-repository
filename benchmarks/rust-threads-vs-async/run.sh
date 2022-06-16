@@ -24,4 +24,8 @@ mv target/release/rust-threads-vs-async async_threads
 
 echo "Running hyperfine"
 
-hyperfine --warmup 3 sync threads async async_threads > "$ARTIFACTS_FOLDER/hyperfine-output.txt"
+ls
+
+hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output.txt"
+
+hyperfine ./threads ./async  > "$ARTIFACTS_FOLDER/hyperfine-output-2.txt"
