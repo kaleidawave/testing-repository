@@ -44,7 +44,7 @@ async fn main() {
         C: Connect + Clone + Send + Sync + 'static,
         B: HttpBody + Send + 'static,
         B::Data: Send,
-        B::Error: Into<Box<dyn std::error::Error> + Send + Sync>>,
+        B::Error: Into<Box<dyn std::error::Error + Send + Sync>>,
     {
         let _future = client.get(Uri::from_static(SERVER)).await.unwrap();
     }

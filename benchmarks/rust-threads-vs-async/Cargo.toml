@@ -9,7 +9,7 @@ publish = false
 [dependencies]
 tokio = { version = "1.19.2", features = ["full"], optional = true }
 futures = { version = "0.3.21", optional = true }
-hyper = { version = "0.14.19", features = ["http1"], optional = true }
+hyper = { version = "0.14.19", features = ["http1", "client"], optional = true }
 ureq = "2.4.0"
 
 [features]
