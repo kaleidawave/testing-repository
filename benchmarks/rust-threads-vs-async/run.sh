@@ -16,4 +16,4 @@ mv target/release/bin async_threads
 
 caddy start &
 
-hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "hyperfine-output.txt"
+hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output.txt"

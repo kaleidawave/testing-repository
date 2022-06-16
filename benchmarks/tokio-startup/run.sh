@@ -1,2 +1,4 @@
 cargo build --release
-./target/release/bin
+for i in {1..10} do
+    ./target/release/bin > "$ARTIFACTS_FOLDER/tokio-startup.txt"
+done

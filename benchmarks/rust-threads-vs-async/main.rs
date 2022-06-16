@@ -39,7 +39,7 @@ async fn main() {
     async fn async_connect_and_read() {
         let mut stream = TcpStream::connect(SERVER).await.unwrap();
         let mut buffer = String::new();
-        f.read_to_string(&mut buffer).await.unwrap();
+        stream.read_to_string(&mut buffer).await.unwrap();
     }
 
     let request_futures = (1..100).map(|_| async_connect_and_read());
