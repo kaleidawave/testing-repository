@@ -1,34 +1,19 @@
-# Installation
+# Install prerequisites
 brew install hyperfine
-
-# Make some files
-mkdir files
-mkdir out
-for i in {1..10000}
-do
-  cp run.sh "files/$i" 
-done
+brew install caddy
 
 cargo build --release
-mv target/release/rust-threads-vs-async sync
+mv target/release/bin sync
 
 cargo build --release --features threads
-mv target/release/rust-threads-vs-async threads
+mv target/release/bin threads
 
 cargo build --release --features async
-mv target/release/rust-threads-vs-async async
+mv target/release/bin async
 
 cargo build --release --features async,threads
-mv target/release/rust-threads-vs-async async_threads
+mv target/release/bin async_threads
 
-export NUM_FILES=100
-hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
+caddy start &
 
-export NUM_FILES=1000
-hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
-
-export NUM_FILES=10000
-hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_FILES.txt"
-
-cat ./out/1 > "$ARTIFACTS_FOLDER/output.txt"
-cat ./out/1
+hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "hyperfine-output.txt"
