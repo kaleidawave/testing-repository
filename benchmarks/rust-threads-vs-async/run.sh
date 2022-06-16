@@ -16,15 +16,12 @@ mv target/release/bin async_threads
 
 caddy start
 
-export NUM_REQUESTS=10
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_REQUESTS.txt"
 export NUM_REQUESTS=100
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_REQUESTS.txt"
 export NUM_REQUESTS=1000
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_REQUESTS.txt"
 export NUM_REQUESTS=10000
-hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_REQUESTS.txt"
-export NUM_REQUESTS=50000
 hyperfine --warmup 3 ./sync ./threads ./async ./async_threads > "$ARTIFACTS_FOLDER/hyperfine-output-$NUM_REQUESTS.txt"
 
 caddy stop
