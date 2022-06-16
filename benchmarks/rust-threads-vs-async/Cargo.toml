@@ -14,7 +14,7 @@ ureq = "2.4.0"
 
 [features]
 threads = []
-async = ["dep:tokio", "dep:futures", "dep:futures"]
+async = ["dep:tokio", "dep:futures", "dep:hyper"]
 
 [[bin]]
 name = "bin"
