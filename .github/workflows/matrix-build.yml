@@ -40,7 +40,6 @@ jobs:
       with:
         name: builds
         path: builds
-    - run: ls -R
     - name: Set git credentials
       run: |
         git config user.name github-actions
