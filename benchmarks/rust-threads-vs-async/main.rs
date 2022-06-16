@@ -1,24 +1,20 @@
-// fn get_file_count() -> usize {
-//     std::env::var("NUM_FILES")
-//         .expect("Expected 'NUM_FILES' env variable")
-//         .parse()
-//         .expect("Expected 'NUM_FILES' env variable to be integer")
-// }
+fn get_num_requests() -> usize {
+    std::env::var("NUM_REQUESTS")
+        .expect("Expected 'NUM_REQUESTS' env variable")
+        .parse()
+        .expect("Expected 'NUM_REQUESTS' env variable to be integer")
+}
 
 const SERVER: &str = "http://localhost:8080";
 
 #[cfg(not(feature = "async"))]
 fn main() {
     fn sync_connect_and_read() {
-        let _body: String = ureq::get(SERVER)
-            .call()
-            .unwrap()
-            .into_string()
-            .unwrap();
+        let _body: String = ureq::get(SERVER).call().unwrap().into_string().unwrap();
     }
 
     let mut handles = Vec::new();
-    for _ in 1..100 {
+    for _ in 1..get_num_requests() {
         if cfg!(feature = "threads") {
             let handle = std::thread::spawn(sync_connect_and_read);
             handles.push(handle);
@@ -36,8 +32,8 @@ fn main() {
 #[cfg_attr(not(feature = "threads"), tokio::main(flavor = "current_thread"))]
 async fn main() {
     use futures::future::join_all;
-    use hyper::client::{Client, connect::Connect};
-    use hyper::{Uri, body::HttpBody};
+    use hyper::client::{connect::Connect, Client};
+    use hyper::{body::HttpBody, Uri};
 
     async fn async_connect_and_read<C, B>(client: &Client<C, B>)
     where
@@ -51,6 +47,6 @@ async fn main() {
 
     let client = Client::new();
 
-    let request_futures = (1..100).map(|_| async_connect_and_read(&client));
+    let request_futures = (1..get_num_requests()).map(|_| async_connect_and_read(&client));
     join_all(request_futures).await;
 }
