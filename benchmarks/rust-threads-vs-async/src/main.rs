@@ -1,9 +1,11 @@
+const FILES: usize = 10 ** 5;
+
 #[cfg(not(feature = "async"))]
 fn main() {
     use std::thread;
 
     let mut handles = Vec::new();
-    for i in 1..100 {
+    for i in 1..FILES {
         let path = format!("files/{}", i);
         if cfg!(feature = "threads") {
             let handle = thread::spawn(move || {
@@ -27,6 +29,6 @@ async fn main() {
         let _x = tokio::fs::read(&path).await.unwrap();
     }
 
-    let file_read_futures = (1..100).map(|i| read_file(format!("files/{}", i)));
+    let file_read_futures = (1..FILES).map(|i| read_file(format!("files/{}", i)));
     join_all(file_read_futures).await;
 }
