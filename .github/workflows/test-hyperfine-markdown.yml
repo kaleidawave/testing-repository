@@ -1,0 +1,16 @@
+name: Hyperfine and Markdown
+
+on:
+  push
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          brew install hyperfine
+
+          echo '### Hello world! :rocket:' >> $GITHUB_STEP_SUMMARY
+
+          hyperfine 'sleep 0.3' --export-markdown temp.md 
+          cat temp.md >> $GITHUB_STEP_SUMMARY
