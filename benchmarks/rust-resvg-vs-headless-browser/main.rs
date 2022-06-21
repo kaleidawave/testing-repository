@@ -2,7 +2,7 @@
 // use image::io::Reader as ImageReader;
 // use image::Rgb;
 use resvg::render;
-use std::{error::Error, fs, time::Instant};
+use std::{error::Error, fs, time::Instant, path::Path};
 use tiny_skia::{Pixmap, Transform};
 use usvg::{Options, Tree};
 
@@ -45,7 +45,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut tracer = Tracer::new();
     options
         .fontdb
-        .load_font_data(include_bytes!("../Inter.ttf").to_vec());
+        .load_font_data(include_bytes!("./Inter.ttf").to_vec());
     tracer.log("loading fonts");
     render(
         &Tree::from_str(&svg, &options.to_ref())?,
