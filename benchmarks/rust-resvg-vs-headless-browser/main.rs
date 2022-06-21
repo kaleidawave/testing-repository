@@ -1,6 +1,3 @@
-// use fontdue::FontSettings;
-// use image::io::Reader as ImageReader;
-// use image::Rgb;
 use resvg::render;
 use std::{error::Error, fs, time::Instant, path::Path};
 use tiny_skia::{Pixmap, Transform};
