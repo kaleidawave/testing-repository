@@ -1,4 +1,4 @@
-cargo install
+brew install hyperfine
 
 # Rust run
 cargo build --features tracing
@@ -14,7 +14,7 @@ done
 
 cargo build --release
 
-npm ci || npm install
+npm install
 node index.js >> "$ARTIFACTS_FOLDER/puppetteer-output.txt"
 
 hyperfine "./target/release/image-generation" "node index.js" >> "$ARTIFACTS_FOLDER/hyperfine.txt"
