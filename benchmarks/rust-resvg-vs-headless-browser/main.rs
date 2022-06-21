@@ -56,7 +56,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     tracer.log("rendering");
     let png = t.encode_png()?;
     tracer.log("encoding");
-    fs::write(Path::new(std::env::var("ARTIFACTS_FOLDER").unwrap()).join("rust-output.png"), png)?;
+    fs::write(Path::new(std::env::var("ARTIFACTS_FOLDER").unwrap_or(".".to_owned())).join("rust-output.png"), png)?;
     tracer.log("writing");
     Ok(())
 }
