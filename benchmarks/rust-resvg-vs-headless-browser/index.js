@@ -5,10 +5,14 @@ const path = require('path');
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto('file://' + path.join(process.cwd(), "./ferris.svg"));
-  for (let i = 0; i < 10; i++) {
-    console.time("Screenshot time");
+  if (process.env.SINGLE_RUN) {
     await page.screenshot({ path: path.join(process.env.ARTIFACTS_FOLDER, 'node-output.webp') });
-    console.timeEnd("Screenshot time");
-    await browser.close();
+  } else {
+    for (let i = 0; i < 10; i++) {
+      console.time("Screenshot time");
+      await page.screenshot({ path: path.join(process.env.ARTIFACTS_FOLDER, 'node-output.webp') });
+      console.timeEnd("Screenshot time");
+    }
   }
+  await browser.close();
 })();
