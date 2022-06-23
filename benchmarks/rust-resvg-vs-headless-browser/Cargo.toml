@@ -10,6 +10,8 @@ publish = false
 resvg = "0.23.0"
 tiny-skia = "0.6.5"
 usvg = "0.23.0"
+webp = "0.2.2"
+reqwest = { version = "0.11.11", features = ["blocking"] }
 
 [features]
 tracing = []
