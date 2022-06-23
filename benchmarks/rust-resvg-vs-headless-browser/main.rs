@@ -1,7 +1,9 @@
 use resvg::render;
-use std::{error::Error, fs, time::Instant, path::Path};
+use std::fs;
+use std::sync::Arc;
+use std::{error::Error, ops::Deref, time::Instant};
 use tiny_skia::{Pixmap, Transform};
-use usvg::{Options, Tree};
+use usvg::{ImageHrefResolver, ImageKind, Options, Tree};
 
 const WIDTH: u32 = 1200;
 const HEIGHT: u32 = 630;
