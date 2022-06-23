@@ -9,7 +9,7 @@ for i in {1..5}
 do
   ./target/debug/image-generation 2> >(tee -a "$ARTIFACTS_FOLDER/resvg-debug-output.txt")
   ./target/release/image-generation 2> >(tee -a "$ARTIFACTS_FOLDER/resvg-release-output.txt")
-  node index.js >>"$ARTIFACTS_FOLDER/node-release-output-$i.txt"
+  node index.js >> "$ARTIFACTS_FOLDER/node-release-output.txt"
   echo "" >> "$ARTIFACTS_FOLDER/resvg-debug-output.txt"
   echo "" >> "$ARTIFACTS_FOLDER/resvg-release-output.txt"
 done
