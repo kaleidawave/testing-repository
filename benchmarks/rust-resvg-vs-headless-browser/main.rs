@@ -4,6 +4,7 @@ use std::sync::Arc;
 use std::{error::Error, ops::Deref, time::Instant};
 use tiny_skia::{Pixmap, Transform};
 use usvg::{ImageHrefResolver, ImageKind, Options, Tree};
+use std::path::Path;
 
 const WIDTH: u32 = 1200;
 const HEIGHT: u32 = 630;
