@@ -17,10 +17,8 @@ jobs:
         with:
           toolchain: 1.50.0
           override: true
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
+      - run: cargo check
+        working-directory: demo-crate-6154
       - name: Crates publish
         uses: kaleidawave/crates-release-gh-action@v1
         id: release
