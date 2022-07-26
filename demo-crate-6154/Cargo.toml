@@ -1,11 +1,11 @@
 [package]
 name = "demo-crate-6154"
-version = "0.0.0"
+version = "0.1.0"
 description = "Testing crate"
 license = "MIT"
 homepage = "https://crates.io/crates/demo-crate-6154"
 edition = "2018"
-rust-version = "1.50"
+rust-version = "1.59"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
