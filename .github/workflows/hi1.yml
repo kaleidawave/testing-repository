@@ -1,0 +1,12 @@
+name: Hi 1
+
+on:
+  push
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ "hello" }}
+      - run: echo hello
+        if: ${{ "a" == "b"  }}
