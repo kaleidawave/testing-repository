@@ -1,0 +1,34 @@
+name: Get video
+
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: 'YT URL'     
+        required: true
+      start:
+        description: 'Start'
+        required: false
+      end:
+        description: 'End'
+        required: false
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          brew install yt-dlp/taps/yt-dlp
+          brew install ffmpeg
+          mkdir videos
+      - run: |
+          yt-dlp ${{ github.event.inputs.video }} --output videos/output.mp4
+      - if: ${{ github.event.inputs.start }}
+        run: |
+          ffmpeg -i videos/output.mp4 -ss ${{github.event.inputs.start}} -to ${{github.event.inputs.end}} -c:v copy -c:a copy videos/output.mp4
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: videos
+          path: |
+            videos
