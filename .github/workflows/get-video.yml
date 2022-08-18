@@ -12,6 +12,8 @@ on:
       end:
         description: 'End'
         required: false
+  push:
+    branches: ['*']
 
 jobs:
   run:
