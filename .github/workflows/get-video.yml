@@ -14,19 +14,22 @@ on:
         required: false
 
 jobs:
-  bench:
+  run:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: Install & setup
+        run: |
           brew install yt-dlp/taps/yt-dlp
           brew install ffmpeg
           mkdir videos
-      - run: |
+      - name: Download
+        run: |
           yt-dlp ${{ github.event.inputs.video }} --output videos/output.mp4
-      - if: ${{ github.event.inputs.start }}
+      - name: Trim
+        if: ${{ github.event.inputs.start }}
         run: |
           ffmpeg -i videos/output.mp4 -ss ${{github.event.inputs.start}} -to ${{github.event.inputs.end}} -c:v copy -c:a copy videos/output.mp4
-      - name: Archive production artifacts
+      - name: Upload
         uses: actions/upload-artifact@v3
         with:
           name: videos
