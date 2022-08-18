@@ -12,13 +12,12 @@ on:
       end:
         description: 'End'
         required: false
-  push:
-    branches: ['*']
 
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
+      - run: echo Video is ${{ inputs.video }} 
       - name: Install & setup
         run: |
           brew install yt-dlp/taps/yt-dlp
@@ -26,11 +25,11 @@ jobs:
           mkdir videos
       - name: Download
         run: |
-          yt-dlp ${{ github.event.inputs.video }} --output videos/output.mp4
+          yt-dlp ${{ inputs.video }} --output videos/output.mp4
       - name: Trim
-        if: ${{ github.event.inputs.start }}
+        if: ${{ inputs.start }}
         run: |
-          ffmpeg -i videos/output.mp4 -ss ${{github.event.inputs.start}} -to ${{github.event.inputs.end}} -c:v copy -c:a copy videos/output.mp4
+          ffmpeg -i videos/output.mp4 -ss ${{ inputs.start }} -to ${{ inputs.end }} -c:v copy -c:a copy videos/output.mp4
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
