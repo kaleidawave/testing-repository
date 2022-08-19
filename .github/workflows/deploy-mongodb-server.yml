@@ -14,3 +14,4 @@ jobs:
         with:
           deploy-key: ${{ secrets.SHUTTLE_DEPLOY_KEY }}
           working-directory: one-off/mongo-db-deploy
+          allow-dirty: true
