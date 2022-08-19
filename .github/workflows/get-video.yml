@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "video/video-requests.txt"
+      - ".github/workflows/get-video.yml"
 
 jobs:
   run:

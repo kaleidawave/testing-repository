@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "one-off/mongo-db-deploy/**"
+      - ".github/workflows/deploy-mongodb-server.yml"
 
 jobs:
   deploy:
