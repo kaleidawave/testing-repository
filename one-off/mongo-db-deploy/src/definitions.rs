@@ -22,6 +22,7 @@ pub enum Responses {
     TodoItems { items: Vec<(ObjectId, Todo)> },
     CreatedTodoItem,
     UpdatedTodoItems,
+    Error
 }
 
 #[derive(Serialize, Deserialize, Debug)]
