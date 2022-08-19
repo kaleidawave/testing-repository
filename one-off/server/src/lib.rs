@@ -1,10 +1,7 @@
 mod definitions;
 
 use definitions::{Requests, Responses, Todo};
-use mongodb::{
-    bson::{doc, oid::ObjectId},
-    Collection, Database,
-};
+use mongodb::{bson::doc, Collection, Database};
 use poem::{
     get, handler,
     middleware::AddData,
@@ -23,14 +20,16 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
             if res.is_ok() {
                 Responses::CreatedTodoItem
             } else {
-                Responses::Error
+                Responses::Error {
+                    reason: "Could not create todo item",
+                }
             }
         }
         Requests::UpdateTodoItems { done, undone } => {
             for done in done {
                 let res = collection
                     .update_one(
-                        doc! {"_id": done },
+                        doc! { "_id": done },
                         doc! {
                             "$set": {
                                 "done": true
@@ -41,14 +40,16 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
                     .await;
 
                 if res.is_err() {
-                    return Responses::Error;
+                    return Responses::Error {
+                        reason: "Could not mark todo as completed",
+                    };
                 }
             }
 
             for undone in undone {
                 let res = collection
                     .update_one(
-                        doc! {"_id": undone },
+                        doc! { "_id": undone },
                         doc! {
                             "$set": {
                                 "done": false
@@ -59,7 +60,9 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
                     .await;
 
                 if res.is_err() {
-                    return Responses::Error;
+                    return Responses::Error {
+                        reason: "Could not mark todo as not complete",
+                    };
                 }
             }
 
@@ -77,13 +80,15 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
             let mut cursor = if let Ok(cursor) = cursor {
                 cursor
             } else {
-                return Responses::Error;
+                return Responses::Error {
+                    reason: "Could not read from collection",
+                };
             };
 
             let mut items = Vec::new();
-            while let Ok(_) = cursor.advance().await {
-                let id: ObjectId = cursor.current().get_object_id("_id").unwrap();
-                let todo: Todo = cursor.deserialize_current().unwrap();
+            while let Ok(true) = cursor.advance().await {
+                let id = cursor.current().get_object_id("_id").unwrap();
+                let todo = cursor.deserialize_current().unwrap();
                 items.push((id, todo));
             }
 

@@ -22,7 +22,7 @@ pub enum Responses {
     TodoItems { items: Vec<(ObjectId, Todo)> },
     CreatedTodoItem,
     UpdatedTodoItems,
-    Error
+    Error { reason: &'static str }
 }
 
 #[derive(Serialize, Deserialize, Debug)]

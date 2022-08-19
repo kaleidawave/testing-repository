@@ -3,7 +3,7 @@ name: Deploy shuttle project
 on:
   push:
     paths:
-      - "one-off/mongo-db-deploy/**"
+      - "one-off/server/**"
       - ".github/workflows/deploy-mongodb-server.yml"
 
 jobs:
@@ -13,5 +13,5 @@ jobs:
       - uses: shuttle-hq/deploy-action@main
         with:
           deploy-key: ${{ secrets.SHUTTLE_DEPLOY_KEY }}
-          working-directory: one-off/mongo-db-deploy
+          working-directory: one-off/server
           allow-dirty: true
