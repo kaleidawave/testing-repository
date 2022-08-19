@@ -3,7 +3,7 @@ name: Deploy shuttle project
 on:
   push:
     paths:
-      - "one-off/mongo-db-deploy"
+      - "one-off/mongo-db-deploy/**"
 
 jobs:
   deploy:

@@ -3,7 +3,7 @@ name: Dashmap build
 on:
   push:
     paths:
-      - "dashmap-testing/**"
+      - "one-off/dashmap-testing/**"
       - ".github/workflows/dashmap-build.yml"
 
 jobs:
