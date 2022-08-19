@@ -32,7 +32,9 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
                     .update_one(
                         doc! {"_id": done },
                         doc! {
-                            "done": true
+                            "$set": {
+                                "done": true
+                            }
                         },
                         None,
                     )
@@ -48,7 +50,9 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
                     .update_one(
                         doc! {"_id": undone },
                         doc! {
-                            "done": false
+                            "$set": {
+                                "done": false
+                            }
                         },
                         None,
                     )
