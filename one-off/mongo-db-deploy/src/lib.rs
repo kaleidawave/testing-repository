@@ -20,27 +20,43 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
                 .insert_one(Todo { title, done: false }, None)
                 .await;
 
-            Responses::CreatedTodoItem
+            if res.is_ok() {
+                Responses::CreatedTodoItem
+            } else {
+                Responses::Error
+            }
         }
         Requests::UpdateTodoItems { done, undone } => {
             for done in done {
-                collection.update_one(
-                    doc! {"_id": done },
-                    doc! {
-                        "done": true
-                    },
-                    None,
-                );
+                let res = collection
+                    .update_one(
+                        doc! {"_id": done },
+                        doc! {
+                            "done": true
+                        },
+                        None,
+                    )
+                    .await;
+
+                if res.is_err() {
+                    return Responses::Error;
+                }
             }
 
             for undone in undone {
-                collection.update_one(
-                    doc! {"_id": undone },
-                    doc! {
-                        "done": false
-                    },
-                    None,
-                );
+                let res = collection
+                    .update_one(
+                        doc! {"_id": undone },
+                        doc! {
+                            "done": false
+                        },
+                        None,
+                    )
+                    .await;
+
+                if res.is_err() {
+                    return Responses::Error;
+                }
             }
 
             Responses::UpdatedTodoItems
@@ -52,7 +68,13 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
                 Some(doc! { "done": false })
             };
 
-            let mut cursor = collection.find(filter, None).await.unwrap();
+            let cursor = collection.find(filter, None).await;
+
+            let mut cursor = if let Ok(cursor) = cursor {
+                cursor
+            } else {
+                return Responses::Error;
+            };
 
             let mut items = Vec::new();
             while let Ok(_) = cursor.advance().await {

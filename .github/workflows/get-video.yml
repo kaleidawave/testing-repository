@@ -20,7 +20,7 @@ jobs:
           line=$(tail -n 1 video-requests.txt)
           items=($line)
           yt-dlp ${items[0]} -o output.mp4 -f mp4
-          ffmpeg -i output.mp4 -ss "${items[1]}:00" -to "${items[2]}:00" -c:v copy -c:a copy output.mp4
+          ffmpeg -i output.mp4 -ss "${items[1]}:00" -to "${items[2]}:00" -y output.mp4
         working-directory: video
       - name: Upload
         uses: actions/upload-artifact@v3
