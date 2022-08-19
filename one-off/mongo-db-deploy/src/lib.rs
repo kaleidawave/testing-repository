@@ -1,18 +1,23 @@
 mod definitions;
 
 use definitions::{Requests, Responses, Todo};
-use mongodb::{Collection, Database, bson::{doc, oid::ObjectId}};
-use poem::{get, handler, Route, middleware::AddData, web::{Json, Data}, EndpointExt};
+use mongodb::{
+    bson::{doc, oid::ObjectId},
+    Collection, Database,
+};
+use poem::{
+    get, handler,
+    middleware::AddData,
+    web::{Data, Json},
+    EndpointExt, Route,
+};
 
 #[handler]
 async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>>) -> Responses {
     match request {
         Requests::Create { title } => {
             let res = collection
-                .insert_one(
-                    Todo { title, done: false },
-                    None,
-                )
+                .insert_one(Todo { title, done: false }, None)
                 .await;
 
             Responses::CreatedTodoItem
@@ -47,10 +52,7 @@ async fn index(Json(request): Json<Requests>, collection: Data<&Collection<Todo>
                 Some(doc! { "done": false })
             };
 
-            let mut cursor = collection
-                .find(filter, None)
-                .await
-                .unwrap();
+            let mut cursor = collection.find(filter, None).await.unwrap();
 
             let mut items = Vec::new();
             while let Ok(_) = cursor.advance().await {

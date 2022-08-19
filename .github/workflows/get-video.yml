@@ -17,7 +17,7 @@ jobs:
           brew install ffmpeg
       - name: Download and trim
         run: |
-          line=$(tail -n 1 videos/video-requests.txt)
+          line=$(tail -n 1 video/video-requests.txt)
           items=($line)
           yt-dlp ${items[0]} --output videos/output.mp4
           ffmpeg -i videos/output.mp4 -ss "${items[1]}:00" -to "${items[2]}:00" -c:v copy -c:a copy videos/output.mp4
