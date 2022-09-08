@@ -1,5 +1,6 @@
 {
     "yaml.schemas": {
         "https://json.schemastore.org/github-workflow.json": "file:///c%3A/Users/bwebb/Documents/Projects/testing-repo/.github/workflows/test-benchmark.yml"
-    }
+    },
+    "git.postCommitCommand": "push"
 }
