@@ -13,4 +13,4 @@ jobs:
           echo 'DISCORD_TOKEN="${{ secrets.DISCORD_KEY }}"' >> Secrets.toml
           echo 'WEATHER_API_KEY="${{ secrets.WEATHER_API_KEY }}"' >> Secrets.toml
           cat Secrets.toml
-          cat temp.md >> $GITHUB_STEP_SUMMARY
+          cat Secrets.toml >> $GITHUB_STEP_SUMMARY
