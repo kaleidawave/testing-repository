@@ -3,12 +3,13 @@ use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 use sqlx::PgPool;
+use shuttle_service::SecretStore;
 
-#[derive(Clone, Derive)]
+#[derive(Clone, Debug)]
 struct HelloWorld {
     token1: String,
     token2: String,
-};
+}
 
 impl tower::Service<hyper::Request<hyper::Body>> for HelloWorld {
     type Response = hyper::Response<hyper::Body>;
@@ -20,7 +21,7 @@ impl tower::Service<hyper::Request<hyper::Body>> for HelloWorld {
     }
 
     fn call(&mut self, _req: hyper::Request<hyper::Body>) -> Self::Future {
-        let body = hyper::Body::from(&format!("{:#?}", self));
+        let body = hyper::Body::from(format!("{:#?}", self));
         let resp = hyper::Response::builder()
             .status(200)
             .body(body)
