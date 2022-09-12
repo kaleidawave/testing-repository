@@ -1,0 +1,12 @@
+[package]
+name = "secrets-test"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+shuttle-service = { version = "0.5.2", features = ["web-tower", "secrets"] }
+tower = { version = "0.4.13", features = ["full"] }
+hyper = { version = "0.14.20", features = ["full"] }
+sqlx = { version = "0.6", features = ["runtime-tokio-native-tls", "postgres"] }
