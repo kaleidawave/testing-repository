@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - "video/video-requests.txt"
-      - ".github/workflows/get-video.yml"
 
 jobs:
   run:
@@ -17,14 +16,17 @@ jobs:
           brew install ffmpeg
       - name: Download and trim
         run: |
-          line=$(tail -n 1 video-requests.txt)
-          items=($line)
-          yt-dlp ${items[0]} -o output.mp4 -f mp4
-          echo "Snipping out ${items[1]} to ${items[2]}"
-          ffmpeg -i output.mp4 -ss "${items[1]}" -to "${items[2]}" -y cut-output.mp4
-          rm output.mp4
-          mv cut-output.mp4 output.mp4
+          items=$(cat video-requests.txt | grep -v "^$")
+          for i in ${!items[@]}; do
+            item=${items[$i]}
+            yt-dlp ${items[0]} -o output.mp4 -f mp4
+            echo "Snipping out ${items[1]} to ${items[2]}"
+            ffmpeg -i output.mp4 -ss "${items[1]}" -to "${items[2]}" -y cut-output.mp4
+            rm output.mp4
+            mv cut-output.mp4 "output-$i.mp4"
+          done
         working-directory: video
+        shell: bash
       - name: Upload
         uses: actions/upload-artifact@v3
         with:

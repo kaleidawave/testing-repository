@@ -1,0 +1,27 @@
+name: Get video
+
+on:
+  push:
+    paths:
+      - "binaries/binary-requests.txt"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build binaries
+        run: |
+          items=$(cat binary-requests.txt | grep -v "^$")
+          for i in ${!items[@]}; do
+            item=${items[$i]}
+            cargo install --root "$item"
+          done
+        working-directory: binaries
+        shell: bash
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: binaries
+          path: |
+            binaries
