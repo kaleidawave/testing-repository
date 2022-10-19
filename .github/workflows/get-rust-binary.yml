@@ -16,7 +16,7 @@ jobs:
           for i in ${!items[@]}; do
             item=${items[$i]}
             echo "Installing $item"
-            cargo install "$item" --root
+            cargo install "$item" --root .
           done
         working-directory: binaries
         shell: bash
