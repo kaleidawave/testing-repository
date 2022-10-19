@@ -1,1 +1,1 @@
-cargo-shuttle
+cargo-shuttle@0.7.0
