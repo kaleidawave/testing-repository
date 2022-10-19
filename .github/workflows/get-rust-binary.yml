@@ -1,4 +1,4 @@
-name: Get video
+name: Get Rust binary
 
 on:
   push:
@@ -15,7 +15,8 @@ jobs:
           items=$(cat binary-requests.txt | grep -v "^$")
           for i in ${!items[@]}; do
             item=${items[$i]}
-            cargo install --root "$item"
+            echo "Installing $item"
+            cargo install "$item" --root
           done
         working-directory: binaries
         shell: bash
