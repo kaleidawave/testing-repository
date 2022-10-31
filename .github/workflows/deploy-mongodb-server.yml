@@ -4,13 +4,12 @@ on:
   push:
     paths:
       - "one-off/mongo-db-server/**"
-      - ".github/workflows/deploy-mongodb-server.yml"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: shuttle-hq/deploy-action@patch-1
+      - uses: shuttle-hq/deploy-action
         with:
           deploy-key: ${{ secrets.SHUTTLE_DEPLOY_KEY }}
           working-directory: one-off/deploy-mongodb-server/server

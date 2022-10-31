@@ -7,7 +7,9 @@ git clone https://github.com/dudykr/stc stc
 echo "::endgroup::"
 
 echo "::group::Get EZNO"
+gh auth status
 gh repo clone kaleidawave/ezno-private ezno
+gh repo clone kaleidawave/derive-finite-automaton temp
 echo "::endgroup::"
 
 echo "::group::Check both projects there"
@@ -21,5 +23,6 @@ echo "::endgroup::"
 
 echo "::group::EZNO information"
 loc ezno
+loc ezno/checker
 cat ezno/README.md
 echo "::endgroup::"
