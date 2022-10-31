@@ -20,7 +20,7 @@ jobs:
     env:
       cache: true
       ARTIFACTS_FOLDER: artifacts
-      SPECIAL_GH_TOKEN: ${{ secrets.EZNO_KEY }}
+      GH_TOKEN: ${{ secrets.EZNO_KEY }}
 
     defaults:
       run:
@@ -41,11 +41,12 @@ jobs:
             target/
           key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock', 'run.sh') }}
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
-      - name: Run benchmark
+      - name: Make executable
         run: |
           # run.sh might not be executable
           chmod +x run.sh
-          ./run.sh
+      - name: Run benchmark
+        run: ./run.sh
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:

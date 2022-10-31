@@ -46,7 +46,7 @@ jobs:
           }
 
           items=$(join_by , ${!aa[@]})
-          echo "::set-output name=paths::[$items]"
+          echo "paths=[$items]" >> $GITHUB_OUTPUT
 
   run-benchmarks:
     needs: find-changed-paths
