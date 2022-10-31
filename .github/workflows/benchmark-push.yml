@@ -9,8 +9,10 @@ on:
 jobs:
   find-changed-paths:
     runs-on: ubuntu-latest
+
     outputs:
       paths: ${{ steps.read-change.outputs.paths }}
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -49,6 +51,7 @@ jobs:
   run-benchmarks:
     needs: find-changed-paths
     if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
+  
     uses: ./.github/workflows/benchmark.yml
     with:
       benchmarks: ${{ needs.find-changed-paths.outputs.paths }}

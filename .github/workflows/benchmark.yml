@@ -20,6 +20,7 @@ jobs:
     env:
       cache: true
       ARTIFACTS_FOLDER: artifacts
+      SPECIAL_GH_TOKEN: ${{ secrets.EZNO_KEY }}
 
     defaults:
       run:
