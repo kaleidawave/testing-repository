@@ -10,9 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo Hi
-      - name: Add secrets
+      # - name: Add secrets
+      #   run: |
+      #     echo 'DISCORD_TOKEN="${{ secrets.DISCORD_KEY }}"' >> Secrets.toml
+      #     echo 'WEATHER_API_KEY="${{ secrets.WEATHER_API_KEY }}"' >> Secrets.toml
+      #     cat Secrets.toml
+      #     cat Secrets.toml >> $GITHUB_STEP_SUMMARY
+      - name: Get private repo
         run: |
-          echo 'DISCORD_TOKEN="${{ secrets.DISCORD_KEY }}"' >> Secrets.toml
-          echo 'WEATHER_API_KEY="${{ secrets.WEATHER_API_KEY }}"' >> Secrets.toml
-          cat Secrets.toml
-          cat Secrets.toml >> $GITHUB_STEP_SUMMARY
+          gh repo clone https://github.com/kaleidawave/aoc20 aoc20
+          ls -R aoc20
+        env:
+          GITHUB_TOKEN: ${{ secrets.TEST_FINE_GRAINED_TOKEN }}

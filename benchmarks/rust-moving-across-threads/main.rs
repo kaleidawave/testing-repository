@@ -9,7 +9,7 @@ struct Larger(pub [u64; 6]);
 fn smol() -> u64 {
     let mut n: u64 = 0;
     for idx in 0..100_100 {
-        n = n.wrapping_add(55);
+        n = n.wrapping_add(idx);
     }
     n
 }
