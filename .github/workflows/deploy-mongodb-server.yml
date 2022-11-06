@@ -1,4 +1,4 @@
-name: Deploy shuttle project
+name: Deploy mongodb server project
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: shuttle-hq/deploy-action
+      - uses: shuttle-hq/deploy-action@main
         with:
           deploy-key: ${{ secrets.SHUTTLE_DEPLOY_KEY }}
           working-directory: one-off/deploy-mongodb-server/server
