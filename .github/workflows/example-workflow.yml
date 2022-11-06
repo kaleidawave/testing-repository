@@ -18,7 +18,8 @@ jobs:
       #     cat Secrets.toml >> $GITHUB_STEP_SUMMARY
       - name: Get private repo
         run: |
-          gh repo clone https://github.com/kaleidawave/aoc20 aoc20
+          gh auth status
+          gh repo clone kaleidawave/aoc20 aoc20
           ls -R aoc20
         env:
-          GITHUB_TOKEN: ${{ secrets.TEST_FINE_GRAINED_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
