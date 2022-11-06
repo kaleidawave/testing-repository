@@ -19,7 +19,8 @@ jobs:
       - name: Get private repo
         run: |
           gh auth status
+          gh repo list kaleidawave
           gh repo clone kaleidawave/aoc20 aoc20
           ls -R aoc20
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TEST_PRIVATE_KEY }}
