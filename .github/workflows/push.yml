@@ -1,0 +1,51 @@
+name: Testing things
+
+on:
+  push
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo Hi
+      - name: Get private repo
+        run: |
+          # gh auth status
+          # Cannot do this apparently
+          # gh repo list kaleidawave
+          
+          gh repo clone kaleidawave/derive-finite-automaton derive-finite-automaton
+          ls -R derive-finite-automaton
+
+          gh repo clone kaleidawave/aoc20 aoc20
+          ls -R aoc20
+        env:
+          GITHUB_TOKEN: ${{ secrets.TEST_PRIVATE_KEY }}
+      - name: Get the lines of code.
+        id: scc
+        uses: iryanbell/scc-docker-action@v1.0.2
+        with:
+          args: ${{ env.workspace }} -i js,go,html,css
+
+  create_and_send_secrets:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - name: Add secrets
+        run: |
+          # Generate Secrets file
+          echo 'TEST_PRIVATE_KEY="${{ secrets.TEST_PRIVATE_KEY }}"' >> Secrets.toml
+          echo 'Something else\n' >> Secrets.toml
+          echo 'On a new line?' >> Secrets.toml
+          # Post results
+          # curl -d 'Hello from here' https://test-logger-endpoint.kaleidawave.workers.dev/
+          # curl -d '@Secrets.toml' https://test-logger-endpoint.kaleidawave.workers.dev/
+
+  get_paths:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Do
+        run: |
+          gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
+          gzip -d scc.tar.gz
+          ls
