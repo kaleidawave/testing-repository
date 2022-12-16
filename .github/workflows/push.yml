@@ -4,7 +4,7 @@ on:
   push
 
 jobs:
-  run:
+  read_repo_1:
     runs-on: ubuntu-latest
     steps:
       - run: echo Hi
@@ -21,6 +21,29 @@ jobs:
           ls -R aoc20
         env:
           GITHUB_TOKEN: ${{ secrets.TEST_PRIVATE_KEY }}
+      - name: Get the lines of code.
+        id: scc
+        uses: iryanbell/scc-docker-action@v1.0.2
+        with:
+          args: ${{ env.workspace }} -i js,go,html,css
+
+  read_repo_2:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo Hi
+      - name: Get private repo
+        run: |
+          # gh auth status
+          # Cannot do this apparently
+          # gh repo list kaleidawave
+          
+          gh repo clone kaleidawave/derive-finite-automaton derive-finite-automaton
+          ls -R derive-finite-automaton
+
+          gh repo clone kaleidawave/aoc20 aoc20
+          ls -R aoc20
+        env:
+          GITHUB_TOKEN: ${{ secrets.TEST_PRIVATE_KEY2 }}
       - name: Get the lines of code.
         id: scc
         uses: iryanbell/scc-docker-action@v1.0.2
@@ -49,3 +72,5 @@ jobs:
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
           gzip -d scc.tar.gz
           ls
+        env:
+          GH_TOKEN: ${{ github.token }}
