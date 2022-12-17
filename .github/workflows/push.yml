@@ -34,15 +34,16 @@ jobs:
       - name: Get scc
         run: |
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
-          file scc.tar.gz
           tar -xf scc.tar.gz
-          ls
-          file scc
           chmod +x scc
-          ./scc --help
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Run scc
         run: |
-          scc -i rs
-          scc -c --no-cocomo -f json -i rs | jq '.[] | .Code'
+          ./scc -i rs ezno
+          ./scc -c --no-cocomo -f json -i rs ezno | jq '.[] | .Code'
+      - name: Look at ezno
+        run: |
+          cd ezno
+          cargo metadata --format-version 1 | jq -r ".workspace_members[] | match(\`"(?'name'.*) (?'version'.*) \\(path\\+file:(?'path'.*)\\)\`") | { (.captures[].name): .captures[].string }"
+      
