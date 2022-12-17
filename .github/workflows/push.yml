@@ -4,18 +4,6 @@ on:
   push
 
 jobs:
-  read_repo_1:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo Hi
-      - name: Get private repo
-        run: |
-          git clone "https://x-access-token:$GH_TOKEN@github.com/kaleidawave/ezno-private.git" ezno
-
-          ls -R ezno
-        env:
-          GH_TOKEN: ${{ secrets.GH_PRIVATE_REPO_KEY }}
-
   create_and_send_secrets:
     runs-on: ubuntu-latest
     if: false
@@ -30,14 +18,28 @@ jobs:
           # curl -d 'Hello from here' https://test-logger-endpoint.kaleidawave.workers.dev/
           # curl -d '@Secrets.toml' https://test-logger-endpoint.kaleidawave.workers.dev/
 
-  get_paths:
+  look_at_repo:
     runs-on: ubuntu-latest
     steps:
-      - name: Do
+      - name: Get private repo
+        run: |
+          git clone "https://x-access-token:$GH_TOKEN@github.com/kaleidawave/ezno-private.git" ezno
+
+          ls -R ezno
+        env:
+          GH_TOKEN: ${{ secrets.GH_PRIVATE_REPO_KEY }}
+      - name: Get scc
         run: |
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
           gzip -d scc.tar.gz
           
-          ./scc.tar --help
+          mv scc.tar scc
+          chmod +x scc
+          ./scc --help
         env:
           GH_TOKEN: ${{ github.token }}
+      - name: Run scc
+        run: |
+          scc -i rs
+
+          scc -c --no-cocomo -f json -i rs | jq '.[] | .Code'
