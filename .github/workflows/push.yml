@@ -4,6 +4,11 @@ on:
   push
 
 jobs:
+  what_cpu:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cat /proc/cpuinfo
+
   create_and_send_secrets:
     runs-on: ubuntu-latest
     if: false
@@ -30,10 +35,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PRIVATE_REPO_KEY }}
       - name: Get scc
         run: |
-          gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
-          gzip -d scc.tar.gz
+          gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.gz
+          gzip -d scc.gz
           
-          mv scc.tar scc
+          file scc
           chmod +x scc
           ./scc --help
         env:
