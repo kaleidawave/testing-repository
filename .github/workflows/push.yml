@@ -34,10 +34,8 @@ jobs:
       - name: Get scc
         run: |
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.gz
-          gzip -d scc.gz
-          ls
-          
           file scc.gz
+          gzip -d -f -v scc.gz
           file scc
           chmod +x scc
           ./scc --help
