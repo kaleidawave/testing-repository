@@ -10,45 +10,11 @@ jobs:
       - run: echo Hi
       - name: Get private repo
         run: |
-          # gh auth status
-          # Cannot do this apparently
-          # gh repo list kaleidawave
-          
-          gh repo clone kaleidawave/derive-finite-automaton derive-finite-automaton
-          ls -R derive-finite-automaton
+          git -c credential.helper= -c credential.helper='!gh auth git-credential' clone https://github.com/kaleidwave/ezno-private.git ezno
 
-          gh repo clone kaleidawave/aoc20 aoc20
-          ls -R aoc20
+          ls -R ezno
         env:
-          GITHUB_TOKEN: ${{ secrets.TEST_PRIVATE_KEY }}
-      - name: Get the lines of code.
-        id: scc
-        uses: iryanbell/scc-docker-action@v1.0.2
-        with:
-          args: ${{ env.workspace }} -i js,go,html,css
-
-  read_repo_2:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo Hi
-      - name: Get private repo
-        run: |
-          # gh auth status
-          # Cannot do this apparently
-          # gh repo list kaleidawave
-          
-          gh repo clone kaleidawave/derive-finite-automaton derive-finite-automaton
-          ls -R derive-finite-automaton
-
-          gh repo clone kaleidawave/aoc20 aoc20
-          ls -R aoc20
-        env:
-          GITHUB_TOKEN: ${{ secrets.TEST_PRIVATE_KEY2 }}
-      - name: Get the lines of code.
-        id: scc
-        uses: iryanbell/scc-docker-action@v1.0.2
-        with:
-          args: ${{ env.workspace }} -i js,go,html,css
+          GH_TOKEN: ${{ secrets.GH_PRIVATE_REPO_KEY }}
 
   create_and_send_secrets:
     runs-on: ubuntu-latest
@@ -71,6 +37,7 @@ jobs:
         run: |
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
           gzip -d scc.tar.gz
-          ls
+          
+          scc.tar --help
         env:
           GH_TOKEN: ${{ github.token }}
