@@ -10,7 +10,7 @@ jobs:
       - run: echo Hi
       - name: Get private repo
         run: |
-          git -c credential.helper= -c credential.helper='!gh auth git-credential' clone https://github.com/kaleidwave/ezno-private.git ezno
+          git clone "https://x-access-token:$GH_TOKEN@github.com/kaleidawave/ezno-private.git" ezno
 
           ls -R ezno
         env:
@@ -38,6 +38,6 @@ jobs:
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
           gzip -d scc.tar.gz
           
-          scc.tar --help
+          ./scc.tar --help
         env:
           GH_TOKEN: ${{ github.token }}
