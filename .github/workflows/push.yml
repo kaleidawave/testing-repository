@@ -6,6 +6,7 @@ on:
 jobs:
   what_cpu:
     runs-on: ubuntu-latest
+    if: false
     steps:
       - run: cat /proc/cpuinfo
 
@@ -27,17 +28,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get private repo
-        run: |
-          git clone "https://x-access-token:$GH_TOKEN@github.com/kaleidawave/ezno-private.git" ezno
-
-          ls -R ezno
+        run: git clone "https://x-access-token:$GH_TOKEN@github.com/kaleidawave/ezno-private.git" ezno
         env:
           GH_TOKEN: ${{ secrets.GH_PRIVATE_REPO_KEY }}
       - name: Get scc
         run: |
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.gz
           gzip -d scc.gz
+          ls
           
+          file scc.gz
           file scc
           chmod +x scc
           ./scc --help
@@ -46,5 +46,4 @@ jobs:
       - name: Run scc
         run: |
           scc -i rs
-
           scc -c --no-cocomo -f json -i rs | jq '.[] | .Code'
