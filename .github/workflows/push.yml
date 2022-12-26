@@ -51,12 +51,9 @@ jobs:
           git clone https://github.com/kaleidawave/self-rust-tokenize
           cd self-rust-tokenize
 
-          IFS=$'\n'
-          for member in $(cargo metadata --format-version 1 | jq -r ".workspace_members[]"); do
+          cargo metadata --format-version 1 | jq -r ".workspace_members[]" | while read -r member ; do
               memberPath=$(echo $member | grep -o -P '(?<=path.file...).*(?=\))');
-              echo $memberPath;
               cd $memberPath;
-              pwd;
               linesOfRustCode=$(scc -c --no-cocomo -f json -i rs | jq '.[] | .Code');
               echo $linesOfRustCode;
               echo $linesOfRustCode >> $GITHUB_STEP_SUMMARY;
