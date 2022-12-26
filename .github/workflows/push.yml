@@ -45,5 +45,13 @@ jobs:
       - name: Look at ezno
         run: |
           cd ezno
-          cargo metadata --format-version 1 | jq -r ".workspace_members[] | match(\`"(?'name'.*) (?'version'.*) \\(path\\+file:(?'path'.*)\\)\`") | { (.captures[].name): .captures[].string }"
-      
+
+          members=$(cargo metadata --format-version 1 | jq -r ".workspace_members[]");
+          while read line; do
+              echo $line;
+              memberPath=$(echo $line | sed -r "s/.*path.file...(.*)\)$/\1/");
+              cd $memberPath;
+              linesOfRustCode=$(scc -c --no-cocomo -f json -i rs | jq '.[] | .Code');
+              echo $linesOfRustCode;
+              echo $linesOfRustCode >> $GITHUB_STEP_SUMMARY;
+          done < $members;
