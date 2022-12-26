@@ -44,7 +44,9 @@ jobs:
           ./scc -c --no-cocomo -f json -i rs ezno | jq '.[] | .Code'
       - name: Look at ezno
         run: |
-          cd ezno
+          # cd ezno
+          git clone https://github.com/kaleidawave/self-rust-tokenize
+          cd self-rust-tokenize
 
           members=$(cargo metadata --format-version 1 | jq -r ".workspace_members[]");
           while read line; do
