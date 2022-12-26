@@ -33,6 +33,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PRIVATE_REPO_KEY }}
       - name: Get scc
         run: |
+          mkdir scc
           cd scc
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
           tar -xf scc.tar.gz
