@@ -49,6 +49,9 @@ jobs:
           cd self-rust-tokenize
 
           members=$(cargo metadata --format-version 1 | jq -r ".workspace_members[]");
+          echo 1
+          echo $members;
+          echo 2
           while read line; do
               echo $line;
               memberPath=$(echo $line | sed -r "s/.*path.file...(.*)\)$/\1/");
@@ -56,4 +59,4 @@ jobs:
               linesOfRustCode=$(scc -c --no-cocomo -f json -i rs | jq '.[] | .Code');
               echo $linesOfRustCode;
               echo $linesOfRustCode >> $GITHUB_STEP_SUMMARY;
-          done < $members;
+          done < "$members";
