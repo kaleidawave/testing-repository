@@ -33,15 +33,17 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PRIVATE_REPO_KEY }}
       - name: Get scc
         run: |
+          cd scc
           gh release download v3.1.0 -R boyter/scc -p '*Linux_x86_64.tar.gz' -O scc.tar.gz
           tar -xf scc.tar.gz
           chmod +x scc
+          pwd >> $GITHUB_PATH
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Run scc
         run: |
-          ./scc -i rs ezno
-          ./scc -c --no-cocomo -f json -i rs ezno | jq '.[] | .Code'
+          scc -i rs ezno
+          scc -c --no-cocomo -f json -i rs ezno | jq '.[] | .Code'
       - name: Look at ezno
         run: |
           # cd ezno
@@ -50,10 +52,10 @@ jobs:
 
           for member in $(cargo metadata --format-version 1 | jq -r ".workspace_members[]"); do
               echo Here;
-              echo $line;
+              echo $member;
               echo Here 2;
-              echo $line | grep -o -P '(?<=path.file...).*(?=\))' | cd
-              linesOfRustCode=$(scc -c --no-cocomo -f json -i rs | jq '.[] | .Code');
-              echo $linesOfRustCode;
-              echo $linesOfRustCode >> $GITHUB_STEP_SUMMARY;
+              # echo $member | grep -o -P '(?<=path.file...).*(?=\))' | cd;
+              # linesOfRustCode=$(scc -c --no-cocomo -f json -i rs | jq '.[] | .Code');
+              # echo $linesOfRustCode;
+              # echo $linesOfRustCode >> $GITHUB_STEP_SUMMARY;
           done
