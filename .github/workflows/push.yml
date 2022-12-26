@@ -53,10 +53,9 @@ jobs:
 
           IFS=$'\n'
           for member in $(cargo metadata --format-version 1 | jq -r ".workspace_members[]"); do
-              echo Here;
-              echo $member;
-              echo Here 2;
-              echo $member | grep -o -P '(?<=path.file...).*(?=\))' | cd;
+              memberPath=$(echo $member | grep -o -P '(?<=path.file...).*(?=\))');
+              echo $memberPath;
+              cd $memberPath;
               pwd;
               linesOfRustCode=$(scc -c --no-cocomo -f json -i rs | jq '.[] | .Code');
               echo $linesOfRustCode;
