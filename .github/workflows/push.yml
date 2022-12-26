@@ -57,8 +57,8 @@ jobs:
               curl \
                 --header "Content-Type: application/json" \
                 --header "X-POST-ACCESS-KEY: ${{ secrets.PROJECTS_POST_ACCESS_KEY }}" \
-                --data '{"project":$name,"language":"rust","loc":$linesOfRustCode}' \
+                --data '{"project":"$name","language":"rust","loc":$linesOfRustCode}' \
                 https://projects.kaleidawave.workers.dev/update-project;
-                
-              echo "$name has $linesOfRustCode lines of code" >> $GITHUB_STEP_SUMMARY;
+
+              echo "\`$name\` has $linesOfRustCode lines of code" >> $GITHUB_STEP_SUMMARY;
           done
