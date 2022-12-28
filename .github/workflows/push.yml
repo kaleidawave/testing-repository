@@ -167,5 +167,7 @@ jobs:
         env:
           INPUT: '{"enum-variants-strings-derive": "minor", "enum-variants-strings": "minor"}'
           # INPUT: ${{ toJSON(value) }}
+        working-directory: evt
       - name: diff
         run: git diff
+        working-directory: evt
