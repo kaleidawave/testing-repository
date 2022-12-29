@@ -77,8 +77,8 @@ jobs:
       - name: Run script
         id: updator
         run: |
-          mv ../updator.py ./updator.py
-          python ./updator.py
+          # mv ../updator.py ./updator.py
+          python ../updator.py
         shell: bash
         env:
           INPUT_VERSION: '{"enum-variants-strings": "minor", "enum-variants-strings-derive": "minor"}'
@@ -88,8 +88,10 @@ jobs:
         working-directory: evt
       - name: Check output
         run: |
-          echo ${{ steps.updator.outputs.NEW_VERSION }}
           echo ${{ steps.updator.outputs.NEW_VERSION_DESCRIPTION }}
+          echo "${{ steps.updator.outputs.NEW_VERSION }}" | jq -r '.[]' | while read -r update; do
+              echo $update
+          done
         shell: bash
 
   python_to_output:

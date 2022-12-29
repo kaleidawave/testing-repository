@@ -66,8 +66,9 @@ def format_change_list(iter):
 		if not iteration == 1:
 			if len(iter) == iteration:
 				msg += " and "
-		else:
-			msg += ", "
+			else:
+				msg += ", "
+				
 		msg += f"{name} to {value}"
 	return msg
 
