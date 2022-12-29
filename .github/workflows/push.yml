@@ -92,7 +92,7 @@ jobs:
           echo '${{ steps.updator.outputs.NEW_VERSION }}' | jq -r '.[]' | while read -r update; do
               echo $update
           done
-          firstUpdateVersion=$(echo "${{ steps.updator.outputs.NEW_VERSION }}" | jq '.[0]')
+          firstUpdateVersion=$(echo '${{ steps.updator.outputs.NEW_VERSION }}' | jq '.[0]')
           echo "Test: $firstUpdateVersion"
         shell: bash
 
