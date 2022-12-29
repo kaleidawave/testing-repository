@@ -117,7 +117,7 @@ try:
 
 except json.JSONDecodeError:
 	if len(cargo_tomls) == 1:
-		_, new_version = update_cargo_toml(update_cargo_toml[0], argument, manifest_cache)
+		_, new_version = update_cargo_toml(cargo_tomls[0], argument, manifest_cache)
 		with open(environ["GITHUB_OUTPUT"], 'w') as f:
 			print(f"NEW_VERSION_DESCRIPTION={new_version}", file=f)
 			print(f"NEW_VERSION={new_version}", file=f)
