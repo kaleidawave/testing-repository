@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get repo
-        run: git clone https://github.com/kaleidawave/enum-variants-strings evt
+        run: git clone https://github.com/kaleidawave/iterator-endiate temp-folder
       - name: Install dependencies (pip)
         run: pip install tomlkit==0.11.6 semver==2.13.0
       - name: Run script
@@ -81,11 +81,11 @@ jobs:
           python ../updator.py
         shell: bash
         env:
-          INPUT_VERSION: '{"enum-variants-strings": "minor", "enum-variants-strings-derive": "minor"}'
-        working-directory: evt
+          INPUT_VERSION: minor
+        working-directory: temp-folder
       - name: diff
         run: git diff
-        working-directory: evt
+        working-directory: temp-folder
       - name: Check output
         run: |
           echo ${{ steps.updator.outputs.NEW_VERSION_DESCRIPTION }}
