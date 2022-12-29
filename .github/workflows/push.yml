@@ -89,7 +89,7 @@ jobs:
       - name: Check output
         run: |
           echo ${{ steps.updator.outputs.NEW_VERSION_DESCRIPTION }}
-          echo "${{ steps.updator.outputs.NEW_VERSION }}" | jq -r '.[]' | while read -r update; do
+          echo '${{ steps.updator.outputs.NEW_VERSION }}' | jq -r '.[]' | while read -r update; do
               echo $update
           done
         shell: bash
