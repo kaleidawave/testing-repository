@@ -120,6 +120,6 @@ except json.JSONDecodeError:
 		_, new_version = update_cargo_toml(cargo_tomls[0], argument, manifest_cache)
 		with open(environ["GITHUB_OUTPUT"], 'w') as f:
 			print(f"NEW_VERSION_DESCRIPTION={new_version}", file=f)
-			print(f"NEW_VERSION={new_version}", file=f)
+			print(f"NEW_VERSION=[\"{new_version}\"]", file=f)
 	else:
 		raise ValueError(f"Found multiple 'Cargo.toml's {cargo_tomls}")
