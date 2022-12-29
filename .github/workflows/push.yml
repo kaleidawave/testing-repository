@@ -69,17 +69,26 @@ jobs:
     runs-on: ubuntu-latest
     if: false
     steps:
+      - uses: actions/checkout@v3
       - name: Get repo
         run: git clone https://github.com/kaleidawave/enum-variants-strings evt
       - name: Install dependencies (pip)
         run: pip install tomlkit==0.11.6 semver==2.13.0
       - name: Run script
-        run: echo todo
-        shell: python
+        id: updator
+        run: python ./updator.py
+        shell: bash
+        env:
+          INPUT_VERSION: '{"enum-variants-strings": "minor", "enum-variants-strings-derive": "minor"}'
         working-directory: evt
       - name: diff
         run: git diff
         working-directory: evt
+      - name: Check output
+        run: |
+          echo ${{ steps.updator.outputs.NEW_VERSION }}
+          echo ${{ steps.updator.outputs.NEW_VERSION_DESCRIPTION }}
+        shell: bash
 
   python_to_output:
     runs-on: ubuntu-latest
@@ -98,9 +107,11 @@ jobs:
           print(os.environ["GITHUB_OUTPUT"])
           with open(os.environ["GITHUB_OUTPUT"], 'w') as f:
             print('Y=TEST', file=f)
+            print('Z=TEST2', file=f)
         shell: python
       - name: Does it work
         run: |
           echo ${{ steps.bash.outputs.X }}
           echo ${{ steps.python.outputs.Y }}
+          echo ${{ steps.python.outputs.Z }}
         shell: bash
