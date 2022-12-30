@@ -130,9 +130,9 @@ jobs:
       - name: Setup Random Variables
         id: variables
         run: |
-          echo "X={"a": 1}" >> $GITHUB_OUTPUT
-          echo "Y={"a": "test"}" >> $GITHUB_OUTPUT
-          echo "Z={"a": [1, 2]}" >> $GITHUB_OUTPUT
+          echo "X={\"a\": 1}" >> $GITHUB_OUTPUT
+          echo "Y={\"a\": \"test\"}" >> $GITHUB_OUTPUT
+          echo "Z={\"a\": [1, 2]}" >> $GITHUB_OUTPUT
         shell: bash
       - name: Test1
         run: python ./one-off/print-arguments.py ${{ steps.variables.outputs.X }}
@@ -144,4 +144,5 @@ jobs:
         run: |
           echo ${{ steps.variables.outputs.Z }}
           echo ${{ toJSON(steps.variables.outputs.Y) }}
+          echo ${{ toJSON(steps.variables.outputs) }}
         shell: bash
