@@ -67,7 +67,7 @@ jobs:
 
   update_tomls:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     steps:
       - uses: actions/checkout@v3
       - name: Get repo
@@ -78,7 +78,7 @@ jobs:
         id: updator
         run: |
           # mv ../updator.py ./updator.py
-          python ../updator.py
+          python ../one-off/updator.py
         shell: bash
         env:
           INPUT_VERSION: minor
@@ -120,4 +120,28 @@ jobs:
           echo ${{ steps.bash.outputs.X }}
           echo ${{ steps.python.outputs.Y }}
           echo ${{ steps.python.outputs.Z }}
+        shell: bash
+
+  was_tha_command_line_input:
+    runs-on: ubuntu-latest
+    if: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Random Variables
+        id: variables
+        run: |
+          echo "X={"a": 1}" >> $GITHUB_OUTPUT
+          echo "Y={"a": "test"}" >> $GITHUB_OUTPUT
+          echo "Z={"a": [1, 2]}" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Test1
+        run: python ./one-off/print-arguments.py ${{ steps.variables.output.X }}
+        shell: bash
+      - name: Test2
+        run: python ./one-off/print-arguments.py ${{ toJSON(steps.variables.output.Y) }}
+        shell: bash
+      - name: Control
+        run: |
+          echo ${{ steps.variables.output.Z }}
+          echo ${{ toJSON(steps.variables.output.Y) }}
         shell: bash
