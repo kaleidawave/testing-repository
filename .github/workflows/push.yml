@@ -135,13 +135,13 @@ jobs:
           echo "Z={"a": [1, 2]}" >> $GITHUB_OUTPUT
         shell: bash
       - name: Test1
-        run: python ./one-off/print-arguments.py ${{ steps.variables.output.X }}
+        run: python ./one-off/print-arguments.py ${{ steps.variables.outputs.X }}
         shell: bash
       - name: Test2
-        run: python ./one-off/print-arguments.py ${{ toJSON(steps.variables.output.Y) }}
+        run: python ./one-off/print-arguments.py ${{ toJSON(steps.variables.outputs.Y) }}
         shell: bash
       - name: Control
         run: |
-          echo ${{ steps.variables.output.Z }}
-          echo ${{ toJSON(steps.variables.output.Y) }}
+          echo ${{ steps.variables.outputs.Z }}
+          echo ${{ toJSON(steps.variables.outputs.Y) }}
         shell: bash
