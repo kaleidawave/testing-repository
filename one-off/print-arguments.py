@@ -1,2 +1,5 @@
 import sys
-print(sys.argv[1])
+import json
+from pprint import pprint
+
+pprint(json.loads(sys.argv[1]))
