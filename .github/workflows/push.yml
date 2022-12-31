@@ -4,11 +4,14 @@ on:
   push
 
 jobs:
-  what_cpu:
+  le_specs:
     runs-on: ubuntu-latest
-    if: false
+    if: true
     steps:
       - run: cat /proc/cpuinfo
+      - run: pip list
+      - run: rustc --version
+      - run: yq --version
 
   create_and_send_secrets:
     runs-on: ubuntu-latest
@@ -124,7 +127,7 @@ jobs:
 
   was_tha_command_line_input:
     runs-on: ubuntu-latest
-    if: false
+    if: true
     steps:
       - uses: actions/checkout@v3
       - name: Setup Random Variables
@@ -139,6 +142,8 @@ jobs:
         shell: bash
       - name: Test2
         run: python ./one-off/print-arguments.py '${{ toJSON(steps.variables.outputs.Y) }}'
+      - name: Test3
+        run: python ./one-off/print-arguments.py '${{ toJSON(steps.variables.outputs) }}'
         shell: bash
       - name: Control
         run: |
@@ -149,7 +154,7 @@ jobs:
 
   json_null:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     steps:
       - name: Setu
         run: |
