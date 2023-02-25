@@ -26,7 +26,8 @@ jobs:
       - name: Rename and move release assets
         run: |
           mkdir artifacts
-          mv target/debug/rust-hello-binary${{ matrix.executable-extension }} artifacts/rust-hello-binary-version-${{ matrix.platform_name }}${{ matrix.executable-extension }}
+          ls target
+          mv target/release/rust-hello-binary${{ matrix.executable-extension }} artifacts/rust-hello-binary-version-${{ matrix.platform_name }}${{ matrix.executable-extension }}
         working-directory: one-off/rust-hello-binary
       - uses: actions/upload-artifact@v3
         with:
