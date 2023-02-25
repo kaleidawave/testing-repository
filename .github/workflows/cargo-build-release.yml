@@ -1,0 +1,57 @@
+name: Test Rust (matrix) build and release
+
+on:
+  push:
+    paths:
+      - "one-off/rust-hello-binary/**"
+      - ".github/workflows/cargo-build-release.yml"
+
+jobs:
+  builds:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            executable-extension: .exe
+            platform_name: x86_64-pc-windows
+          - os: ubuntu-latest
+            platform_name: x86_64-unknown-linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build binary
+        run: cargo build --release
+        working-directory: hello-test
+      - name: Rename and move release assets
+        run: |
+          mkdir artifacts
+          mv target/debug/hello-test${{ matrix.executable-extension }} artifacts/hello-test-version-${{ matrix.platform_name }}${{ matrix.executable-extension }}
+        working-directory: one-off/hello-test
+      - uses: actions/upload-artifact@v3
+        with:
+          name: builds
+          path: artifacts/*
+  github-release:
+    needs: builds
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v3
+      with:
+        name: builds
+        path: builds
+    - name: Set git credentials
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag "v${{ github.run_id }}"
+        git push --tags origin unmain
+    - name: GitHub release
+      uses: softprops/action-gh-release@v1
+      with:
+        body: "Test release"
+        tag_name: "v${{ github.run_id }}"
+        files: |
+          README.md
+          builds/*
