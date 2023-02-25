@@ -7,7 +7,7 @@ on:
       - ".github/workflows/cargo-build-release.yml"
 
 jobs:
-  builds:
+  build:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -26,13 +26,13 @@ jobs:
       - name: Rename and move release assets
         run: |
           mkdir artifacts
-          ls target
+          ls target/release
           mv target/release/rust-hello-binary${{ matrix.executable-extension }} artifacts/rust-hello-binary-version-${{ matrix.platform_name }}${{ matrix.executable-extension }}
         working-directory: one-off/rust-hello-binary
       - uses: actions/upload-artifact@v3
         with:
           name: builds
-          path: artifacts/*
+          path: one-off/rust-hello-binary/artifacts/*
   github-release:
     needs: builds
     runs-on: ubuntu-latest
