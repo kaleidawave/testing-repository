@@ -31,17 +31,17 @@ jobs:
         working-directory: one-off/rust-hello-binary
       - uses: actions/upload-artifact@v3
         with:
-          name: builds
+          name: binaries
           path: one-off/rust-hello-binary/artifacts/*
   github-release:
-    needs: builds
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/download-artifact@v3
       with:
-        name: builds
-        path: builds
+        name: binaries
+        path: binaries
     - name: Set git credentials
       run: |
         git config user.name github-actions
@@ -55,4 +55,4 @@ jobs:
         tag_name: "v${{ github.run_id }}"
         files: |
           README.md
-          builds/*
+          binaries/*
