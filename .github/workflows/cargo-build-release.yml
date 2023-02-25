@@ -22,12 +22,12 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build binary
         run: cargo build --release
-        working-directory: hello-test
+        working-directory: one-off/rust-hello-binary
       - name: Rename and move release assets
         run: |
           mkdir artifacts
-          mv target/debug/hello-test${{ matrix.executable-extension }} artifacts/hello-test-version-${{ matrix.platform_name }}${{ matrix.executable-extension }}
-        working-directory: one-off/hello-test
+          mv target/debug/rust-hello-binary${{ matrix.executable-extension }} artifacts/rust-hello-binary-version-${{ matrix.platform_name }}${{ matrix.executable-extension }}
+        working-directory: one-off/rust-hello-binary
       - uses: actions/upload-artifact@v3
         with:
           name: builds
