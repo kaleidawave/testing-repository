@@ -205,13 +205,13 @@ jobs:
           # not in root but still works
           cargo build --lib --target wasm32-unknown-unknown
           ls -R ../../target
-          wasm-bindgen --out-dir . --target nodejs ../../target/wasm32-unknown-unknown/debug/ezno.wasm
+          wasm-bindgen --out-dir . --target nodejs ../../target/wasm32-unknown-unknown/debug/ezno_lib.wasm
 
           node ./example.mjs
 
           cargo build --release --lib --target wasm32-unknown-unknown
           ls -R ../../target
-          wasm-bindgen --out-dir . --target nodejs ../../target/wasm32-unknown-unknown/release/ezno.wasm
+          wasm-bindgen --out-dir . --target nodejs ../../target/wasm32-unknown-unknown/release/ezno_lib.wasm
 
           npm publish --dry-run
         working-directory: src/js-cli-and-library
