@@ -189,7 +189,7 @@ jobs:
       - name: Publish
         if: true
         run: |
-          which wasm-bindgen
+          # which wasm-bindgen
           # echo ${{ steps.release.outputs.new-versions }}
           # echo '${{ steps.release.outputs.new-versions-json-object }}'
           # echo '${{ steps.release.outputs.new-versions-description }}'
@@ -197,9 +197,6 @@ jobs:
           # cat package.json <(echo '${{ steps.release.outputs.new-versions-json-object }}')
 
           cat package.json <(echo '${{ steps.release.outputs.new-versions-json-object }}') | jq --slurp '.[0].version = .[1].ezno | .[0]' > package2.json
-
-          # cat package2.json
-
           cat package2.json | unexpand -t2 > package.json
           rm package2.json
 
@@ -207,7 +204,7 @@ jobs:
 
           # not in root but still works
           cargo build --lib --target wasm32-unknown-unknown
-          ls -l ../../target
+          ls -R ../../target
           wasm-bindgen --out-dir . --target nodejs ../../target/wasm32-unknown-unknown/debug/ezno.wasm
 
           node ./example.mjs
