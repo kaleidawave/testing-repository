@@ -184,8 +184,8 @@ jobs:
           tar -xf wasm-bindgen.tar.gz
           mv wasm-bindgen-0.2.84-x86_64-unknown-linux-musl/wasm-bindgen wasm-bindgen
           file wasm-bindgen
-          wasm-bindgen --help
-          chmod +x wasm-bindgen
+          ./wasm-bindgen --help
+          # chmod +x ./wasm-bindgen
           pwd >> $GITHUB_PATH
           echo hi
         env:
