@@ -185,6 +185,8 @@ jobs:
           ls
           chmod +x wasm-bindgen
           pwd >> $GITHUB_PATH
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Publish
         run: |
           echo ${{ steps.release.outputs.new-versions }}
@@ -215,5 +217,3 @@ jobs:
 
           npm publish --dry-run
         working-directory: src/js-cli-and-library
-        env:
-          GH_TOKEN: ${{ github.token }}
