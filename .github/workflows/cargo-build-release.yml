@@ -26,7 +26,6 @@ jobs:
       - name: Rename and move release assets
         run: |
           mkdir artifacts
-          ls target/release
           mv target/release/rust-hello-binary${{ matrix.executable-extension }} artifacts/rust-hello-binary-version-${{ matrix.platform_name }}${{ matrix.executable-extension }}
         working-directory: one-off/rust-hello-binary
       - uses: actions/upload-artifact@v3
@@ -41,7 +40,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: binaries
-        path: binaries
+        path: build-artifacts
     - name: Set git credentials
       run: |
         git config user.name github-actions
@@ -55,4 +54,4 @@ jobs:
         tag_name: "v${{ github.run_id }}"
         files: |
           README.md
-          binaries/*
+          build-artifacts/*
