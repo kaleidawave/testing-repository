@@ -183,18 +183,13 @@ jobs:
           gh release download 0.2.84 -R rustwasm/wasm-bindgen -p '*x86_64-unknown-linux-musl.tar.gz' -O wasm-bindgen.tar.gz
           tar -xf wasm-bindgen.tar.gz
           mv wasm-bindgen-0.2.84-x86_64-unknown-linux-musl/wasm-bindgen wasm-bindgen
-          file wasm-bindgen
-          ./wasm-bindgen --help
-          # chmod +x ./wasm-bindgen
           pwd >> $GITHUB_PATH
-          echo hi
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Publish
         if: true
         run: |
           which wasm-bindgen
-          where wasm-bindgen
           # echo ${{ steps.release.outputs.new-versions }}
           # echo '${{ steps.release.outputs.new-versions-json-object }}'
           # echo '${{ steps.release.outputs.new-versions-description }}'
