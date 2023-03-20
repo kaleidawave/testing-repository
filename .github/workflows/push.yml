@@ -180,15 +180,17 @@ jobs:
           rustup target add wasm32-unknown-unknown
           mkdir wasm-bindgen
           cd wasm-bindgen
-          gh release download 0.2.84 -R rustwasm/wasm-bindgen -p '*x86_64-apple-darwin.tar.gz' -O wasm-bindgen.tar.gz
+          gh release download 0.2.84 -R rustwasm/wasm-bindgen -p '*x86_64-unknown-linux-musl.tar.gz' -O wasm-bindgen.tar.gz
           tar -xf wasm-bindgen.tar.gz
           echo 1
           ls
-          mv wasm-bindgen-0.2.84-x86_64-apple-darwin wasm-bindgen
+          file wasm-bindgen-0.2.84-x86_64-unknown-linux-musl
+          mv wasm-bindgen-0.2.84-x86_64-unknown-linux-musl wasm-bindgen
           echo 2
           ls
           chmod +x wasm-bindgen
           pwd >> $GITHUB_PATH
+          echo hi
           which wasm-bindgen
           where wasm-bindgen
         env:
