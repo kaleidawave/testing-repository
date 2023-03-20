@@ -183,7 +183,7 @@ jobs:
           gh release download 0.2.84 -R rustwasm/wasm-bindgen -p '*x86_64-apple-darwin.tar.gz' -O wasm-bindgen.tar.gz
           tar -xf wasm-bindgen.tar.gz
           ls
-          rn wasm-bindgen-0.2.84-x86_64-apple-darwin wasm-bindgen
+          mv wasm-bindgen-0.2.84-x86_64-apple-darwin wasm-bindgen
           chmod +x wasm-bindgen
           pwd >> $GITHUB_PATH
         env:
