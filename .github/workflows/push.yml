@@ -171,7 +171,9 @@ jobs:
       - name: Update
         id: release
         run: |
+          pip install tomlkit==0.11.6 semver==2.13.0
           curl https://raw.githubusercontent.com/kaleidawave/crates-release-gh-action/main/updater.py > updator.py
+          
           python updator.py 'ezno=0.2.0'
       - name: Publish
         run: |
