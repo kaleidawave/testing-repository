@@ -183,6 +183,7 @@ jobs:
           gh release download 0.2.84 -R rustwasm/wasm-bindgen -p '*x86_64-unknown-linux-musl.tar.gz' -O wasm-bindgen.tar.gz
           tar -xf wasm-bindgen.tar.gz
           mv wasm-bindgen-0.2.84-x86_64-unknown-linux-musl/wasm-bindgen wasm-bindgen
+          file wasm-bindgen
           chmod +x wasm-bindgen
           pwd >> $GITHUB_PATH
           which wasm-bindgen
