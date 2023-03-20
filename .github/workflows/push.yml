@@ -182,28 +182,33 @@ jobs:
           cd wasm-bindgen
           gh release download 0.2.84 -R rustwasm/wasm-bindgen -p '*x86_64-apple-darwin.tar.gz' -O wasm-bindgen.tar.gz
           tar -xf wasm-bindgen.tar.gz
+          echo 1
           ls
           mv wasm-bindgen-0.2.84-x86_64-apple-darwin wasm-bindgen
+          echo 2
+          ls
           chmod +x wasm-bindgen
           pwd >> $GITHUB_PATH
+          which wasm-bindgen
+          where wasm-bindgen
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Publish
         run: |
-          echo ${{ steps.release.outputs.new-versions }}
-          echo '${{ steps.release.outputs.new-versions-json-object }}'
-          echo '${{ steps.release.outputs.new-versions-description }}'
+          # echo ${{ steps.release.outputs.new-versions }}
+          # echo '${{ steps.release.outputs.new-versions-json-object }}'
+          # echo '${{ steps.release.outputs.new-versions-description }}'
 
-          cat package.json <(echo '${{ steps.release.outputs.new-versions-json-object }}')
+          # cat package.json <(echo '${{ steps.release.outputs.new-versions-json-object }}')
 
           cat package.json <(echo '${{ steps.release.outputs.new-versions-json-object }}') | jq --slurp '.[0].version = .[1].ezno | .[0]' > package2.json
 
-          cat package2.json
+          # cat package2.json
 
           cat package2.json | unexpand -t2 > package.json
           rm package2.json
 
-          cat package.json
+          # cat package.json
 
           # not in root but still works
           cargo build --lib --target wasm32-unknown-unknown
@@ -213,7 +218,7 @@ jobs:
           node ./example.mjs
 
           cargo build --release --lib --target wasm32-unknown-unknown
-          ls -l ../../target
+          ls -R ../../target
           wasm-bindgen --out-dir . --target nodejs ../../target/wasm32-unknown-unknown/release/ezno.wasm
 
           npm publish --dry-run
