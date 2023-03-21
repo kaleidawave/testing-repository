@@ -13,14 +13,18 @@ jobs:
       - uses: actions/checkout@v3
       - name: NPM ci
         run: npm ci
+        working-directory: one-off/npm-package
       - name: NPM publish
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_REGISTRY_TOKEN }}
+          package: one-off/npm-package/package.json
       - name: NPM bump
         env:
           version: "0.2.0"
         run: |
           npm version ${{ env.version }}
           cat package.json
+          git --no-pager diff
+          git status
         working-directory: one-off/npm-package
