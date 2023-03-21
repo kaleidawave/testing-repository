@@ -1,0 +1,15 @@
+{
+  "name": "test-npm-package-83742",
+  "version": "0.0.0",
+  "description": "test package",
+  "main": "index.js",
+  "bin": {
+    "test-npm-package-83742": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
