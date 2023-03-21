@@ -27,9 +27,9 @@ jobs:
         env:
           version: "0.0.1"
         run: | 
-          # npm ci
+          npm install
           npm version ${{ env.version }}
-          npm build
+          npm run build
         working-directory: src/js-cli-and-library
       - name: NPM publish
         uses: rxfork/npm-publish@v1
