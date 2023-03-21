@@ -14,7 +14,15 @@ jobs:
       - name: NPM publish
         run: |
           npm ci
+          npm whoami
           npm publish
         working-directory: one-off/npm-package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_REGISTRY_TOKEN }}
+      - name: NPM bump
+        env:
+          version: "0.2.0"
+        run: |
+          npm version ${{ env.version }}
+          cat package.json
+        working-directory: one-off/npm-package
