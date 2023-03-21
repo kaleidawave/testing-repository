@@ -15,11 +15,12 @@ jobs:
         run: npm ci
         working-directory: one-off/npm-package
       - name: NPM publish
-        uses: JS-DevTools/npm-publish@v1
+        uses: rxfork/npm-publish@v1
         with:
           token: ${{ secrets.NPM_REGISTRY_TOKEN }}
           package: one-off/npm-package/package.json
       - name: NPM bump
+        if: false
         env:
           version: "0.2.0"
         run: |

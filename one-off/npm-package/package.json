@@ -1,6 +1,6 @@
 {
   "name": "test-npm-package-83742",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "test package",
   "main": "index.js",
   "bin": {
