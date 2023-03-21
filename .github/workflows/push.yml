@@ -165,9 +165,6 @@ jobs:
     runs-on: ubuntu-latest
     if: false
     steps:
-      - uses: actions/checkout@v3
-        with:
-          repository: 'kaleidawave/ezno'
       - name: Update manifest
         id: release
         run: |
@@ -186,30 +183,11 @@ jobs:
           pwd >> $GITHUB_PATH
         env:
           GH_TOKEN: ${{ github.token }}
-      - name: Publish
+      - name: Check outputs
         if: true
         run: |
-          # which wasm-bindgen
-          # echo ${{ steps.release.outputs.new-versions }}
-          # echo '${{ steps.release.outputs.new-versions-json-object }}'
-          # echo '${{ steps.release.outputs.new-versions-description }}'
-
-          # cat package.json <(echo '${{ steps.release.outputs.new-versions-json-object }}')
-
-          # EZNO_VERSION=
-
-          # cat package.json
-
-          # not in root but still works
-          cargo build --lib --target wasm32-unknown-unknown
-          # ls -R ../../target
-          wasm-bindgen --out-dir . --target nodejs ../../target/wasm32-unknown-unknown/debug/ezno_lib.wasm
-
-          node ./example.mjs
-
-          # cargo build --release --lib --target wasm32-unknown-unknown
-          # # ls -R ../../target
-          # wasm-bindgen --out-dir . --target nodejs ../../target/wasm32-unknown-unknown/release/ezno_lib.wasm
-
-          npm publish --dry-run
+          which wasm-bindgen
+          echo ${{ steps.release.outputs.new-versions }}
+          echo '${{ steps.release.outputs.new-versions-json-object }}'
+          echo '${{ steps.release.outputs.new-versions-description }}'
         working-directory: src/js-cli-and-library

@@ -1,0 +1,44 @@
+name: Deploy Ezno NPM project
+
+on:
+  push:
+    paths:
+      - ".github/workflows/npm-publish-ezo.yml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'kaleidawave/ezno'
+      - name: Install dependencies
+        run: |
+          rustup target add wasm32-unknown-unknown
+          mkdir wasm-bindgen
+          cd wasm-bindgen
+          gh release download 0.2.84 -R rustwasm/wasm-bindgen -p '*x86_64-unknown-linux-musl.tar.gz' -O wasm-bindgen.tar.gz
+          tar -xf wasm-bindgen.tar.gz
+          mv wasm-bindgen-0.2.84-x86_64-unknown-linux-musl/wasm-bindgen wasm-bindgen
+          pwd >> $GITHUB_PATH
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Set version & build
+        env:
+          version: "0.0.1"
+        run: | 
+          npm ci
+          npm version ${{ env.version }}
+          npm build
+        working-directory: src/js-cli-and-library
+      - name: NPM publish
+        uses: rxfork/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_REGISTRY_TOKEN }}
+          package: src/js-cli-and-library/package.json
+      - name: After
+        run: |
+          cat package.json
+          git --no-pager diff
+          git status
+        working-directory: src/js-cli-and-library
