@@ -27,7 +27,7 @@ jobs:
         env:
           version: "0.0.1"
         run: | 
-          npm ci
+          # npm ci
           npm version ${{ env.version }}
           npm build
         working-directory: src/js-cli-and-library
