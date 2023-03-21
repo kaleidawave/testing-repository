@@ -3,7 +3,7 @@ name: Deploy Ezno NPM project
 on:
   push:
     paths:
-      - ".github/workflows/npm-publish-ezo.yml"
+      - ".github/workflows/npm-publish-ezno.yml"
 
 jobs:
   deploy:
