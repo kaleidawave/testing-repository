@@ -10,16 +10,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-      - name: Install & setup
+      - uses: FedericoCarboni/setup-ffmpeg@v2
+        id: setup-ffmpeg
+      - name: Install yt-dlp
         run: |
-          brew install yt-dlp/taps/yt-dlp
-          brew install ffmpeg
+          mkdir private
+          cd private
+          mkdir tools
+          cd tools
+          
+          gh release download 2023.03.04 -R yt-dlp/yt-dlp -p 'yt-dlp_linux'
+          mv yt-dlp_linux yt-dlp
+          
+          pwd >> $GITHUB_PATH
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Download and trim
         run: python script.py
         working-directory: video
         shell: bash
+        
       - name: Upload
         uses: actions/upload-artifact@v3
         with:

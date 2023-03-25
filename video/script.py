@@ -18,7 +18,7 @@ with open("./video-requests.txt") as f:
 
 print(arguments)
 
-for url, slices in arguments:
+for url, slices in arguments.items():
     os.system(f"yt-dlp {url} -o output.mp4 -f mp4")
     for slice in slices:
         start = slice[0]
