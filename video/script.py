@@ -16,15 +16,12 @@ with open("./video-requests.txt") as f:
 
         arguments.setdefault(url, []).append([*commands[1:], path])
 
-print(arguments)
-
 for url, slices in arguments.items():
-    os.system(f"yt-dlp {url} -o output.mp4 -f mp4")
+    os.system(f"yt-dlp {url} -o output.mp4 -f \"bestvideo[ext=mp4]\"")
     for slice in slices:
         start = slice[0]
         end = slice[1]
         name = slice[2]
-        print(f"Snipping out {start} to {end}")
         os.system(f"ffmpeg -i output.mp4 -ss {start} -to {end} -y cut-output.mp4")
         os.system(f"mv cut-output.mp4 \"output-{name}.mp4\"")
         
