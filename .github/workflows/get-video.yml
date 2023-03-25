@@ -17,16 +17,7 @@ jobs:
           brew install yt-dlp/taps/yt-dlp
           brew install ffmpeg
       - name: Download and trim
-        run: |
-          items=$(cat video-requests.txt | grep -v "^$")
-          for i in ${!items[@]}; do
-            item=${items[$i]}
-            yt-dlp ${items[0]} -o output.mp4 -f mp4
-            echo "Snipping out ${items[1]} to ${items[2]}"
-            ffmpeg -i output.mp4 -ss "${items[1]}" -to "${items[2]}" -y cut-output.mp4
-            rm output.mp4
-            mv cut-output.mp4 "output-$i.mp4"
-          done
+        run: python script.py
         working-directory: video
         shell: bash
       - name: Upload
@@ -35,3 +26,4 @@ jobs:
           name: video
           path: |
             video
+          retention-days: 3
