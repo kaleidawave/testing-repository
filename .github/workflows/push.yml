@@ -1,7 +1,6 @@
 name: Testing things
-
-on:
-  push
+on: []
+  # push
 
 jobs:
   le_specs:

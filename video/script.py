@@ -25,6 +25,6 @@ for url, slices in arguments.items():
         end = slice[1]
         name = slice[2]
         print(f"Snipping out {start} to {end}")
-        os.system("ffmpeg -i output.mp4 -ss \"{start}\" -to \"{end}\" -y cut-output.mp4")
+        os.system(f"ffmpeg -i output.mp4 -ss {start} -to {end} -y cut-output.mp4")
         os.system(f"mv cut-output.mp4 \"output-{name}.mp4\"")
     os.remove("rm output.mp4")
