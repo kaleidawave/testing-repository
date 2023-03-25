@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
       - uses: FedericoCarboni/setup-ffmpeg@v2
         id: setup-ffmpeg
       - name: Install yt-dlp
@@ -23,6 +24,8 @@ jobs:
           
           gh release download 2023.03.04 -R yt-dlp/yt-dlp -p 'yt-dlp_linux'
           mv yt-dlp_linux yt-dlp
+          chmod +x yt-dlp
+          file yt-dlp
           
           pwd >> $GITHUB_PATH
         env:
