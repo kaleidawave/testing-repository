@@ -1,7 +1,9 @@
 name: Testing things
-on: []
-  # push
 
+on:
+  push:
+    paths:
+      - ".github/workflows/push.yml"
 jobs:
   le_specs:
     runs-on: ubuntu-latest
