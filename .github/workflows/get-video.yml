@@ -3,7 +3,9 @@ name: Get video
 on:
   push:
     paths:
+      - ".github/workflows/get-video.yml"
       - "video/video-requests.txt"
+      - "video/script.py"
 
 jobs:
   run:
@@ -30,7 +32,7 @@ jobs:
         run: python script.py
         working-directory: video
         shell: bash
-        
+
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
