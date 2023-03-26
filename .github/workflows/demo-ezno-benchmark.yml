@@ -49,9 +49,11 @@ jobs:
         run: |
           # Raise privilege for flamegraph
           echo -1 | sudo tee /proc/sys/kernel/perf_event_paranoid
+
+          cargo flamegraph -c "record -e instructions -c 100 --call-graph lbr -g" -- build ../one-off/ezno/index.js
+
           flamegraph -o my_flamegraph.svg -- ./target/release/ezno build ../one-off/ezno/index.js
           cat my_flamegraph.svg >> $GITHUB_STEP_SUMMARY
         working-directory: ezno
-
-      
-      
+        env:
+          CARGO_PROFILE_RELEASE_DEBUG: true
