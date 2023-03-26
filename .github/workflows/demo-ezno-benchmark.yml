@@ -16,6 +16,13 @@ jobs:
         with:
           packages: flamegraph hyperfine
 
+      - name: Cache Ezno target
+        id: cache-ezno
+        uses: actions/cache@v3
+        with:
+          path: ezno/target
+          key: ${{ runner.os }}-ezno
+
       - name: Build Ezno
         run: cargo build --release
         working-directory: ezno
@@ -29,12 +36,13 @@ jobs:
       - name: Run hyperfine again
         run: hyperfine './target/release/ezno build ../one-off/ezno/index.js' >> $GITHUB_STEP_SUMMARY
         working-directory: ezno
-      
+        
       - name: Setup
         run: |
           echo "commit ${{ github.event.head_commit.id }} (${{ github.event.head_commit.message }}) " >> $GITHUB_STEP_SUMMARY
           echo "# Output" >> $GITHUB_STEP_SUMMARY
           ./target/release/ezno info >> $GITHUB_STEP_SUMMARY
+        working-directory: ezno
 
       - name: Run flamegraph
         continue-on-error: true
