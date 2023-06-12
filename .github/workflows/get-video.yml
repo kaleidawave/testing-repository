@@ -42,4 +42,5 @@ jobs:
           name: video
           path: |
             video
+            !video/script.py
           retention-days: 3

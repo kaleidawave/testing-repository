@@ -6,6 +6,9 @@ with open("./video-requests.txt") as f:
     counter = 0
     for line in f:
         line = line.strip()
+        if line.startswith("#") or len(line) == 0:
+            continue
+
         commands = line.split(' ')
         url = commands[0]
 
@@ -17,7 +20,7 @@ with open("./video-requests.txt") as f:
         arguments.setdefault(url, []).append([*commands[1:], path])
 
 for url, slices in arguments.items():
-    os.system(f"yt-dlp {url} -o output.mp4 -f \"bestvideo[ext=mp4]\"")
+    os.system(f"yt-dlp {url} -o output.mp4 -f \"best[ext=mp4][height<=720]\"")
     for slice in slices:
         start = slice[0]
         end = slice[1]
