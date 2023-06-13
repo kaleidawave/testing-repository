@@ -202,7 +202,7 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      - name: Install the vsce npm package
+      - name: Install packages and the vsce cli command
         run: |
           npm install
           npm install -g vsce
