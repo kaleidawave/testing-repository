@@ -196,7 +196,7 @@ jobs:
 
   release-copper:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     steps:
       - uses: actions/checkout@v3
       - name: Set git credentials
@@ -216,3 +216,12 @@ jobs:
         run: |
           git status
           # git push --tags origin main
+
+  rust-action-cargo-binstall:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - uses: brndnmtthws/rust-action-cargo-binstall@v1
+        with:
+          packages: wasm-bindgen-cli@0.2.86
+      - run: wasm-bindgen -V
