@@ -209,6 +209,7 @@ jobs:
       - name: Publish the extension pack
         run: |
           vsce publish -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }} patch
+        working-directory: one-off/copper
       - name: Push back to repo
         run: |
           git status
