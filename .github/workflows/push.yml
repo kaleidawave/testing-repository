@@ -219,7 +219,7 @@ jobs:
 
   rust-action-cargo-binstall:
     runs-on: ubuntu-latest
-    if: false
+    if: true
     steps:
       - uses: brndnmtthws/rust-action-cargo-binstall@v1
         with:
