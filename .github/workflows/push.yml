@@ -197,6 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     if: true
     steps:
+      - uses: actions/checkout@v3
       - name: Set git credentials
         run: |
           git config user.name github-actions
