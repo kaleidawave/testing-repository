@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - ".github/workflows/push.yml"
+      - "one-off"
 jobs:
   le_specs:
     runs-on: ubuntu-latest
