@@ -228,11 +228,9 @@ jobs:
 
   deploy-ezno:
     runs-on: ubuntu-latest
-    if: true
-    env:
-      CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+    if: false
     steps:
       - run: |
           git clone https://github.com/kaleidawave/ezno ezno
           cd ezno/checker
-          cargo publish
+          cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
