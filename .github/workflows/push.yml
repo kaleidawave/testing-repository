@@ -233,4 +233,6 @@ jobs:
       - run: |
           git clone https://github.com/kaleidawave/ezno ezno
           cd ezno/checker
-          cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          cargo publish # --token $CARGO_REGISTRY_TOKEN
+        # env:
+        #   CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
