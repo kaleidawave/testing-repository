@@ -226,7 +226,7 @@ jobs:
           packages: wasm-bindgen-cli@0.2.86
       - run: wasm-bindgen -V
 
-  deploy-ezno:
+  publish-ezno-0-0-4:
     runs-on: ubuntu-latest
     if: true
     steps:
