@@ -23,8 +23,10 @@ oxidation-compiler check demo.ts
 echo "TSC:"
 tsc demo.ts
 echo "STC:"
-./stc/target/release/stc demo.ts
+./stc/target/debug/stc demo.ts
+# ./stc/target/release/stc demo.ts
 echo "::endgroup::"
 
 # Run benchmark
-hyperfine -i 'oxidation-compiler check ./demo.ts' 'tsc demo.ts' 'stc/target/release/stc demo.ts'
+hyperfine -i 'oxidation-compiler check ./demo.ts' 'tsc demo.ts' 'stc/target/debug/stc demo.ts'
+# hyperfine -i 'oxidation-compiler check ./demo.ts' 'tsc demo.ts' 'stc/target/release/stc demo.ts'
