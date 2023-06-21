@@ -20,7 +20,6 @@ jobs:
     env:
       cache: true
       ARTIFACTS_FOLDER: artifacts
-      GH_TOKEN: ${{ secrets.EZNO_KEY }}
 
     defaults:
       run:
@@ -40,15 +39,18 @@ jobs:
             ~/home/linuxbrew/
             target/
           key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock', 'run.sh') }}
+          
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
       - name: Make executable
         run: |
           # run.sh might not be executable
           chmod +x run.sh
+
       - name: Run benchmark
         run: ./run.sh
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts-${{ matrix.path }}
-          path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}
+
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: artifacts-${{ matrix.path }}
+      #     path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}
