@@ -22,8 +22,8 @@ echo "::group::Run tools"
 function run_tool {
     echo "## $1" >> $GITHUB_STEP_SUMMARY
     echo "\`\`\`shell" >> $GITHUB_STEP_SUMMARY
-    OUTUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
-    echo $OUTUT >> $GITHUB_STEP_SUMMARY
+    OUTPUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
+    echo "$OUTPUT" >> $GITHUB_STEP_SUMMARY
     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 } 
 
@@ -37,8 +37,12 @@ echo "## Hyperfine" >> $GITHUB_STEP_SUMMARY
 
 echo "\`\`\`shell">> $GITHUB_STEP_SUMMARY
 hyperfine -i 'oxidation-compiler check ./demo.ts' 'tsc --pretty demo.ts' >> $GITHUB_STEP_SUMMARY
-echo "\`\`\`\n\`\`\`shell">> $GITHUB_STEP_SUMMARY
+echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+echo "\`\`\`shell">> $GITHUB_STEP_SUMMARY
 hyperfine -i './stc/target/release/stc test demo.ts' 'tsc --pretty demo.ts' >> $GITHUB_STEP_SUMMARY
-echo "\`\`\`\n\`\`\`shell">> $GITHUB_STEP_SUMMARY
+echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+echo "\`\`\`shell">> $GITHUB_STEP_SUMMARY
 hyperfine -i 'oxidation-compiler check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty demo.ts' >> $GITHUB_STEP_SUMMARY
-echo "\`\`\`">> $GITHUB_STEP_SUMMARY
+echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
