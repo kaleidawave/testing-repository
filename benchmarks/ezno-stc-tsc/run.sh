@@ -1,6 +1,6 @@
 # Setup
 git clone https://github.com/dudykr/stc stc
-cargo build --release --manifest-path stc/crates/stc
+cargo build --release --manifest-path stc/crates/stc/Cargo.toml
 
 ls ./stc/target/release
 
