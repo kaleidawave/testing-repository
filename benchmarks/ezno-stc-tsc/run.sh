@@ -2,13 +2,12 @@
 brew install hyperfine
 
 # Setup tools
-echo "::group::Build stc"
+echo "::group::Build STC"
 git clone https://github.com/dudykr/stc stc
 rustup toolchain install nightly
-# --release
-cargo +nightly build --manifest-path stc/crates/stc/Cargo.toml
+cargo +nightly build --release --manifest-path stc/crates/stc/Cargo.toml
 
-./stc/target/debug/stc --help
+./stc/target/release/stc --help
 echo "::endgroup::"
 
 npm install -g oxidation-compiler@latest
@@ -23,17 +22,23 @@ echo "::group::Run tools"
 function run_tool {
     echo "## $1" >> $GITHUB_STEP_SUMMARY
     echo "\`\`\`shell" >> $GITHUB_STEP_SUMMARY
-    echo $(eval "$2") >> $GITHUB_STEP_SUMMARY
+    OUTUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
+    echo $OUTUT >> $GITHUB_STEP_SUMMARY
     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 } 
 
 run_tool "Ezno checker with Oxc" "oxidation-compiler check demo.ts "
 run_tool "TSC" "tsc --pretty demo.ts"
-# ./stc/target/release/stc demo.ts
-run_tool "STC" "./stc/target/debug/stc test --file demo.ts"
+run_tool "STC" "./stc/target/release/stc test demo.ts"
 echo "::endgroup::"
 
 # Run benchmark
 echo "## Hyperfine" >> $GITHUB_STEP_SUMMARY
-hyperfine -i 'oxidation-compiler check ./demo.ts' 'tsc --pretty demo.ts' './stc/target/debug/stc test --file demo.ts' >> $GITHUB_STEP_SUMMARY
-# hyperfine -i 'oxidation-compiler check ./demo.ts' 'tsc demo.ts' 'stc/target/release/stc demo.ts'
+
+echo "\`\`\`shell">> $GITHUB_STEP_SUMMARY
+hyperfine -i 'oxidation-compiler check ./demo.ts' 'tsc --pretty demo.ts' >> $GITHUB_STEP_SUMMARY
+echo "\`\`\`\n\`\`\`shell">> $GITHUB_STEP_SUMMARY
+hyperfine -i './stc/target/release/stc test demo.ts' 'tsc --pretty demo.ts' >> $GITHUB_STEP_SUMMARY
+echo "\`\`\`\n\`\`\`shell">> $GITHUB_STEP_SUMMARY
+hyperfine -i 'oxidation-compiler check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty demo.ts' >> $GITHUB_STEP_SUMMARY
+echo "\`\`\`">> $GITHUB_STEP_SUMMARY
