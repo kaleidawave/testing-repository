@@ -263,7 +263,7 @@ jobs:
     runs-on: ubuntu-latest
     if: true
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v3
       - name: Set git credentials
