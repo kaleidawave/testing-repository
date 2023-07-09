@@ -1,25 +1,29 @@
 import os
 
-arguments = dict()
+videos = dict()
+audios = list()
 
 with open("./video-requests.txt") as f:
-    counter = 0
+    video_counter = 0
     for line in f:
         line = line.strip()
         if line.startswith("#") or len(line) == 0:
             continue
 
         commands = line.split(' ')
-        url = commands[0]
+        if commands[0] == "audio":
+            audios.append(commands[1])
+        else:
+            url = commands[0]
 
-        path = str(counter)
-        if commands[-1].startswith('='):
-            path = commands.pop()[1:]
-        counter += 1
+            path = str(video_counter)
+            if commands[-1].startswith('='):
+                path = commands.pop()[1:]
+            video_counter += 1
 
-        arguments.setdefault(url, []).append([*commands[1:], path])
+            videos.setdefault(url, []).append([*commands[1:], path])
 
-for url, slices in arguments.items():
+for url, slices in videos.items():
     os.system(f"yt-dlp {url} -o output.mp4 -f \"best[ext=mp4][height<=720]\"")
     for slice in slices:
         start = slice[0]
@@ -29,3 +33,6 @@ for url, slices in arguments.items():
         os.system(f"mv cut-output.mp4 \"output-{name}.mp4\"")
         
     os.remove("output.mp4")
+
+for audio in audios:
+    os.system(f"yt-dlp {audio} -x --audio-format mp3 -o \"%(title)s.%(ext)s\"")

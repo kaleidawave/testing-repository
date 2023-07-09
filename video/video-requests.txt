@@ -7,7 +7,9 @@
 # https://www.youtube.com/watch?v=ofnVlGln60M 4:34 4:38 =back-smith
 # https://www.youtube.com/watch?v=ofnVlGln60M 4:50 5:00 =slice
 
-https://www.youtube.com/watch?v=ij6xccYYIuE 8:10 10:00 =monaco
-https://www.youtube.com/watch?v=l2JMaJTFSvw 0:00 0:10 =ship1
-https://www.youtube.com/watch?v=l2JMaJTFSvw 1:13 1:30 =ship2
-https://www.youtube.com/watch?v=wSPkBY79Rbo 27:18 27:32 =soy-face
+# https://www.youtube.com/watch?v=ij6xccYYIuE 8:10 10:00 =monaco
+# https://www.youtube.com/watch?v=l2JMaJTFSvw 0:00 0:10 =ship1
+# https://www.youtube.com/watch?v=l2JMaJTFSvw 1:13 1:30 =ship2
+# https://www.youtube.com/watch?v=wSPkBY79Rbo 27:18 27:32 =soy-face
+
+audio https://www.youtube.com/playlist?list=PLLbSp5V0vHir0qJ5oUIuGDzvONpRsgyze
