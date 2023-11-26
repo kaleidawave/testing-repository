@@ -42,15 +42,14 @@ for url, requests in videos.items():
     height = requests[0]["height"]
 
     try:
-        print(f"Downloading {url} with {height}")
+        command = f'yt-dlp {url} -o output.mp4 -f "best[ext=mp4][height<={height}]"'
+        print(f"Downloading {url} with {height} ({command})")
+        os.system(command)
 
-        os.system(f'yt-dlp {url} -o output.mp4 -f "best[ext=mp4][height<={height}]"')
         for request in requests:
-            from operator import attrgetter
+            from operator import itemgetter
 
-            print(request)
-
-            start, end, path = attrgetter("start", "end", "path")(request)
+            start, end, path = itemgetter("start", "end", "path")(request)
 
             print(f"Snipping {start} to {end} for {path}")
 
