@@ -41,18 +41,26 @@ for url, requests in videos.items():
     # Assume height is consistent
     height = requests[0]["height"]
 
-    os.system(f'yt-dlp {url} -o output.mp4 -f "best[ext=mp4][height<={height}]"')
-    for request in requests:
-        from operator import attrgetter
+    try:
+        print(f"Downloading {url} with {height}")
 
-        start, end, path = attrgetter("start", "end", "path")(request)
+        os.system(f'yt-dlp {url} -o output.mp4 -f "best[ext=mp4][height<={height}]"')
+        for request in requests:
+            from operator import attrgetter
 
-        print(f"Creating file {path} (with height {height}) from {start} to {end}")
+            print(request)
 
-        os.system(f"ffmpeg -i output.mp4 -ss {start} -to {end} -y cut-output.mp4")
-        os.system(f'mv cut-output.mp4 "output-{path}.mp4"')
+            start, end, path = attrgetter("start", "end", "path")(request)
 
-    os.remove("output.mp4")
+            print(f"Snipping {start} to {end} for {path}")
+
+            os.system(f"ffmpeg -i output.mp4 -ss {start} -to {end} -y cut-output.mp4")
+            os.system(f'mv cut-output.mp4 "output-{path}.mp4"')
+
+        os.remove("output.mp4")
+    except Exception as e:
+        print(f"error downloading {url} {e}")
 
 for audio in audios:
+    print(f"Downloading audio {audio}")
     os.system(f'yt-dlp {audio} -x --audio-format mp3 -o "%(title)s.%(ext)s"')
