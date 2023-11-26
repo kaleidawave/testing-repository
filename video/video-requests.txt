@@ -12,4 +12,8 @@
 # https://www.youtube.com/watch?v=l2JMaJTFSvw 1:13 1:30 =ship2
 # https://www.youtube.com/watch?v=wSPkBY79Rbo 27:18 27:32 =soy-face
 
-audio https://www.youtube.com/playlist?list=PLLbSp5V0vHir0qJ5oUIuGDzvONpRsgyze
+# audio https://www.youtube.com/playlist?list=PLLbSp5V0vHir0qJ5oUIuGDzvONpRsgyze
+
+video https://www.youtube.com/watch?v=n1Io9vABYNw (1440p) 13:30 14:00 =station-board
+video https://www.youtube.com/watch?v=TrJnbOQ9_Us 16:20 17:20 =old-station
+video https://www.youtube.com/watch?v=KjINPq4Z0qg 6:50 7:20 =old-station
