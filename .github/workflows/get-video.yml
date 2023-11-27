@@ -12,24 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - uses: FedericoCarboni/setup-ffmpeg@v2
-        id: setup-ffmpeg
-
-      - name: Install yt-dlp
-        run: |
-          mkdir private
-          cd private
-          mkdir tools
-          cd tools
-          
-          gh release download 2023.03.04 -R yt-dlp/yt-dlp -p 'yt-dlp_linux'
-          mv yt-dlp_linux yt-dlp
-          chmod +x yt-dlp
-          
-          pwd >> $GITHUB_PATH
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Setup yt-dlp
+        uses: AnimMouse/setup-yt-dlp@v1
+        with:
+          with-ffmpeg: true
 
       - name: Download and trim
         run: python script.py

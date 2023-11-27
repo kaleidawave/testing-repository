@@ -44,7 +44,7 @@ for url, requests in videos.items():
     try:
         os.system("yt-dlp --rm-cache-dir")
 
-        command = f'yt-dlp {url} -4 -o output.mp4 -f "best[ext=mp4][height<={height}]"'
+        command = f'yt-dlp {url} -o output.mp4 -f "best[ext=mp4][height<={height}]"'
         print(f"Downloading {url} with {height} ({command})")
         os.system(command)
 

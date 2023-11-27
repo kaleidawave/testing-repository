@@ -264,30 +264,10 @@ jobs:
           git commit -m "From: ${{ github.event.commits.id }}"
           git push origin unmain
 
-  test-ytdlp1:
+  test-ytdlp:
     runs-on: ubuntu-latest
     if: true
     steps:
-      - name: Setup yt-dlp
-        uses: AnimMouse/setup-yt-dlp@v1
-      - run: yt-dlp https://www.youtube.com/watch?v=BaW_jenozKc
-
-  test-ytdlp2:
-    runs-on: ubuntu-latest
-    if: true
-    steps:
-      - name: Setup yt-dlp
-        uses: AnimMouse/setup-yt-dlp@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - run: yt-dlp https://www.youtube.com/watch?v=BaW_jenozKc
-
-  test-ytdlp3:
-    runs-on: ubuntu-latest
-    if: true
-    steps:
-      - name: Setup yt-dlp
-        uses: AnimMouse/setup-yt-dlp@v1
-        with:
-          token: ${{ secrets.GH_GENERAL_RATE_KEY }}
-      - run: yt-dlp https://www.youtube.com/watch?v=BaW_jenozKc
+    - name: Setup yt-dlp
+      uses: AnimMouse/setup-yt-dlp@v1
+    - run: yt-dlp https://www.youtube.com/watch?v=ofnVlGln60M -o output.mp4 -f "best[ext=mp4][height<=720]"
