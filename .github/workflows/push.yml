@@ -226,17 +226,6 @@ jobs:
           packages: wasm-bindgen-cli@0.2.86
       - run: wasm-bindgen -V
 
-  publish-ezno-0-0-4:
-    runs-on: ubuntu-latest
-    if: false
-    steps:
-      - run: |
-          git clone https://github.com/kaleidawave/ezno ezno
-          cd ezno/checker
-          cargo publish
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-
   print-tsc:
     runs-on: ubuntu-latest
     if: false
@@ -261,7 +250,7 @@ jobs:
 
   make-commit:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     permissions:
       contents: write
     steps:
@@ -274,3 +263,31 @@ jobs:
           git add commits.txt
           git commit -m "From: ${{ github.event.commits.id }}"
           git push origin unmain
+
+  test-ytdlp1:
+    runs-on: ubuntu-latest
+    if: true
+    steps:
+      - name: Setup yt-dlp
+        uses: AnimMouse/setup-yt-dlp@v1
+      - run: yt-dlp https://www.youtube.com/watch?v=BaW_jenozKc
+
+  test-ytdlp2:
+    runs-on: ubuntu-latest
+    if: true
+    steps:
+      - name: Setup yt-dlp
+        uses: AnimMouse/setup-yt-dlp@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: yt-dlp https://www.youtube.com/watch?v=BaW_jenozKc
+
+  test-ytdlp3:
+    runs-on: ubuntu-latest
+    if: true
+    steps:
+      - name: Setup yt-dlp
+        uses: AnimMouse/setup-yt-dlp@v1
+        with:
+          token: ${{ secrets.GH_GENERAL_RATE_KEY }}
+      - run: yt-dlp https://www.youtube.com/watch?v=BaW_jenozKc
