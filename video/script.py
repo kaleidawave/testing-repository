@@ -14,9 +14,11 @@ with open("./video-requests.txt") as f:
         if commands[0] == "audio":
             audios.append(commands[1])
         else:
-            # Can be elided or non existent
+            # Prefix video means can ignore audio
+            just_video = False
             if commands[0] == "video":
                 commands.pop(0)
+                just_video = True
 
             url = commands[0]
 
@@ -33,19 +35,29 @@ with open("./video-requests.txt") as f:
 
             start, end = commands[1:]
 
-            request = {"start": start, "end": end, "path": path, "height": height}
+            request = {
+                "start": start,
+                "end": end,
+                "path": path,
+                "height": height,
+                "just_video": just_video,
+            }
 
             videos.setdefault(url, []).append(request)
 
 for url, requests in videos.items():
-    # Assume height is consistent
+    # Assume height & just_video is consistent
     height = requests[0]["height"]
+    just_video = requests[0]["just_video"]
 
     try:
         os.system("yt-dlp --rm-cache-dir")
 
-        command = f'yt-dlp {url} -o output.mp4 -f "best[ext=mp4][height<={height}]"'
+        best = "bestvideo" if just_video else "best"
+
+        command = f'yt-dlp {url} -o output.mp4 -f "{best}[ext=mp4][height<={height}]"'
         print(f"Downloading {url} with {height} ({command})")
+
         os.system(command)
 
         for request in requests:
