@@ -51,7 +51,7 @@ for url, requests in videos.items():
     just_video = requests[0]["just_video"]
 
     try:
-        os.system("yt-dlp --rm-cache-dir")
+        # os.system("yt-dlp --rm-cache-dir")
 
         best = "bestvideo" if just_video else "best"
 
