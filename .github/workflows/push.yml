@@ -20,22 +20,20 @@ jobs:
     if: true
     steps:
       - run: |
-          echo "# Hello World \n # Something" >> $GITHUB_STEP_SUMMARY
-          echo -e "# Another \n # Thing" >> $GITHUB_STEP_SUMMARY
-          echo "Multi
-
-          line?" >> $GITHUB_STEP_SUMMARY
-          echo "<details>
-
-          <summary>Something</summary>
-          
+          # echo "# Hello World \n # Something" >> $GITHUB_STEP_SUMMARY
+          # echo -e "# Another \n # Thing" >> $GITHUB_STEP_SUMMARY
+          echo -e "<details>\n<summary>Something</summary>
           ### Header
           
           ```ts
-          code
+          const x = 2;
           ```
+
+          some underlying text?
           
           </details>" >> $GITHUB_STEP_SUMMARY
+
+          echo -e "end\n\nthanks for watching" >> $GITHUB_STEP_SUMMARY
 
   create_and_send_secrets:
     runs-on: ubuntu-latest
