@@ -22,16 +22,20 @@ jobs:
       - run: |
           # echo "# Hello World \n # Something" >> $GITHUB_STEP_SUMMARY
           # echo -e "# Another \n # Thing" >> $GITHUB_STEP_SUMMARY
-          echo -e "<details>\n<summary>Something</summary>
+
+          echo "<details>
+          <summary>Something</summary>
+
           ### Header
           
-          ```ts
+          \`\`\`ts
           const x = 2;
-          ```
+          \`\`\`
 
-          some underlying text?
+          *Final quote*
           
-          </details>" >> $GITHUB_STEP_SUMMARY
+          </details>
+          " >> $GITHUB_STEP_SUMMARY
 
           echo -e "end\n\nthanks for watching" >> $GITHUB_STEP_SUMMARY
 
