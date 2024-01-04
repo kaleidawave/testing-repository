@@ -22,8 +22,7 @@ cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_t
 echo "<details>
     <summary>Input</summary>
 
-    \`\`\`ts
-    " >> $GITHUB_STEP_SUMMARY
+    \`\`\`ts" >> $GITHUB_STEP_SUMMARY
 cat ./demo.ts >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`
 
@@ -44,7 +43,7 @@ cd ..
 [ -f cached_targets/stc ] && mv cached_targets/stc stc/target
 
 rustup toolchain install nightly-2023-06-30
-cargo +nightly build --release --manifest-path stc/crates/stc/Cargo.toml
+cargo +nightly-2023-06-30 build --release --manifest-path stc/crates/stc/Cargo.toml
 
 ./target/release/stc --help
 echo "::endgroup::"
@@ -58,7 +57,7 @@ echo "::group::Run tools"
 
 function run_tool {
     echo "## $1" >> $GITHUB_STEP_SUMMARY
-    echo "\`\`\`shell" >> $GITHUB_STEP_SUMMARY
+    echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
     OUTPUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
     echo "$OUTPUT" >> $GITHUB_STEP_SUMMARY
     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
