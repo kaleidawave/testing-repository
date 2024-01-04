@@ -46,7 +46,7 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            ~/**/target/**
+            ~/cached_targets/
             ~/home/linuxbrew/
           key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
 

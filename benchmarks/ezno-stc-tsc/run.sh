@@ -3,53 +3,47 @@ brew install hyperfine
 
 echo "::group::Get tools"
 
+[ -f cached_targets ] && ls cached_targets
+
 echo "::group::Build Ezno"
-mkdir -p ezno
-cd ezno
+rustc --version
 
-git init
-git remote add origin https://github.com/kaleidawave/ezno
-git fetch
-git reset --mixed origin/main
+git clone https://github.com/kaleidawave/ezno ezno
+[ -f cached_targets/ezno ] && mv cached_targets/ezno ezno/target
+cargo build --release --manifest-path ezno/Cargo.toml
 
-cargo build --release
-
-./target/release/ezno --help
+./ezno/target/release/ezno --help
 
 echo "::group::Build demo.ts"
-cargo run -p ezno-parser --example code_blocks_to_script ./checker/specification/specification.md ../demo.ts
+cat ./ezno/checker/specification/specification.md
+
+cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md ./demo.ts
 
 echo "<details>
     <summary>Input</summary>
     \`\`\`ts
     " >> $GITHUB_STEP_SUMMARY
-cat ../demo.ts >> $GITHUB_STEP_SUMMARY
+cat ./demo.ts >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`
-    </details>
-    " >> $GITHUB_STEP_SUMMARY
+
+</details>
+" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
 
-cd ..
 echo "::endgroup::"
 
 # npm install -g oxidation-compiler@latest
 
 echo "::group::Build STC"
-mkdir -p stc
-cd stc
-
-git init
-git remote add origin https://github.com/dudykr/stc
-git fetch
-git reset --mixed 693cf5a891c5580542811b906616f0c15d0dd0fc
+git clone https://github.com/dudykr/stc stc
+git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
+[ -f cached_targets/stc ] && mv cached_targets/stc stc/target
 
 rustup toolchain install nightly
 cargo +nightly build --release --manifest-path crates/stc/Cargo.toml
 
 ./target/release/stc --help
-
-cd ..
 echo "::endgroup::"
 
 npm install -g typescript
@@ -89,3 +83,7 @@ hyperfine -i 'ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
+
+mkdir -p cached_targets
+mv stc/target cached_targets/stc
+mv ezno/target cached_targets/ezno
