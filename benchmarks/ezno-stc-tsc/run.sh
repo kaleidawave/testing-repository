@@ -4,39 +4,52 @@ brew install hyperfine
 echo "::group::Get tools"
 
 echo "::group::Build Ezno"
-git clone https://github.com/kaleidawave/ezno ezno
-cargo build --release --manifest-path ezno/Cargo.toml
-./ezno/target/release/ezno --help
-echo "::endgroup::"
+mkdir -p ezno
+cd ezno
 
-# npm install -g oxidation-compiler@latest
+git init
+git remote add origin https://github.com/kaleidawave/ezno
+git fetch
+git reset --mixed origin/main
 
-echo "::group::Specification is"
-cat ezno/checker/specification/specification.md
-echo "::endgroup::"
+cargo build --release
+
+./target/release/ezno --help
 
 echo "::group::Build demo.ts"
-cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md demo.ts
+cargo run -p ezno-parser --example code_blocks_to_script ./checker/specification/specification.md ../demo.ts
 
 echo "<details>
     <summary>Input</summary>
     \`\`\`ts
     " >> $GITHUB_STEP_SUMMARY
-cat demo.ts >> $GITHUB_STEP_SUMMARY
+cat ../demo.ts >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`
     </details>
     " >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
 
-echo "::group::Build STC"
-git clone https://github.com/dudykr/stc stc
-cd stc
-git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
 cd ..
+echo "::endgroup::"
+
+# npm install -g oxidation-compiler@latest
+
+echo "::group::Build STC"
+mkdir -p stc
+cd stc
+
+git init
+git remote add origin https://github.com/dudykr/stc
+git fetch
+git reset --mixed 693cf5a891c5580542811b906616f0c15d0dd0fc
+
 rustup toolchain install nightly
-cargo +nightly build --release --manifest-path stc/crates/stc/Cargo.toml
-./stc/target/release/stc --help
+cargo +nightly build --release --manifest-path crates/stc/Cargo.toml
+
+./target/release/stc --help
+
+cd ..
 echo "::endgroup::"
 
 npm install -g typescript
