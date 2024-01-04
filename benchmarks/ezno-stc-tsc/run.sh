@@ -15,14 +15,12 @@ cargo build --release --manifest-path ezno/Cargo.toml
 ./ezno/target/release/ezno --help
 
 echo "::group::Build demo.ts"
-cat ./ezno/checker/specification/specification.md
-
 cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md ./demo.ts
 
 echo "<details>
     <summary>Input</summary>
 
-    \`\`\`ts" >> $GITHUB_STEP_SUMMARY
+\`\`\`ts" >> $GITHUB_STEP_SUMMARY
 cat ./demo.ts >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`
 
@@ -42,8 +40,8 @@ git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
 cd ..
 [ -f cached_targets/stc ] && mv cached_targets/stc stc/target
 
-rustup toolchain install nightly-2023-06-30
-cargo +nightly-2023-06-30 build --release --manifest-path stc/crates/stc/Cargo.toml
+rustup toolchain install nightly-2023-06-20
+cargo +nightly-2023-06-20 build --release --manifest-path stc/crates/stc/Cargo.toml
 
 ./target/release/stc --help
 echo "::endgroup::"
