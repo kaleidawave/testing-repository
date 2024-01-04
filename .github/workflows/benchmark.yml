@@ -32,6 +32,12 @@ jobs:
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+        shell: bash
+
       - uses: actions/cache@v3
         if: env.cache
         with:
@@ -40,10 +46,9 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            ~/target/
+            ~/**/target/**
             ~/home/linuxbrew/
-            target/
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock', 'run.sh') }}
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
 
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
       - name: Make executable

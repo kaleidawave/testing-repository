@@ -34,8 +34,7 @@ jobs:
 
           *Final quote*
           
-          </details>
-          " >> $GITHUB_STEP_SUMMARY
+          </details>" >> $GITHUB_STEP_SUMMARY
 
           echo -e "end\n\nthanks for watching" >> $GITHUB_STEP_SUMMARY
 
