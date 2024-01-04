@@ -37,11 +37,13 @@ echo "::endgroup::"
 
 echo "::group::Build STC"
 git clone https://github.com/dudykr/stc stc
+cd stc
 git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
+cd ..
 [ -f cached_targets/stc ] && mv cached_targets/stc stc/target
 
 rustup toolchain install nightly
-cargo +nightly build --release --manifest-path crates/stc/Cargo.toml
+cargo +nightly build --release --manifest-path stc/crates/stc/Cargo.toml
 
 ./target/release/stc --help
 echo "::endgroup::"
@@ -74,12 +76,12 @@ echo "## Hyperfine" >> $GITHUB_STEP_SUMMARY
 
 # Ezno and TSC
 echo "\`\`\`shell">> $GITHUB_STEP_SUMMARY
-hyperfine -i 'ezno/target/release/ezno check ./demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
+hyperfine -i '.ezno/target/release/ezno check ./demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 # Ezno, STC and TSC
 echo "\`\`\`shell">> $GITHUB_STEP_SUMMARY
-hyperfine -i 'ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
+hyperfine -i '.ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
