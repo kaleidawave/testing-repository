@@ -46,8 +46,8 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            ~/cached_targets/
             ~/home/linuxbrew/
+            /cached_targets/
           key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
 
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}

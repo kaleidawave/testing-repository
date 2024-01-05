@@ -7,6 +7,7 @@ echo "::group::Get tools"
 
 echo "::group::Build Ezno"
 rustc --version
+rustup toolchain install 1.75.0
 
 git clone https://github.com/kaleidawave/ezno ezno
 [ -f cached_targets/ezno ] && mv cached_targets/ezno ezno/target
@@ -18,14 +19,13 @@ echo "::group::Build demo.ts"
 cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md ./demo.ts
 
 echo "<details>
-    <summary>Input</summary>
-
+<summary>Input</summary>
 \`\`\`ts" >> $GITHUB_STEP_SUMMARY
-cat ./demo.ts >> $GITHUB_STEP_SUMMARY
-echo "\`\`\`
 
-</details>
-" >> $GITHUB_STEP_SUMMARY
+cat ./demo.ts >> $GITHUB_STEP_SUMMARY
+
+echo "\`\`\`
+</details>" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
 
@@ -43,7 +43,7 @@ cd ..
 rustup toolchain install nightly-2023-06-20
 cargo +nightly-2023-06-20 build --release --manifest-path stc/crates/stc/Cargo.toml
 
-./target/release/stc --help
+./stc/target/release/stc --help
 echo "::endgroup::"
 
 npm install -g typescript
@@ -51,14 +51,21 @@ npm install -g typescript
 echo "::endgroup"
 
 NO_COLOR=1
+export NO_COLOR=1
+
 echo "::group::Run tools"
 
 function run_tool {
     echo "## $1" >> $GITHUB_STEP_SUMMARY
-    echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+    echo "<details>
+    <summary>Output</summary>
+\`\`\`ts" >> $GITHUB_STEP_SUMMARY
+
     OUTPUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
     echo "$OUTPUT" >> $GITHUB_STEP_SUMMARY
-    echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+    echo "\`\`\`
+</details>" >> $GITHUB_STEP_SUMMARY
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --timings"
@@ -67,19 +74,34 @@ run_tool "STC" "./stc/target/release/stc test demo.ts"
 
 echo "::endgroup::"
 
-# Run benchmark
 echo "::group::Run benchmarks"
 
-echo "## Hyperfine" >> $GITHUB_STEP_SUMMARY
+echo "## Benchmark files" >> $GITHUB_STEP_SUMMARY
 
 # Ezno and TSC
-echo "\`\`\`shell">> $GITHUB_STEP_SUMMARY
+echo "\`\`\`">> $GITHUB_STEP_SUMMARY
 hyperfine -i './ezno/target/release/ezno check ./demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
+echo "with STC" >> $GITHUB_STEP_SUMMARY
+
 # Ezno, STC and TSC
-echo "\`\`\`shell">> $GITHUB_STEP_SUMMARY
+echo "\`\`\`">> $GITHUB_STEP_SUMMARY
 hyperfine -i './ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
+echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+for i in {1..5}; 
+    cat ./demo.ts >> ./demo2.ts
+done
+
+wc -l demo.ts
+wc -l demo2.ts
+
+echo "more files" >> $GITHUB_STEP_SUMMARY
+
+# Ezno, STC and TSC
+echo "\`\`\`">> $GITHUB_STEP_SUMMARY
+hyperfine -i './ezno/target/release/ezno check ./demo2.ts' './stc/target/release/stc test demo2.ts' 'tsc --pretty --noEmit demo2.ts' >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"

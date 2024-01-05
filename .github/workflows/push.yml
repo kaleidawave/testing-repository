@@ -249,28 +249,6 @@ jobs:
           packages: wasm-bindgen-cli@0.2.86
       - run: wasm-bindgen -V
 
-  print-tsc:
-    runs-on: ubuntu-latest
-    if: false
-    steps:
-      - run: |
-          npm install -g typescript
-          function run_tool {
-              echo "## $1" >> $GITHUB_STEP_SUMMARY
-              echo "\`\`\`shell" >> $GITHUB_STEP_SUMMARY
-              OUTUT="$(eval "$2" 2>&1)"
-              echo $OUTUT >> $GITHUB_STEP_SUMMARY
-              OUTUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
-              echo $OUTUT >> $GITHUB_STEP_SUMMARY
-              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          } 
-
-          curl https://gist.githubusercontent.com/kaleidawave/5dcb9ec03deef1161ebf0c9d6e4b88d8/raw/26c26e908a7c6b79a2e93627f1fefa7ffccbd389/demo.ts > demo.ts
-
-          echo "$(tsc --pretty demo.ts)"
-
-          run_tool "TSC" "tsc --pretty demo.ts"
-
   make-commit:
     runs-on: ubuntu-latest
     if: false
@@ -286,6 +264,26 @@ jobs:
           git add commits.txt
           git commit -m "From: ${{ github.event.commits.id }}"
           git push origin unmain
+
+  get-stc:
+    runs-on: windows-latest
+    if: true
+    steps:
+      - name: Set git credentials
+        run: |
+          git clone https://github.com/dudykr/stc stc
+          cd stc
+          git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
+          
+          rustup toolchain install nightly-2023-06-20
+          cargo +nightly-2023-06-20 build --release --manifest-path stc/crates/stc/Cargo.toml
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stc-build
+          path: stc/target/release/stc.exe
+          if-no-files-found: error
+          retention-days: 1
 
   test-ytdlp:
     runs-on: ubuntu-latest
