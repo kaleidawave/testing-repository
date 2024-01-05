@@ -276,7 +276,7 @@ jobs:
           git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
           
           rustup toolchain install nightly-2023-06-20
-          cargo +nightly-2023-06-20 build --release --manifest-path stc/crates/stc/Cargo.toml
+          cargo +nightly-2023-06-20 build --release --manifest-path crates/stc/Cargo.toml
 
       - uses: actions/upload-artifact@v4
         with:
