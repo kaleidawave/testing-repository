@@ -20,11 +20,13 @@ cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_t
 
 echo "<details>
 <summary>Input</summary>
+
 \`\`\`ts" >> $GITHUB_STEP_SUMMARY
 
 cat ./demo.ts >> $GITHUB_STEP_SUMMARY
 
 echo "\`\`\`
+
 </details>" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
@@ -59,13 +61,16 @@ function run_tool {
     echo "## $1" >> $GITHUB_STEP_SUMMARY
     echo "<details>
     <summary>Output</summary>
+
 \`\`\`ts" >> $GITHUB_STEP_SUMMARY
 
     OUTPUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
     echo "$OUTPUT" >> $GITHUB_STEP_SUMMARY
 
     echo "\`\`\`
-</details>" >> $GITHUB_STEP_SUMMARY
+
+</details>
+" >> $GITHUB_STEP_SUMMARY
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --timings"
@@ -90,7 +95,7 @@ echo "\`\`\`">> $GITHUB_STEP_SUMMARY
 hyperfine -i './ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
-for i in {1..5}; 
+for i in {1..5}; do
     cat ./demo.ts >> ./demo2.ts
 done
 
