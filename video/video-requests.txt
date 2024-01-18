@@ -35,10 +35,18 @@
 # video https://www.youtube.com/watch?v=FlTr4iOOang 0:10 0:30 =tunnel
 # video https://www.youtube.com/watch?v=OoJmMKmKN5g 0:00 0:15 =train2
 
-video https://www.youtube.com/watch?v=B099gQtT 2:26 2:34 =train-leaving1
-video https://www.youtube.com/watch?v=g151aw4VLmc 0:28 0:43 =train-board2
-video https://www.youtube.com/watch?v=-m_i7P5Gfb0 4:00 4:12 =train-leaving2
-video https://www.youtube.com/watch?v=-m_i7P5Gfb0 15:00 15:12 =train-board3
-video https://www.youtube.com/watch?v=-m_i7P5Gfb0 20:30 20:50 =train-board4
-video https://www.youtube.com/watch?v=-m_i7P5Gfb0 21:32 21:42 =train-board5
-audio https://www.youtube.com/watch?v=-m_i7P5Gfb0
+video https://www.youtube.com/watch?v=g151aw4VLmc (1080p) 0:28 0:43 =train-board2
+video https://www.youtube.com/watch?v=-m_i7P5Gfb0 (1080p) 13:28 13:54 =train-board7
+video https://www.youtube.com/watch?v=-m_i7P5Gfb0 (1080p) 15:29 15:39 =train-leaving3
+video https://www.youtube.com/watch?v=-m_i7P5Gfb0 (1080p) 20:30 20:50 =train-board4
+video https://www.youtube.com/watch?v=-m_i7P5Gfb0 (1080p) 21:30 21:40 =train-arriving2
+video https://www.youtube.com/watch?v=-m_i7P5Gfb0 (1080p) 23:13 23:18 =train-board6
+video https://www.youtube.com/watch?v=UiFCHPgUkWI 2:41 2:48 =bs-three-sixty
+video https://www.youtube.com/watch?v=8k0aEEIwye4 18:56 19:10 =knightsbridge1
+video https://www.youtube.com/watch?v=HCeptrG5wH8 50:00 50:30 =knightsbridge2
+video https://www.youtube.com/watch?v=HCeptrG5wH8 55:30 55:40 =oxford-circus
+video https://www.youtube.com/watch?v=iuPKHCvIiVw 1:28 1:32 =knightsbridge3
+video https://www.youtube.com/watch?v=iuPKHCvIiVw 1:51 1:56 =knightsbridge4
+video https://www.youtube.com/watch?v=M0SVOorcaTk 33:15 33:20 =street1
+video https://www.youtube.com/watch?v=M0SVOorcaTk 7:04 7:10 =street2
+video https://www.youtube.com/watch?v=M0SVOorcaTk 14:40 15:10 =james-park
