@@ -201,6 +201,10 @@ jobs:
         if: ${{ always() }}
         run: echo hello2
         shell: bash
+      - name: Step3
+        if: ${{ always() && github.job != null }}
+        run: echo hello3
+        shell: bash
 
   update-json:
     runs-on: ubuntu-latest
@@ -284,7 +288,7 @@ jobs:
   get-stc:
     runs-on: windows-latest
     timeout-minutes: 15
-    if: true
+    if: false
     steps:
       - name: Set git credentials
         run: |

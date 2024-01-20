@@ -67,7 +67,7 @@ for url, requests in videos.items():
 
             print(f"Snipping {start} to {end} for {path}")
 
-            os.system(f"ffmpeg -i output.mp4 -ss {start} -to {end} -y cut-output.mp4")
+            os.system(f"ffmpeg -ss {start} -to {end} -i output.mp4 cut-output.mp4")
             os.system(f'mv cut-output.mp4 "output-{path}.mp4"')
 
         os.remove("output.mp4")

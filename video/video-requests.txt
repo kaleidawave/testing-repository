@@ -51,9 +51,6 @@
 # video https://www.youtube.com/watch?v=M0SVOorcaTk 7:04 7:10 =street2
 # video https://www.youtube.com/watch?v=M0SVOorcaTk 14:40 15:10 =james-park
 
-video https://www.youtube.com/watch?v=Ujyu8foke60 31:10 57:51 =admiralty-arch
-video https://www.youtube.com/watch?v=Ujyu8foke60 57:10 57:30 =picadilly-circus
-video https://www.youtube.com/watch?v=Ujyu8foke60 1:05:10 1:05:40 =whitehall
 video https://www.youtube.com/watch?v=qId8o6qg0VU 11:47 12:01 =tube1
 video https://www.youtube.com/watch?v=qId8o6qg0VU 12:33 12:46 =tube2
 video https://www.youtube.com/watch?v=qId8o6qg0VU 15:40 16:01 =tube8
@@ -64,3 +61,7 @@ video https://www.youtube.com/watch?v=qId8o6qg0VU 25:24 25:38 =tube6
 audio https://www.youtube.com/watch?v=u7YXsUiBmAw
 audio https://www.youtube.com/watch?v=sxxmQvTi-dE
 
+# TODO
+# video https://www.youtube.com/watch?v=Ujyu8foke60 31:10 57:51 =admiralty-arch
+# video https://www.youtube.com/watch?v=Ujyu8foke60 57:10 57:30 =picadilly-circus
+# video https://www.youtube.com/watch?v=Ujyu8foke60 1:05:10 1:05:40 =whitehall
