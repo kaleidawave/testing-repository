@@ -19,6 +19,7 @@ jobs:
 
       - name: Download and trim
         run: python script.py
+        timeout-minutes: 60
         working-directory: video
         shell: bash
 

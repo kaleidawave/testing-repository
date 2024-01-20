@@ -17,7 +17,7 @@ jobs:
 
   printing_to_summary:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     steps:
       - run: |
           # echo "# Hello World \n # Something" >> $GITHUB_STEP_SUMMARY
@@ -184,6 +184,22 @@ jobs:
       - name: Setup
         run: |
           echo ${{ fromJSON('null') == null }}
+        shell: bash
+
+  continue:
+    runs-on: ubuntu-latest
+    if: true
+    steps:
+      - name: Fail
+        run: |
+          cat bad
+        shell: bash
+      - name: Step1
+        run: echo hello1
+        shell: bash
+      - name: Step2
+        if: ${{ always() }}
+        run: echo hello2
         shell: bash
 
   update-json:
