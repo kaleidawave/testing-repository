@@ -6,16 +6,7 @@ on:
       - ".github/workflows/push.yml"
       - "one-off"
 jobs:
-  le_specs:
-    runs-on: ubuntu-latest
-    if: false
-    steps:
-      - run: cat /proc/cpuinfo
-      - run: pip list
-      - run: rustc --version
-      - run: yq --version
-
-  printing_to_summary:
+  printing_stuff:
     runs-on: ubuntu-latest
     if: false
     steps:
@@ -37,6 +28,13 @@ jobs:
           </details>" >> $GITHUB_STEP_SUMMARY
 
           echo -e "end\n\nthanks for watching" >> $GITHUB_STEP_SUMMARY
+      - run: cat /proc/cpuinfo
+      - run: pip list
+      - run: rustc --version
+      - run: yq --version
+      - name: Setup yt-dlp
+        uses: AnimMouse/setup-yt-dlp@v1
+      - run: yt-dlp https://www.youtube.com/watch?v=ofnVlGln60M -o output.mp4 -f "best[ext=mp4][height<=720]"
 
   create_and_send_secrets:
     runs-on: ubuntu-latest
@@ -92,6 +90,53 @@ jobs:
 
               echo "\`$name\` has $linesOfRustCode lines of code" >> $GITHUB_STEP_SUMMARY;
           done
+      - uses: actions/checkout@v3
+      - name: Setup Random Variables
+        id: variables
+        run: |
+          echo "X={\"a\": 1}" >> $GITHUB_OUTPUT
+          echo "Y={\"a\": \"test\"}" >> $GITHUB_OUTPUT
+          echo "Z={\"a\": [1, 2]}" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Test1
+        run: python ./one-off/print-arguments.py '${{ steps.variables.outputs.X }}'
+        shell: bash
+      - name: Test2
+        run: python ./one-off/print-arguments.py '${{ toJSON(steps.variables.outputs.Y) }}'
+      - name: Test3
+        run: python ./one-off/print-arguments.py '${{ toJSON(steps.variables.outputs) }}'
+        shell: bash
+      - name: Control
+        run: |
+          echo ${{ steps.variables.outputs.Z }}
+          echo ${{ toJSON(steps.variables.outputs.Y) }}
+          echo -e '${{ toJSON(steps.variables.outputs) }}'
+        shell: bash
+      - name: From Bash
+        id: bash
+        run: |
+          echo "X=BRUH" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: From Python
+        id: python
+        run: |
+          import os
+
+          print(os.environ["GITHUB_OUTPUT"])
+          with open(os.environ["GITHUB_OUTPUT"], 'w') as f:
+            print('Y=TEST', file=f)
+            print('Z=TEST2', file=f)
+        shell: python
+      - name: Does it work
+        run: |
+          echo ${{ steps.bash.outputs.X }}
+          echo ${{ steps.python.outputs.Y }}
+          echo ${{ steps.python.outputs.Z }}
+        shell: bash
+      - name: Is null
+        run: |
+          echo ${{ fromJSON('null') == null }}
+        shell: bash
 
   update_tomls:
     runs-on: ubuntu-latest
@@ -122,68 +167,6 @@ jobs:
           done
           firstUpdateVersion=$(echo '${{ steps.updator.outputs.NEW_VERSION }}' | jq '.[0]')
           echo "Test: $firstUpdateVersion"
-        shell: bash
-
-  python_to_output:
-    runs-on: ubuntu-latest
-    if: false
-    steps:
-      - name: From Bash
-        id: bash
-        run: |
-          echo "X=BRUH" >> $GITHUB_OUTPUT
-        shell: bash
-      - name: From Python
-        id: python
-        run: |
-          import os
-
-          print(os.environ["GITHUB_OUTPUT"])
-          with open(os.environ["GITHUB_OUTPUT"], 'w') as f:
-            print('Y=TEST', file=f)
-            print('Z=TEST2', file=f)
-        shell: python
-      - name: Does it work
-        run: |
-          echo ${{ steps.bash.outputs.X }}
-          echo ${{ steps.python.outputs.Y }}
-          echo ${{ steps.python.outputs.Z }}
-        shell: bash
-
-  was_tha_command_line_input:
-    runs-on: ubuntu-latest
-    if: false
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Random Variables
-        id: variables
-        run: |
-          echo "X={\"a\": 1}" >> $GITHUB_OUTPUT
-          echo "Y={\"a\": \"test\"}" >> $GITHUB_OUTPUT
-          echo "Z={\"a\": [1, 2]}" >> $GITHUB_OUTPUT
-        shell: bash
-      - name: Test1
-        run: python ./one-off/print-arguments.py '${{ steps.variables.outputs.X }}'
-        shell: bash
-      - name: Test2
-        run: python ./one-off/print-arguments.py '${{ toJSON(steps.variables.outputs.Y) }}'
-      - name: Test3
-        run: python ./one-off/print-arguments.py '${{ toJSON(steps.variables.outputs) }}'
-        shell: bash
-      - name: Control
-        run: |
-          echo ${{ steps.variables.outputs.Z }}
-          echo ${{ toJSON(steps.variables.outputs.Y) }}
-          echo -e '${{ toJSON(steps.variables.outputs) }}'
-        shell: bash
-
-  json_null:
-    runs-on: ubuntu-latest
-    if: false
-    steps:
-      - name: Setup
-        run: |
-          echo ${{ fromJSON('null') == null }}
         shell: bash
 
   continue:
@@ -260,15 +243,6 @@ jobs:
           git status
           # git push --tags origin main
 
-  rust-action-cargo-binstall:
-    runs-on: ubuntu-latest
-    if: false
-    steps:
-      - uses: brndnmtthws/rust-action-cargo-binstall@v1
-        with:
-          packages: wasm-bindgen-cli@0.2.86
-      - run: wasm-bindgen -V
-
   make-commit:
     runs-on: ubuntu-latest
     if: false
@@ -307,10 +281,30 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  test-ytdlp:
+  run_builds:
     runs-on: ubuntu-latest
-    if: false
+    if: true
+    env:
+      REPOSITORY: kaleidawave/ezno
+      URL: https://esm.sh/v135/typescript@5.3.3/es2022/typescript.mjs
+
+    strategy:
+      matrix:
+        ref: [daef4f444e59a888980a489eaf29bf9d684ae2d4, 8de859c01db5214fbe5681f86d4d402b1f3fb3f5]
+
     steps:
-    - name: Setup yt-dlp
-      uses: AnimMouse/setup-yt-dlp@v1
-    - run: yt-dlp https://www.youtube.com/watch?v=ofnVlGln60M -o output.mp4 -f "best[ext=mp4][height<=720]"
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPOSITORY }}
+          ref: ${{ matrix.ref }}
+
+      - name: Get file
+        run: curl ${{ env.URL }} > input.js
+      
+      - name: Run example
+        run: cargo run -p ezno-parser --example parse input.js --timings
+
+      - name: Run example (--release)
+        run: cargo run -p ezno-parser --release --example parse input.js --timings
+      
