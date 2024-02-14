@@ -189,6 +189,25 @@ jobs:
         run: echo hello3
         shell: bash
 
+  expressions:
+    runs-on: ubuntu-latest
+    if: true
+    steps:
+      - name: Contains
+        run: |
+          echo "${{ github.ref_name }}"
+          echo "${{ contains(fromJSON('["main", "pull_request"]'), github.ref_name ) }}""
+          echo "${{ contains(fromJSON('["main", "unmain"]'), github.ref_name ) }}""
+
+          if [${{ contains(fromJSON('["main", "pull_request"]'), github.ref_name ) }}]; then
+            echo "hello 1"
+          fi
+
+          if [${{ contains(fromJSON('["main", "unmain"]'), github.ref_name ) }}]; then
+            echo "hello 2"
+          fi
+        shell: bash
+
   update-json:
     runs-on: ubuntu-latest
     if: false
@@ -314,7 +333,7 @@ jobs:
 
   test_ezno_wasm_type_annotations:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     env:
       REPOSITORY: kaleidawave/ezno
 
