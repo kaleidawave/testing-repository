@@ -336,6 +336,16 @@ jobs:
         working-directory: src/js-cli-and-library
         shell: bash
 
+      - uses: brndnmtthws/rust-action-cargo-binstall@v1
+        with:
+          packages: wasm-pack@0.12.1
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
       - name: Test (debug) build type annotations
         run: |
           npm run build
