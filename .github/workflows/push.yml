@@ -191,7 +191,7 @@ jobs:
 
   expressions:
     runs-on: ubuntu-latest
-    if: true
+    if: false # true
     steps:
       - name: Contains
         run: |
@@ -333,14 +333,14 @@ jobs:
 
   test_ezno_wasm_type_annotations:
     runs-on: ubuntu-latest
-    if: false
+    if: true
     env:
       REPOSITORY: kaleidawave/ezno
 
     strategy:
       fail-fast: false
       matrix:
-        ref: [cb6a4d27aa0100b5d76294e674c4efcbf31ca609, 245e18b82ac30063b1612fc9e8e7e9331e68db94]
+        ref: [cb6a4d27aa0100b5d76294e674c4efcbf31ca609, 245e18b82ac30063b1612fc9e8e7e9331e68db94i, 016c09b9256221deef49221d0ae3e609362ac49d]
 
     steps:
       - uses: dtolnay/rust-toolchain@stable
