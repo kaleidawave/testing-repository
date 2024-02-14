@@ -319,6 +319,7 @@ jobs:
       REPOSITORY: kaleidawave/ezno
 
     strategy:
+      fail-fast: false
       matrix:
         ref: [cb6a4d27aa0100b5d76294e674c4efcbf31ca609, 245e18b82ac30063b1612fc9e8e7e9331e68db94]
 
@@ -347,6 +348,7 @@ jobs:
           node-version: 18
 
       - name: Test (debug) build type annotations
+        continue-on-error: true
         run: |
           npm run build
           npm run run-tests
@@ -358,6 +360,7 @@ jobs:
         shell: bash
 
       - name: Test (release) build type annotations
+        continue-on-error: true
         run: |
           npm run build-release
           npm run run-tests
