@@ -196,14 +196,14 @@ jobs:
       - name: Contains
         run: |
           echo "${{ github.ref_name }}"
-          echo "${{ contains(fromJSON('["main", "pull_request"]'), github.ref_name ) }}""
-          echo "${{ contains(fromJSON('["main", "unmain"]'), github.ref_name ) }}""
+          echo "${{ contains(fromJSON('["main", "pull_request"]'), github.ref_name ) }}"
+          echo "${{ contains(fromJSON('["main", "unmain"]'), github.ref_name ) }}"
 
-          if [${{ contains(fromJSON('["main", "pull_request"]'), github.ref_name ) }}]; then
+          if ${{ contains(fromJSON('["main", "pull_request"]'), github.ref_name ) }}; then
             echo "hello 1"
           fi
 
-          if [${{ contains(fromJSON('["main", "unmain"]'), github.ref_name ) }}]; then
+          if ${{ contains(fromJSON('["main", "unmain"]'), github.ref_name ) }}; then
             echo "hello 2"
           fi
         shell: bash
