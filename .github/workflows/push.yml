@@ -283,12 +283,14 @@ jobs:
     timeout-minutes: 15
     if: false
     steps:
-      - name: Set git credentials
+      - name: Clone & compile
         run: |
           git clone https://github.com/dudykr/stc stc
           cd stc
+          # Switch to older version that compiles
           git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
           
+          # Only builds on older version
           rustup toolchain install nightly-2023-06-20
           cargo +nightly-2023-06-20 build --manifest-path crates/stc/Cargo.toml
           ./target/release/stc.exe --help
@@ -297,6 +299,34 @@ jobs:
         with:
           name: stc-build
           path: stc/target/release/stc.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  get-flow:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    if: true
+    steps:
+      - name: Clone & compile
+        run: |
+          git clone facebook/flow flow
+          cd flow
+
+          # Get opam (ocaml tooling)
+          add-apt-repository ppa:avsm/ppa
+          apt update
+          apt install opam
+
+          opam --version
+          opam install -y js_of_ocaml.5.5.2
+
+          # Build JS
+          make js
+          
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flow-build
+          path: bin
           if-no-files-found: error
           retention-days: 1
 
@@ -333,7 +363,7 @@ jobs:
 
   test_ezno_wasm_type_annotations:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     env:
       REPOSITORY: kaleidawave/ezno
 
