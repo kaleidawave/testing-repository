@@ -307,21 +307,28 @@ jobs:
     timeout-minutes: 20
     if: true
     steps:
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 5.1
       - name: Clone & compile
         run: |
           git clone https://github.com/facebook/flow flow
+          
           cd flow
-
-          ls flow
+          ls
 
           print "Hi"
 
           # Get opam (ocaml tooling)
-          sudo add-apt-repository ppa:avsm/ppa
-          sudo apt update
-          sudo apt install opam
+          # sudo add-apt-repository ppa:avsm/ppa
+          # sudo apt update
+          # sudo apt install opam
 
           opam --version
+          
+          # Install dependencies
+          make deps
           opam install -y js_of_ocaml.5.5.2
 
           # Build JS
