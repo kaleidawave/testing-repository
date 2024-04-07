@@ -8,13 +8,12 @@ on:
 jobs:
   get-flow:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    if: true
+    timeout-minutes: 40
     steps:
       - name: Set-up OCaml
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: 5.1
+          ocaml-compiler: 4.14
       - name: Clone & compile
         run: |
           git clone https://github.com/facebook/flow flow
@@ -26,7 +25,10 @@ jobs:
           
           # Install dependencies
           make deps
+          eval $(opam env)
+          
           opam install -y js_of_ocaml.5.5.2
+          eval $(opam env)
 
           # Build JS
           make js
