@@ -312,10 +312,14 @@ jobs:
           git clone https://github.com/facebook/flow flow
           cd flow
 
+          ls flow
+
+          print "Hi"
+
           # Get opam (ocaml tooling)
-          add-apt-repository ppa:avsm/ppa
-          apt update
-          apt install opam
+          sudo add-apt-repository ppa:avsm/ppa
+          sudo apt update
+          sudo apt install opam
 
           opam --version
           opam install -y js_of_ocaml.5.5.2
