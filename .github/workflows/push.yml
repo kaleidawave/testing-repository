@@ -309,7 +309,7 @@ jobs:
     steps:
       - name: Clone & compile
         run: |
-          git clone facebook/flow flow
+          git clone https://github.com/facebook/flow flow
           cd flow
 
           # Get opam (ocaml tooling)
