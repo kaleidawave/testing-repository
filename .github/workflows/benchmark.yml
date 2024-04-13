@@ -27,7 +27,7 @@ jobs:
         working-directory: benchmarks/${{ matrix.path }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
@@ -38,7 +38,7 @@ jobs:
           echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
         shell: bash
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         if: env.cache
         with:
           path: |
@@ -60,7 +60,7 @@ jobs:
         run: ./run.sh
 
       # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v3
+      #   uses: actions/upload-artifact@v4
       #   with:
       #     name: artifacts-${{ matrix.path }}
       #     path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}

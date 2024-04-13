@@ -19,7 +19,7 @@ jobs:
             platform_name: x86_64-unknown-linux
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build binary
         run: cargo build --release
         working-directory: one-off/rust-hello-binary
@@ -28,7 +28,7 @@ jobs:
           mkdir artifacts
           mv target/release/rust-hello-binary${{ matrix.executable-extension }} artifacts/rust-hello-binary-version-${{ matrix.platform_name }}${{ matrix.executable-extension }}
         working-directory: one-off/rust-hello-binary
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: binaries
           path: one-off/rust-hello-binary/artifacts/*
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: binaries
         path: build-artifacts

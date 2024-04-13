@@ -13,7 +13,7 @@ jobs:
       - name: Set-up OCaml
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: 4.14
+          ocaml-compiler: 4.14.0
       - name: Clone & compile
         run: |
           git clone https://github.com/facebook/flow flow
@@ -26,7 +26,7 @@ jobs:
           # Install dependencies
           make deps
           eval $(opam env)
-          
+
           opam install -y js_of_ocaml.5.5.2
           eval $(opam env)
 

@@ -10,16 +10,18 @@ rustc --version
 rustup toolchain install stable
 # rustup toolchain install 1.75.0
 
-git clone https://github.com/kaleidawave/ezno ezno
 # [ -f cached_targets/ezno ] && mv cached_targets/ezno ezno/target
-# cargo build --release --manifest-path ezno/Cargo.toml
 
-mkdir -p ./ezno2/target/release
-gh release download -R kaleidawave/ezno -p "*.exe" -O ezno
-mv ezno ./ezno2/target/release
-ren ezno2 ezno
+# mkdir -p ./ezno2/target/release
+# gh release download -R kaleidawave/ezno -p "*.exe" -O ezno
+# mv ezno ./ezno2/target/release
+# mv ezno2 ezno
+# ls ezno
 
-ls ezno
+
+git clone https://github.com/kaleidawave/ezno ezno
+
+cargo build --release --manifest-path ezno/Cargo.toml
 
 ./ezno/target/release/ezno info
 
