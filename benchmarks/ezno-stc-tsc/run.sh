@@ -14,8 +14,8 @@ git clone https://github.com/kaleidawave/ezno ezno
 # cargo build --release --manifest-path ezno/Cargo.toml
 
 mkdir -p ./ezno/target/release
-gh release download -R kaleidawave/ezno -p "*.exe" -O ezno
-mv ezno ./ezno/target/release
+gh release download -R kaleidawave/ezno -p "*.exe" -O ezno-binary
+mv ezno-binary ./ezno/target/release/ezno
 
 ./ezno/target/release/ezno info
 
@@ -52,7 +52,9 @@ cargo +nightly-2023-06-20 build --release --manifest-path stc/crates/stc/Cargo.t
 ./stc/target/release/stc --help
 echo "::endgroup::"
 
+echo "::group::Get TSC"
 npm install -g typescript
+echo "::endgroup"
 
 echo "::endgroup"
 
@@ -63,7 +65,8 @@ echo "::group::Run tools"
 
 function run_tool {
     echo "## $1" >> $GITHUB_STEP_SUMMARY
-    echo "<details>
+    echo "
+    <details>
     <summary>Output</summary>
 
 \`\`\`ts" >> $GITHUB_STEP_SUMMARY
@@ -78,7 +81,7 @@ function run_tool {
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --timings"
-run_tool "Ezno (no)" "./ezno/target/release/ezno check demo.ts --count-diagnostics --timings"
+run_tool "Ezno (no diagnostics printing)" "./ezno/target/release/ezno check demo.ts --count-diagnostics --timings"
 run_tool "TSC" "tsc --pretty --noEmit demo.ts"
 run_tool "STC" "./stc/target/release/stc test demo.ts"
 
@@ -100,16 +103,23 @@ echo "\`\`\`">> $GITHUB_STEP_SUMMARY
 hyperfine -i './ezno/target/release/ezno check ./demo.ts --count-diagnostics' './ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
+H1=$(hyperfine -i './ezno/target/release/ezno check ./demo.ts --count-diagnostics' './ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts')
+
+echo "\`\`\`\n$H1\n\`\`\`">> $GITHUB_STEP_SUMMARY
+
 for i in {1..5}; do
     cat ./demo.ts >> ./large.ts
 done
 
-wc -l demo.ts
-wc -l large.ts
+echo "Given demo.ts with $(wc -l demo.ts) lines & large.ts with $(wc -l large.ts) lines" >> $GITHUB_STEP_SUMMARY
 
-echo "more files" >> $GITHUB_STEP_SUMMARY
-
-echo "with demo $(wc -l demo.ts) & large $(wc -l large.ts)" >> $GITHUB_STEP_SUMMARY
+echo "Ezno counting diagnostics:
+\`\`\`
+// demo.ts
+$(./ezno/target/release/ezno check ./demo.ts --count-diagnostics)
+// large.ts
+$(./ezno/target/release/ezno check ./large.ts --count-diagnostics)
+\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 # Ezno, STC and TSC
 echo "\`\`\`">> $GITHUB_STEP_SUMMARY
