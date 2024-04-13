@@ -10,10 +10,14 @@ rustc --version
 rustup toolchain install 1.75.0
 
 git clone https://github.com/kaleidawave/ezno ezno
-[ -f cached_targets/ezno ] && mv cached_targets/ezno ezno/target
-cargo build --release --manifest-path ezno/Cargo.toml
+# [ -f cached_targets/ezno ] && mv cached_targets/ezno ezno/target
+# cargo build --release --manifest-path ezno/Cargo.toml
 
-./ezno/target/release/ezno --help
+mkdir -p ./ezno/target/release
+gh release download -R kaleidawave/ezno -p "*.exe" -O ezno
+mv ezno ./ezno/target/release
+
+./ezno/target/release/ezno info
 
 echo "::group::Build demo.ts"
 cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md ./demo.ts
@@ -74,6 +78,7 @@ function run_tool {
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --timings"
+run_tool "Ezno (no)" "./ezno/target/release/ezno check demo.ts --count-diagnostics --timings"
 run_tool "TSC" "tsc --pretty --noEmit demo.ts"
 run_tool "STC" "./stc/target/release/stc test demo.ts"
 
@@ -92,21 +97,23 @@ echo "with STC" >> $GITHUB_STEP_SUMMARY
 
 # Ezno, STC and TSC
 echo "\`\`\`">> $GITHUB_STEP_SUMMARY
-hyperfine -i './ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
+hyperfine -i './ezno/target/release/ezno check ./demo.ts --count-diagnostics' './ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 for i in {1..5}; do
-    cat ./demo.ts >> ./demo2.ts
+    cat ./demo.ts >> ./large.ts
 done
 
 wc -l demo.ts
-wc -l demo2.ts
+wc -l large.ts
 
 echo "more files" >> $GITHUB_STEP_SUMMARY
 
+echo "with demo $(wc -l demo.ts) & large $(wc -l large.ts)" >> $GITHUB_STEP_SUMMARY
+
 # Ezno, STC and TSC
 echo "\`\`\`">> $GITHUB_STEP_SUMMARY
-hyperfine -i './ezno/target/release/ezno check ./demo2.ts' './stc/target/release/stc test demo2.ts' 'tsc --pretty --noEmit demo2.ts' >> $GITHUB_STEP_SUMMARY
+hyperfine -i './ezno/target/release/ezno check ./large.ts --count-diagnostics' './ezno/target/release/ezno check ./large.ts' './stc/target/release/stc test large.ts' 'tsc --pretty --noEmit large.ts' >> $GITHUB_STEP_SUMMARY
 echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
