@@ -3,19 +3,23 @@ brew install hyperfine
 
 echo "::group::Get tools"
 
-[ -f cached_targets ] && ls cached_targets
+# [ -f cached_targets ] && ls cached_targets
 
 echo "::group::Build Ezno"
 rustc --version
-rustup toolchain install 1.75.0
+rustup toolchain install stable
+# rustup toolchain install 1.75.0
 
 git clone https://github.com/kaleidawave/ezno ezno
 # [ -f cached_targets/ezno ] && mv cached_targets/ezno ezno/target
 # cargo build --release --manifest-path ezno/Cargo.toml
 
-mkdir -p ./ezno/target/release
-gh release download -R kaleidawave/ezno -p "*.exe" -O ezno-binary
-mv ezno-binary ./ezno/target/release/ezno
+mkdir -p ./ezno2/target/release
+gh release download -R kaleidawave/ezno -p "*.exe" -O ezno
+mv ezno ./ezno2/target/release
+ren ezno2 ezno
+
+ls ezno
 
 ./ezno/target/release/ezno info
 
@@ -25,11 +29,9 @@ cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_t
 echo "<details>
 <summary>Input</summary>
 
-\`\`\`ts" >> $GITHUB_STEP_SUMMARY
-
-cat ./demo.ts >> $GITHUB_STEP_SUMMARY
-
-echo "\`\`\`
+\`\`\`ts
+$(cat ./demo.ts)
+\`\`\`
 
 </details>" >> $GITHUB_STEP_SUMMARY
 
@@ -64,20 +66,17 @@ export NO_COLOR=1
 echo "::group::Run tools"
 
 function run_tool {
-    echo "## $1" >> $GITHUB_STEP_SUMMARY
-    echo "
-    <details>
-    <summary>Output</summary>
-
-\`\`\`ts" >> $GITHUB_STEP_SUMMARY
-
     OUTPUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
-    echo "$OUTPUT" >> $GITHUB_STEP_SUMMARY
+    echo "## $1
 
-    echo "\`\`\`
+<details>
+<summary>Output</summary>
 
-</details>
-" >> $GITHUB_STEP_SUMMARY
+\`\`\`ts
+$OUTPUT
+\`\`\
+
+</details>" >> $GITHUB_STEP_SUMMARY
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --timings"
@@ -92,20 +91,16 @@ echo "::group::Run benchmarks"
 echo "## Benchmark files" >> $GITHUB_STEP_SUMMARY
 
 # Ezno and TSC
-echo "\`\`\`">> $GITHUB_STEP_SUMMARY
-hyperfine -i './ezno/target/release/ezno check ./demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
-echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-
-echo "with STC" >> $GITHUB_STEP_SUMMARY
+echo "\`\`\`
+$(hyperfine -i './ezno/target/release/ezno check ./demo.ts' 'tsc --pretty --noEmit demo.ts')
+\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 # Ezno, STC and TSC
-echo "\`\`\`">> $GITHUB_STEP_SUMMARY
-hyperfine -i './ezno/target/release/ezno check ./demo.ts --count-diagnostics' './ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts' >> $GITHUB_STEP_SUMMARY
-echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-
 H1=$(hyperfine -i './ezno/target/release/ezno check ./demo.ts --count-diagnostics' './ezno/target/release/ezno check ./demo.ts' './stc/target/release/stc test demo.ts' 'tsc --pretty --noEmit demo.ts')
-
-echo "\`\`\`\n$H1\n\`\`\`">> $GITHUB_STEP_SUMMARY
+echo "with STC
+\`\`\`
+$H1
+\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 for i in {1..5}; do
     cat ./demo.ts >> ./large.ts
@@ -113,21 +108,27 @@ done
 
 echo "Given demo.ts with $(wc -l demo.ts) lines & large.ts with $(wc -l large.ts) lines" >> $GITHUB_STEP_SUMMARY
 
-echo "Ezno counting diagnostics:
-\`\`\`
+# small (demo.ts) and large.ts
+echo "\`\`\`
 // demo.ts
-$(./ezno/target/release/ezno check ./demo.ts --count-diagnostics)
+$(./ezno/target/release/ezno check ./demo.ts --count-diagnostics --timings)
 // large.ts
-$(./ezno/target/release/ezno check ./large.ts --count-diagnostics)
+$(./ezno/target/release/ezno check ./large.ts --count-diagnostics --timings)
+// comparison (ezno)
+$(hyperfine -i './ezno/target/release/ezno check ./demo.ts --count-diagnostics' './ezno/target/release/ezno check ./large.ts --count-diagnostics')
+// comparison (tsc)
+$(hyperfine -i 'tsc --noEmit demo.ts' 'tsc --noEmit large.ts')
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
 # Ezno, STC and TSC
-echo "\`\`\`">> $GITHUB_STEP_SUMMARY
-hyperfine -i './ezno/target/release/ezno check ./large.ts --count-diagnostics' './ezno/target/release/ezno check ./large.ts' './stc/target/release/stc test large.ts' 'tsc --pretty --noEmit large.ts' >> $GITHUB_STEP_SUMMARY
-echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+H2=$(hyperfine -i './ezno/target/release/ezno check ./large.ts --count-diagnostics' './ezno/target/release/ezno check ./large.ts' './stc/target/release/stc test large.ts' 'tsc --pretty --noEmit large.ts')
+echo "Large small etc
+\`\`\`
+$H2
+\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
 
-mkdir -p cached_targets
-mv stc/target cached_targets/stc
-mv ezno/target cached_targets/ezno
+# mkdir -p cached_targets
+# mv stc/target cached_targets/stc
+# mv ezno/target cached_targets/ezno
