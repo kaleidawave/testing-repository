@@ -187,5 +187,5 @@ fn main() {
 
     let duration = now.elapsed().as_micros().separate_with_commas();
 
-    println!("Printing diagnostics in {duration}µs");
+    println!("Printing diagnostics in {duration}µs (COMPACT={COMPACT:?})");
 }

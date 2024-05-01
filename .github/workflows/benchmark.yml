@@ -63,19 +63,9 @@ jobs:
       - name: Run benchmark
         run: ./run.sh
 
-      - id: artifacts_generated
-        run: |
-          if [ "$(ls -A "${{ env.ARTIFACTS_FOLDER }}")" ]; then
-            notEmpty="true"
-          else
-            notEmpty="false"
-          fi
-          echo "artifacts_generated=$notEmpty" >> $GITHUB_OUTPUT
-          echo "artifacts_generated=$notEmpty" >> $GITHUB_STEP_SUMMARY
-  
       - name: Upload artifacts
-        if: ${{ steps.artifacts_generated.outputs.artifacts_generated }}
         uses: actions/upload-artifact@v4
         with:
+          if-no-files-found: ignore
           name: artifacts-${{ matrix.path }}
           path: ${{ env.ARTIFACTS_FOLDER }}

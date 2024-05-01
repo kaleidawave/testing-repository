@@ -18,3 +18,11 @@ source-map = { git = "https://github.com/kaleidawave/source-map.git", branch = "
 [[bin]]
 name = "codespan-reporting-benchmark"
 path = "main.rs"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = "symbols"
+debug = false
+panic = "abort"

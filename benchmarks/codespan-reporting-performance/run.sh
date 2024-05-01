@@ -1,27 +1,42 @@
-# echo "Trunk:"
+echo "<details>
+<summary>Main</summary>
 
-./bin-main
+\`\`\`
+$(./bin-main)
+\`\`\`
+</details>
+" >> $GITHUB_STEP_SUMMARY
 
-echo "---"
+echo "<details>
+<summary>Compact</summary>
 
-./bin-compact
+\`\`\`
+$(./bin-compact)
+\`\`\`
+</details>
+" >> $GITHUB_STEP_SUMMARY
 
-# echo "Fork:"
-
-# ./bin-fork 2>/dev/null
-
-# ./bin-fork 2>&1 | tail -n 1
-
-# echo "Co"
+echo "::debug::Running benchmarks"
 
 echo "\`\`\`shell
 // Main
 $(./bin-main 2>/dev/null)
 
-// Comparison using 'hyperfine'
-$(hyperfine -i "bin-main")
+// On hyperfone
+$(hyperfine -i "./bin-main")
 
-// Comparison using 'hyperfine'
-$(hyperfine -i "bin-main" "bin-compact")
+// Comparison
+$(hyperfine -i "./bin-main" "./bin-compact")
+\`\`\`
+" >> $GITHUB_STEP_SUMMARY
+
+NO_COLOR=1
+export NO_COLOR=1
+
+echo "
+With \`NO_COLOR=1\`
+\`\`\`shell
+// Comparison
+$(hyperfine -i "./bin-main" "./bin-compact")
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
