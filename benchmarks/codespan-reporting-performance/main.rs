@@ -12,7 +12,7 @@ use thousands::Separable;
 
 const COMPACT: bool = option_env!("COMPACT").is_some();
 const LOCKED: bool = option_env!("LOCKED").is_some();
-const BUFFERED: bool = option_env!("LOCKED").is_some();
+const BUFFERED: bool = option_env!("BUFFERED").is_some();
 
 const CONTENT: &str = include_str!("./demo.ts");
 
