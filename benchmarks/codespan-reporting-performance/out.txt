@@ -1,0 +1,226 @@
+Position { reason: "Expected string, found number", position: 1106..1124#2, kind: Error }
+Position { reason: "Cannot use a default value of type number for parameter of type string", position: 1194..1207#2, kind: Error }
+Position { reason: "Expected 4, found 2", position: 1295..1315#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Cannot return T because the function is expected to return U", position: 1450..1459#2, labels: [("Function annotated to return U here", Some(1443..1444#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type T is not assignable to type U", position: 1659..1660#2, labels: [("Variable declared with type U", Some(1655..1656#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Cannot return { a: T, b: U } because the function is expected to return { a: U, b: U }", position: 1819..1834#2, labels: [("Function annotated to return { a: U, b: U } here", Some(1799..1813#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type \"hi\" is not assignable to type number", position: 2072..2073#2, labels: [("Variable declared with type number", Some(2025..2026#2))], kind: Error }
+Position { reason: "Type 3 does not meet property constraint string", position: 2088..2098#2, kind: Error }
+Position { reason: "Expected boolean, found Array<string>", position: 2274..2293#2, kind: Error }
+Position { reason: "Expected boolean, found number", position: 2350..2369#2, kind: Error }
+Position { reason: "Expected string, found number | undefined", position: 3761..3779#2, kind: Error }
+Position { reason: "Expected string, found 4", position: 4526..4555#2, kind: Error }
+Position { reason: "Expected string, found void", position: 7466..7487#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Cannot return 5 because the function is expected to return void", position: 7495..7503#2, labels: [("Function annotated to return void here", Some(7456..7460#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Cannot return string | number because the function is expected to return number", position: 8103..8113#2, labels: [("Function annotated to return number here", Some(8094..8100#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Cannot return T because the function is expected to return U & T", position: 8238..8248#2, labels: [("Function annotated to return U & T here", Some(8230..8235#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Cannot return T & V | U & V because the function is expected to return T & U | U & V", position: 8508..8518#2, labels: [("Function annotated to return T & U | U & V here", Some(8488..8505#2))], kind: Error }
+Position { reason: "No property 'a' on { a: 2 } | { b: 3 }", position: 8574..8579#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Argument of type \"hi\" is not assignable to parameter of type number", position: 9056..9060#2, labels: [("Parameter has type number", Some(263..270#1))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 2 is not assignable to type string", position: 80..81#2, labels: [("Variable declared with type string", Some(71..77#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 4 is not assignable to type object", position: 102..103#2, labels: [("Variable declared with type object", Some(93..99#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 3 is not assignable to type string", position: 140..141#2, labels: [("Variable declared with type string", Some(131..137#2))], kind: Error }
+Position { reason: "Cannot assign to unknown variable 'doesNotExist'", position: 146..158#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type 2 is not assignable to type 3", position: 211..219#2, labels: [("Variable declared with type 3", Some(207..208#2))], kind: Error }
+Position { reason: "Expected string, found 1", position: 358..390#2, kind: Error }
+Position { reason: "Expected boolean, found 2", position: 393..426#2, kind: Error }
+Position { reason: "Expected 100, found 3", position: 505..525#2, kind: Error }
+Position { reason: "Expected boolean, found 6", position: 529..553#2, kind: Error }
+Position { reason: "Expected string, found { a: 2, b: 6 }", position: 680..700#2, kind: Error }
+Position { reason: "Expected true, found false", position: 706..730#2, kind: Error }
+Position { reason: "Expected string, found true", position: 734..760#2, kind: Error }
+Position { reason: "Expected true, found false", position: 798..820#2, kind: Error }
+Position { reason: "Expected number, found true", position: 824..848#2, kind: Error }
+Position { reason: "Expected string, found true", position: 852..877#2, kind: Error }
+Position { reason: "Expected 5, found false", position: 881..901#2, kind: Error }
+Position { reason: "Expected number, found \"HI\"", position: 907..942#2, kind: Error }
+Position { reason: "Expected 0, found 1", position: 947..970#2, kind: Error }
+Position { reason: "Expected 1, found 4", position: 973..998#2, kind: Error }
+Position { reason: "Expected 2, found 723", position: 1001..1031#2, kind: Error }
+Position { reason: "Expected number, found \"m\"", position: 1037..1070#2, kind: Error }
+Position { reason: "Expected string, found () => never", position: 1372..1396#2, kind: Error }
+Position { reason: "No property 't' on number", position: 1992..1995#2, kind: Error }
+Position { reason: "Expected string, found 6", position: 2392..2429#2, kind: Error }
+Position { reason: "Expected () => 4, found () => number", position: 2539..2567#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type 2 is not assignable to type 3", position: 2715..2720#2, labels: [("Variable declared with type 3", Some(2711..2712#2))], kind: Error }
+Position { reason: "Expected 5, found 18", position: 2811..2859#2, kind: Error }
+Position { reason: "Expected 2, found 3", position: 2936..2963#2, kind: Error }
+Position { reason: "Expected 8, found 105", position: 3049..3082#2, kind: Error }
+Position { reason: "Expected \"HEY\", found \"HI\"", position: 3157..3195#2, kind: Error }
+Position { reason: "Expected \"HEY\", found \"HI\"", position: 3274..3311#2, kind: Error }
+Position { reason: "The 'this' context of the function is expected to be string, found undefined", position: 3352..3365#2, kind: Error }
+Position { reason: "Expected \"hello\", found \"hi\"", position: 3428..3469#2, kind: Error }
+Position { reason: "Expected number, found \"hello world\"", position: 3547..3597#2, kind: Error }
+Position { reason: "Expected 2, found 1", position: 3662..3687#2, kind: Error }
+Position { reason: "Expected \"Hi Ben\", found \"Hello Ben\"", position: 3913..3952#2, kind: Error }
+Position { reason: "Expected 2, found 5", position: 4014..4036#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Invalid assignment to parameter", position: 4352..4374#2, labels: [("Type \"hi\" does not meet property constraint number", Some(4264..4276#2))], kind: Error }
+Position { reason: "Expected 4, found 3", position: 4661..4686#2, kind: Error }
+Position { reason: "Expected 4, found 3", position: 4747..4776#2, kind: Error }
+Position { reason: "Expected 6, found 8", position: 5087..5117#2, kind: Error }
+Position { reason: "Expected 6, found 10", position: 5311..5339#2, kind: Error }
+Position { reason: "Expected number, found \"negative\"", position: 5425..5456#2, kind: Error }
+Position { reason: "Expected boolean, found \"positive\"", position: 5459..5490#2, kind: Error }
+Position { reason: "Expected \"some number\", found \"zero\"", position: 5706..5745#2, kind: Error }
+Position { reason: "Expected \"ONE\", found \"one\"", position: 5748..5779#2, kind: Error }
+Position { reason: "Expected \"100\", found \"some number\"", position: 5782..5815#2, kind: Error }
+Position { reason: "Expected \"TWO\", found \"some number\"", position: 5818..5850#2, kind: Error }
+Position { reason: "Expected number, found \"!!!!!!!!!!\"", position: 5995..6025#2, kind: Error }
+Position { reason: "Expected boolean, found \"abc\"", position: 6142..6170#2, kind: Error }
+Position { reason: "Expected 3, found \"hi\"", position: 6204..6229#2, kind: Error }
+Position { reason: "Expected [7, 8, 11], found [7, 9, 11]", position: 6265..6312#2, kind: Error }
+Position { reason: "Expected 4, found 2", position: 6373..6417#2, kind: Error }
+Position { reason: "Expected string, found /hi/", position: 6486..6507#2, kind: Error }
+Position { reason: "Expected null, found undefined", position: 6513..6537#2, kind: Error }
+Position { reason: "Expected undefined, found null", position: 6541..6565#2, kind: Error }
+Position { reason: "Expected string, found undefined", position: 6571..6596#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type { a: \"field\", b: false, c: false } is not assignable to type X", position: 6710..6744#2, labels: [("Variable declared with type X", Some(6706..6707#2))], kind: Error }
+Position { reason: "Variable 'second' used before declaration", position: 6812..6818#2, kind: Error }
+Position { reason: "Expected string, found undefined", position: 6845..6863#2, kind: Error }
+Position { reason: "Expected number, found \"hello\"", position: 6885..6903#2, kind: Error }
+Position { reason: "Expected string, found 2", position: 6947..6967#2, kind: Error }
+Position { reason: "Expected string, found Promise<Response>", position: 6996..7036#2, kind: Error }
+Position { reason: "Expected number, found boolean", position: 7044..7068#2, kind: Error }
+Position { reason: "Expected 5, found false", position: 7187..7212#2, kind: Error }
+Position { reason: "Expected string, found (obj: { prop: 3 } | { prop: 2 }) => 3 | 2", position: 7296..7320#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Argument of type { p: 2 } is not assignable to parameter of type T", position: 7400..7408#2, labels: [("Parameter has type T", Some(7364..7368#2))], kind: Error }
+Position { reason: "Expected string, found 2", position: 7620..7650#2, kind: Error }
+Position { reason: "Expected boolean, found (array: Array<number>) => number | undefined", position: 7721..7747#2, kind: Error }
+Position { reason: "Expected boolean, found (s: string) => string | undefined", position: 7818..7854#2, kind: Error }
+Position { reason: "Expected \"b\", found \"t\"", position: 7858..7900#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type { a: \"hello\" } is not assignable to type Optional", position: 8682..8696#2, labels: [("Variable declared with type Optional", Some(8671..8679#2))], kind: Error }
+Position { reason: "Expected \"Hello Ben\", found \"test\"", position: 8721..8752#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type { internal: \"hi\" } is not assignable to type Wrapper<number>", position: 8842..8860#2, labels: [("Variable declared with type Wrapper<number>", Some(8824..8839#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type [1, 2, \"3\"] is not assignable to type Array<number>", position: 8897..8908#2, labels: [("Variable declared with type Array<number>", Some(8881..8894#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 4 is not assignable to type Array<string>", position: 8991..8992#2, labels: [("Variable declared with type Array<string>", Some(8975..8988#2))], kind: Error }
+Position { reason: "Expected number, found string", position: 9173..9191#2, kind: Error }
+Position { reason: "Type \"yo\" does not meet property constraint boolean", position: 9316..9328#2, kind: Error }
+Position { reason: "Type \"wassup\" does not meet property constraint boolean", position: 9336..9352#2, kind: Error }
+Position { reason: "Type \"hi\" does not meet property constraint number", position: 9535..9547#2, kind: Error }
+Position { reason: "Type \"hello\" does not meet property constraint number", position: 9555..9570#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Argument of type string is not assignable to parameter of type Literal<string>", position: 9731..9745#2, labels: [("Parameter has type Literal<string>", Some(9598..9616#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Cannot return 2 because the function is expected to return string", position: 9960..9968#2, labels: [("Function annotated to return string here", Some(9948..9954#2))], kind: Error }
+Position { reason: "Expected string, found number", position: 10829..10859#2, kind: Error }
+Position { reason: "Expected boolean, found number", position: 10867..10905#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Argument of type 4 is not assignable to parameter of type string", position: 10929..10930#2, labels: [("Parameter has type string", Some(11062..11071#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Cannot return T[\"other\"] because the function is expected to return T[\"prop\"]", position: 11166..11180#2, labels: [("Function annotated to return T[\"prop\"] here", Some(11151..11160#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type \"hello world\" is not assignable to type number", position: 9784..9785#2, labels: [("Variable declared with type number", Some(9768..9769#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type \"hello world\" is not assignable to type boolean", position: 9855..9856#2, labels: [("Variable declared with type boolean", Some(9845..9852#2))], kind: Error }
+Position { reason: "Type \"hello world\" does not meet property constraint number", position: 9902..9926#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type \"hi\" is not assignable to type 3", position: 10051..10068#2, labels: [("Variable declared with type 3", Some(10047..10048#2))], kind: Error }
+Position { reason: "Expected 6, found 5", position: 10169..10191#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Argument of type \"hello world\" is not assignable to parameter of type number | undefined", position: 10342..10355#2, labels: [("Parameter has type number | undefined", Some(10217..10227#2))], kind: Error }
+Position { reason: "Expected \"Hi Ben\", found \"Hello Ben\"", position: 10384..10418#2, kind: Error }
+Position { reason: "Expected 3, found 7", position: 10465..10483#2, kind: Error }
+Position { reason: "No property 'not_a_key' on { ezno: 7 }", position: 10486..10497#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type { b: \"NaN\" } is not assignable to type X", position: 10641..10653#2, labels: [("Variable declared with type X", Some(10637..10638#2))], kind: Error }
+Position { reason: "Expected string, found 3", position: 10749..10769#2, kind: Error }
+Position { reason: "Type \"hello\" does not meet property constraint number", position: 11394..11410#2, kind: Error }
+Position { reason: "Expected string, found boolean", position: 12173..12200#2, kind: Error }
+Position { reason: "Could not find variable 'c' in scope", position: 11439..11440#2, kind: Error }
+Position { reason: "Expected string, found undefined", position: 11454..11472#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type { a: 2 } is not assignable to type { b: 3 }", position: 11503..11511#2, labels: [("Variable declared with type { b: 3 }", Some(11492..11500#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 5 is not assignable to type 4", position: 11529..11534#2, labels: [("Variable declared with type 4", Some(11525..11526#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 4 is not assignable to type 8", position: 11571..11582#2, labels: [("Variable declared with type 8", Some(11567..11568#2))], kind: Error }
+Position { reason: "Expected () => string, found () => 2", position: 11623..11650#2, kind: Error }
+Position { reason: "Expected 8, found 6", position: 11777..11797#2, kind: Error }
+Position { reason: "Expected 1, found 2", position: 11883..11896#2, kind: Error }
+Position { reason: "Cannot catch type string because the try block throws 3", position: 11935..11941#2, kind: Error }
+Position { reason: "The 'this' context of the function is expected to be X, found undefined", position: 12073..12081#2, kind: Error }
+Position { reason: "Type \"hello\" does not meet property constraint number", position: 12408..12424#2, kind: Error }
+Position { reason: "Cannot assign to 'a' before declaration", position: 12443..12444#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type 4 is not assignable to type 3", position: 12517..12525#2, labels: [("Variable declared with type 3", Some(12513..12514#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 5 is not assignable to type 6", position: 12564..12569#2, labels: [("Variable declared with type 6", Some(12560..12561#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 12 is not assignable to type 14", position: 12586..12591#2, labels: [("Variable declared with type 14", Some(12581..12583#2))], kind: Error }
+Position { reason: "Expected (a: string, b: number) => string, found (a: string, b: number) => boolean", position: 12716..12763#2, kind: Error }
+Position { reason: "Expected (a: number, b: number) => boolean, found (a: string, b: number) => boolean", position: 12767..12815#2, kind: Error }
+Position { reason: "Expected string, found true", position: 12845..12874#2, kind: Error }
+Position { reason: "Expected true, found false", position: 12878..12905#2, kind: Error }
+Position { reason: "Expected 0, found 1", position: 12974..12992#2, kind: Error }
+Position { reason: "Expected \"a\", found \"b\"", position: 12996..13020#2, kind: Error }
+Position { reason: "Expected string, found 1", position: 13042..13065#2, kind: Error }
+Position { reason: "Cannot redeclare variable 'a'", position: 13163..13164#2, kind: Error }
+Position { reason: "No property 'b' on { a: 2 }", position: 13225..13228#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Argument of type \"hello world\" is not assignable to parameter of type number", position: 13269..13282#2, labels: [("Parameter has type number", Some(13248..13257#2))], kind: Error }
+Position { reason: "Expected string, found 1", position: 13360..13395#2, kind: Error }
+Position { reason: "Expected boolean, found 3", position: 13433..13469#2, kind: Error }
+Position { reason: "Expected number, found string", position: 13577..13595#2, kind: Error }
+Position { reason: "Expected 2, found 3", position: 13661..13674#2, kind: Error }
+Position { reason: "Expression is always true", position: 13697..13698#2, kind: Warning }
+Position { reason: "Expression is always true", position: 13719..13720#2, kind: Warning }
+PositionWithAdditionalLabels { reason: "Type false is not assignable to type 6", position: 13719..13729#2, labels: [("Variable declared with type 6", Some(13715..13716#2))], kind: Error }
+Position { reason: "Expression is always true", position: 13749..13753#2, kind: Warning }
+PositionWithAdditionalLabels { reason: "Type true is not assignable to type false", position: 13749..13758#2, labels: [("Variable declared with type false", Some(13741..13746#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Missing argument", position: 13809..13816#2, labels: [("(non-optional) Parameter declared here", Some(13789..13799#2))], kind: Error }
+Position { reason: "Expected 1, found 2", position: 13945..13958#2, kind: Error }
+Position { reason: "Expected 3, found 2", position: 13992..14013#2, kind: Error }
+Position { reason: "No property 'b' on { a: 3 }", position: 14086..14094#2, kind: Error }
+Position { reason: "No property 'to' on string", position: 14137..14141#2, kind: Error }
+Position { reason: "Excess argument", position: 14189..14196#2, kind: Error }
+Position { reason: "Expected 3, found 2", position: 14237..14252#2, kind: Error }
+Position { reason: "Expected 4, found 6", position: 14297..14310#2, kind: Error }
+Position { reason: "Expected 23, found 24", position: 14324..14338#2, kind: Error }
+Position { reason: "Cannot call type \"hi\"", position: 14361..14364#2, kind: Error }
+Position { reason: "Expected 3, found 4", position: 14494..14511#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type 3 is not assignable to type 4", position: 14594..14602#2, labels: [("Variable declared with type 4", Some(14590..14591#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 4 is not assignable to type 2", position: 14840..14841#2, labels: [("Variable declared with type 2", Some(14836..14837#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Variable 'x' used before declaration", position: 14919..14925#2, labels: [("Variable referenced here", Some(14874..14875#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type \"hello world\" is not assignable to type X", position: 15012..15025#2, labels: [("Variable declared with type X", Some(15008..15009#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type 4 is not assignable to type 2", position: 15134..15135#2, labels: [("Variable declared with type 2", Some(15130..15131#2))], kind: Error }
+Position { reason: "Expected 3, found \"hi\"", position: 15171..15187#2, kind: Error }
+Position { reason: "Expected 4, found 2", position: 15190..15210#2, kind: Error }
+Position { reason: "Expected string, found 2", position: 15236..15257#2, kind: Error }
+Position { reason: "Type X requires type arguments", position: 15627..15628#2, kind: Error }
+Position { reason: "Expected string, found 4", position: 15421..15439#2, kind: Error }
+Position { reason: "Expected (a: boolean) => 5, found (a: boolean) => 2 | undefined", position: 15511..15543#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Argument of type \"hi\" is not assignable to parameter of type number", position: 15587..15591#2, labels: [("Parameter has type number", Some(263..270#1))], kind: Error }
+Position { reason: "Expected string, found 3", position: 15861..15881#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type { a: 2, b: false } is not assignable to type X", position: 15950..15968#2, labels: [("Variable declared with type X", Some(15946..15947#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Argument of type \"hello world\" is not assignable to parameter of type number", position: 16014..16027#2, labels: [("Parameter has type number", Some(15990..15994#2))], kind: Error }
+Position { reason: "Expected false, found true", position: 16157..16182#2, kind: Error }
+Position { reason: "Expected string, found false", position: 16186..16212#2, kind: Error }
+Position { reason: "Expected 4, found 5", position: 16218..16239#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type { a: 3 } is not assignable to type X", position: 16299..16307#2, labels: [("Variable declared with type X", Some(16295..16296#2))], kind: Error }
+Position { reason: "No intersection between types 2 and \"hi\"", position: 16590..16598#2, kind: Warning }
+Position { reason: "No intersection between types string and number", position: 16611..16626#2, kind: Warning }
+Position { reason: "Expected 2, found 0", position: 16472..16485#2, kind: Error }
+Position { reason: "Expected 3, found 1", position: 16511..16524#2, kind: Error }
+Position { reason: "Expected 3, found 2", position: 16561..16576#2, kind: Error }
+Position { reason: "Expected 2, found 1", position: 16772..16785#2, kind: Error }
+Position { reason: "Expected string, found 4", position: 16883..16907#2, kind: Error }
+Position { reason: "Expression is always false", position: 16949..16950#2, kind: Warning }
+Position { reason: "Expected 3, found 4", position: 16962..16975#2, kind: Error }
+Position { reason: "Expression is always true", position: 16979..16980#2, kind: Warning }
+Position { reason: "Expected string, found 5", position: 16997..17015#2, kind: Error }
+Position { reason: "Expected string, found 1", position: 17165..17189#2, kind: Error }
+Position { reason: "Expected boolean, found 2", position: 17193..17218#2, kind: Error }
+Position { reason: "Expected 8, found 32", position: 17307..17320#2, kind: Error }
+Position { reason: "Expected string, found { a: 4, b: 2 }", position: 17498..17529#2, kind: Error }
+Position { reason: "Expected 8, found 32", position: 17611..17624#2, kind: Error }
+Position { reason: "Variable 'X' used before declaration", position: 17644..17645#2, kind: Error }
+Position { reason: "Expected 8, found 3", position: 17726..17739#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type (p: number) => \"hi\" is not assignable to type (a: number | string) => string", position: 17880..17899#2, labels: [("Variable declared with type (a: number | string) => string", Some(17847..17877#2))], kind: Error }
+Position { reason: "Expected Z, found { a: \"\", b: 4, c: \"hello\" }", position: 18080..18121#2, kind: Error }
+Position { reason: "Expected Z, found { c: \"hi\" }", position: 18125..18150#2, kind: Error }
+Position { reason: "Expected number, found \"0123456789\"", position: 18253..18271#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type (p: number) => \"a number\" is not assignable to type (a: number) => number", position: 18352..18367#2, labels: [("Variable declared with type (a: number) => number", Some(18328..18349#2))], kind: Error }
+Position { reason: "Expected X, found { a: 2 }", position: 18448..18468#2, kind: Error }
+Position { reason: "Expected string, found number", position: 18589..18607#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type { no: false } is not assignable to type { [\"test\"]: boolean }", position: 18706..18719#2, labels: [("Variable declared with type { [\"test\"]: boolean }", Some(18679..18703#2))], kind: Error }
+PositionWithAdditionalLabels { reason: "Type { test: 6 } is not assignable to type { [\"test\"]: boolean }", position: 18759..18770#2, labels: [("Variable declared with type { [\"test\"]: boolean }", Some(18732..18756#2))], kind: Error }
+Position { reason: "Expected 2, found 8", position: 18941..18954#2, kind: Error }
+Position { reason: "Expected string, found 1 | 2 | 3", position: 18995..19013#2, kind: Error }
+Position { reason: "Expected string, found 3", position: 19228..19246#2, kind: Error }
+Position { reason: "Expected boolean, found 6", position: 19250..19274#2, kind: Error }
+Position { reason: "Expected string, found 2", position: 19365..19385#2, kind: Error }
+Position { reason: "Expected 2, found 64", position: 19504..19517#2, kind: Error }
+Position { reason: "Expected string, found true", position: 19680..19711#2, kind: Error }
+Position { reason: "Expected string, found 2", position: 19803..19821#2, kind: Error }
+Position { reason: "Expected string, found { tag_name: \"h1\", attributes: { title: \"Example text\" }, children: [\"Hello World\"] }", position: 19958..20016#2, kind: Error }
+Position { reason: "Expected string, found 2", position: 20149..20167#2, kind: Error }
+Position { reason: "Expected boolean, found 3", position: 20171..20190#2, kind: Error }
+Position { reason: "Expected 3, found 1", position: 20194..20207#2, kind: Error }
+Position { reason: "Cannot find type Y", position: 20254..20255#2, kind: Error }
+Position { reason: "Expected number, found string", position: 20301..20319#2, kind: Error }
+PositionWithAdditionalLabels { reason: "Type \"hello\" is not assignable to type number", position: 20353..20360#2, labels: [("Variable declared with type number", Some(20341..20347#2))], kind: Error }
+Position { reason: "Type 'X' has no generic parameters", position: 20406..20415#2, kind: Error }

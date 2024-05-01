@@ -55,12 +55,27 @@ jobs:
         run: |
           # run.sh might not be executable
           chmod +x run.sh
+          chmod +x setup.sh
+
+      - name: Run setup
+        run: ./setup.sh
 
       - name: Run benchmark
         run: ./run.sh
 
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: artifacts-${{ matrix.path }}
-      #     path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}
+      - id: artifacts_generated
+        run: |
+          if [ "$(ls -A "${{ env.ARTIFACTS_FOLDER }}")" ]; then
+            notEmpty="true"
+          else
+            notEmpty="false"
+          fi
+          echo "artifacts_generated=$notEmpty" >> $GITHUB_OUTPUT
+          echo "artifacts_generated=$notEmpty" >> $GITHUB_STEP_SUMMARY
+  
+      - name: Upload artifacts
+        if: ${{ steps.artifacts_generated.outputs.artifacts_generated }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.path }}
+          path: ${{ env.ARTIFACTS_FOLDER }}
