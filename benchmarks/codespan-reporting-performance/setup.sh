@@ -14,6 +14,11 @@ cargo build --bin codespan-reporting-benchmark --release
 mv target/release/codespan-reporting-benchmark bin-buffered
 unset BUFFERED
 
+export BUFFERED2=1
+cargo build --bin codespan-reporting-benchmark --release
+mv target/release/codespan-reporting-benchmark bin-buffered2
+unset BUFFERED2
+
 export LOCKED=1
 cargo build --bin codespan-reporting-benchmark --release
 mv target/release/codespan-reporting-benchmark bin-locked

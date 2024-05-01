@@ -2,7 +2,7 @@ use codespan_reporting::{
     diagnostic::{Diagnostic, Label, Severity},
     term::{
         emit,
-        termcolor::{ColorChoice, StandardStream},
+        termcolor::{ColorChoice, StandardStream, BufferedStandardStream},
         Config, DisplayStyle,
     },
 };
@@ -13,6 +13,7 @@ use thousands::Separable;
 const COMPACT: bool = option_env!("COMPACT").is_some();
 const LOCKED: bool = option_env!("LOCKED").is_some();
 const BUFFERED: bool = option_env!("BUFFERED").is_some();
+const BUFFERED2: bool = option_env!("BUFFERED2").is_some();
 
 const CONTENT: &str = include_str!("./demo.ts");
 
@@ -157,6 +158,16 @@ pub(crate) fn emit_diagnostics<T: PathMap>(
 
     let files = fs.into_code_span_store();
 
+    if BUFFERED2 {
+        let mut writer = BufferedStandardStream::stderr(ColorChoice::Auto);
+        for diagnostic in diagnostics {
+            let diagnostic = checker_diagnostic_to_codespan_diagnostic(diagnostic, compact);
+            emit(&mut writer, &config, &files, &diagnostic)?;
+        }
+
+        return Ok(());
+    }
+
     let mut writer = StandardStream::stderr(ColorChoice::Auto);
     if LOCKED {
         let mut writer = writer.lock();
@@ -178,10 +189,10 @@ pub(crate) fn emit_diagnostics<T: PathMap>(
         }
 
         {
-            use std::io::{stdout, Write};
+            use std::io::{stderr, Write};
             let now = Instant::now();
-            let mut stdout = stdout().lock();
-            stdout.write(writer.as_slice()).unwrap();
+            let mut stderr = stderr().lock();
+            stderr.write(writer.as_slice()).unwrap();
             let duration = now.elapsed().as_micros().separate_with_commas();
             println!("Writing buffered diagnostics in {duration}µs");
         }
