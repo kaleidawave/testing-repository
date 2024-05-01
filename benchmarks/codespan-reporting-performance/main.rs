@@ -12,6 +12,8 @@ use thousands::Separable;
 
 const COMPACT: bool = option_env!("COMPACT").is_some();
 const LOCKED: bool = option_env!("LOCKED").is_some();
+const BUFFERED: bool = option_env!("LOCKED").is_some();
+
 const CONTENT: &str = include_str!("./demo.ts");
 
 pub mod checker {
@@ -162,6 +164,27 @@ pub(crate) fn emit_diagnostics<T: PathMap>(
             let diagnostic = checker_diagnostic_to_codespan_diagnostic(diagnostic, compact);
             emit(&mut writer, &config, &files, &diagnostic)?;
         }
+    } else if BUFFERED {
+        let mut writer = codespan_reporting::term::termcolor::Buffer::ansi();
+
+        {
+            let now = Instant::now();
+            for diagnostic in diagnostics {
+                let diagnostic = checker_diagnostic_to_codespan_diagnostic(diagnostic, compact);
+                emit(&mut writer, &config, &files, &diagnostic)?;
+            }
+            let duration = now.elapsed().as_micros().separate_with_commas();
+            println!("Building diagnostics in {duration}µs");
+        }
+
+        {
+            use std::io::{stdout, Write};
+            let now = Instant::now();
+            let mut stdout = stdout().lock();
+            stdout.write(writer.as_slice()).unwrap();
+            let duration = now.elapsed().as_micros().separate_with_commas();
+            println!("Writing buffered diagnostics in {duration}µs");
+        }
     } else {
         for diagnostic in diagnostics {
             let diagnostic = checker_diagnostic_to_codespan_diagnostic(diagnostic, compact);
@@ -179,13 +202,14 @@ fn main() {
 
     // let repeat = 1;
 
-    let diagnostics = checker::get_diagnostics(source_id);
-
     let now = Instant::now();
+    let diagnostics = checker::get_diagnostics(source_id);
+    let duration = now.elapsed().as_micros().separate_with_commas();
+    println!("Getting diagnostics in {duration}µs");
 
     let _ = emit_diagnostics(diagnostics, &files, COMPACT);
 
     let duration = now.elapsed().as_micros().separate_with_commas();
 
-    println!("Printing diagnostics in {duration}µs (COMPACT={COMPACT:?})");
+    println!("Printing diagnostics in {duration}µs (COMPACT={COMPACT:?}, LOCKED={LOCKED:?}, BUFFERED={BUFFERED:?})");
 }

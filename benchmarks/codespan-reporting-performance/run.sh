@@ -2,16 +2,14 @@ echo "<details>
 <summary>Main</summary>
 
 \`\`\`
+// main
 $(./bin-main)
-\`\`\`
-</details>
-" >> $GITHUB_STEP_SUMMARY
-
-echo "<details>
-<summary>Compact</summary>
-
-\`\`\`
+// compact
 $(./bin-compact)
+// buffered
+$(./bin-buffered)
+// locked
+$(./bin-locked)
 \`\`\`
 </details>
 " >> $GITHUB_STEP_SUMMARY
@@ -26,7 +24,7 @@ $(./bin-main 2>/dev/null)
 $(hyperfine -i "./bin-main")
 
 // Comparison
-$(hyperfine -i "./bin-main" "./bin-compact")
+$(hyperfine -i "./bin-main" "./bin-compact" "./bin-buffered" "./bin-locked")
 \`\`\`
 " >> $GITHUB_STEP_SUMMARY
 
@@ -37,6 +35,5 @@ echo "
 With \`NO_COLOR=1\`
 \`\`\`shell
 // Comparison
-$(hyperfine -i "./bin-main" "./bin-compact")
+$(hyperfine -i "./bin-main" "./bin-compact" "./bin-buffered" "./bin-locked")
 \`\`\`" >> $GITHUB_STEP_SUMMARY
-
