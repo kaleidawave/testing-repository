@@ -68,4 +68,4 @@ jobs:
         with:
           if-no-files-found: ignore
           name: artifacts-${{ matrix.path }}
-          path: ${{ env.ARTIFACTS_FOLDER }}
+          path: ./${{ env.ARTIFACTS_FOLDER }}
