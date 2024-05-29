@@ -22,6 +22,8 @@ rustup toolchain install stable
 
 git clone https://github.com/kaleidawave/ezno ezno
 
+cargo build --manifest-path ezno/Cargo.toml --release --bin ezno
+
 # cargo install --path ezno
 
 ./ezno/target/release/ezno info

@@ -27,6 +27,11 @@ jobs:
 
           cargo clean
           cargo build --bin ezno
+          
+          git reset --hard
+          
+          cargo clean
+          cargo build --bin ezno
         working-directory: ezno
       - name: Update
         run: |
