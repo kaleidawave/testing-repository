@@ -3,6 +3,9 @@ brew install hyperfine
 
 echo "::group::Get tools"
 
+# DONE improve printing
+# TODO flow, hegel, install tools (or cache better), more
+
 # [ -f cached_targets ] && ls cached_targets
 
 echo "::group::Build Ezno"
@@ -21,7 +24,7 @@ rustup toolchain install stable
 
 git clone https://github.com/kaleidawave/ezno ezno
 
-cargo build --release --manifest-path ezno/Cargo.toml
+# cargo install --path ezno
 
 ./ezno/target/release/ezno info
 
@@ -35,7 +38,10 @@ echo "<details>
 $(cat ./demo.ts)
 \`\`\`
 
-</details>" >> $GITHUB_STEP_SUMMARY
+</details>
+" >> $GITHUB_STEP_SUMMARY
+
+rg --passthru -N 'satisfies' -r 'as' ./demo.ts > ./demo-flow.js
 
 echo "::endgroup::"
 
@@ -48,10 +54,10 @@ git clone https://github.com/dudykr/stc stc
 cd stc
 git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
 cd ..
-[ -f cached_targets/stc ] && mv cached_targets/stc stc/target
+# [ -f cached_targets/stc ] && mv cached_targets/stc stc/target
 
 rustup toolchain install nightly-2023-06-20
-cargo +nightly-2023-06-20 build --release --manifest-path stc/crates/stc/Cargo.toml
+cargo +nightly-2023-06-20 install --path stc/crates/stc
 
 ./stc/target/release/stc --help
 echo "::endgroup::"
@@ -69,16 +75,18 @@ echo "::group::Run tools"
 
 function run_tool {
     OUTPUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
-    echo "## $1
+    echo "
+    
+## $1
 
 <details>
 <summary>Output</summary>
 
 \`\`\`ts
 $OUTPUT
-\`\`\
-
-</details>" >> $GITHUB_STEP_SUMMARY
+\`\`\`
+</details>
+" >> $GITHUB_STEP_SUMMARY
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --timings"
@@ -114,20 +122,26 @@ echo "Given demo.ts with $(wc -l demo.ts) lines & large.ts with $(wc -l large.ts
 echo "\`\`\`
 // demo.ts
 $(./ezno/target/release/ezno check ./demo.ts --count-diagnostics --timings)
+
 // large.ts
 $(./ezno/target/release/ezno check ./large.ts --count-diagnostics --timings)
-// comparison (ezno)
+
+// comparison of small vs large (ezno)
 $(hyperfine -i './ezno/target/release/ezno check ./demo.ts --count-diagnostics' './ezno/target/release/ezno check ./large.ts --count-diagnostics')
-// comparison (tsc)
+
+// comparison of small vs large (tsc)
 $(hyperfine -i 'tsc --noEmit demo.ts' 'tsc --noEmit large.ts')
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
 # Ezno, STC and TSC
-H2=$(hyperfine -i './ezno/target/release/ezno check ./large.ts --count-diagnostics' './ezno/target/release/ezno check ./large.ts' './stc/target/release/stc test large.ts' 'tsc --pretty --noEmit large.ts')
+H2=$(hyperfine -i './ezno/target/release/ezno check ./large.ts' './stc/target/release/stc test large.ts' 'tsc --pretty --noEmit large.ts')
 echo "Large small etc
 \`\`\`
 $H2
 \`\`\`" >> $GITHUB_STEP_SUMMARY
+
+# Temporary what is going on
+# cat $GITHUB_STEP_SUMMARY >> "$ARTIFACTS_FOLDER/out.md"
 
 echo "::endgroup::"
 

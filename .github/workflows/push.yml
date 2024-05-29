@@ -6,9 +6,38 @@ on:
       - ".github/workflows/push.yml"
       - "one-off"
 jobs:
+  time-ezno-debug-and-does-cli-have-an-effect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Clone repository
+        run: |
+          git clone https://github.com/kaleidawave/ezno ezno
+
+      - name: Check build timings
+        run: |
+          cargo clean
+          cargo build --bin ezno
+
+          git apply one-off/ezno/removed.diff
+
+          cargo clean
+          cargo build --bin ezno
+        working-directory: ezno
+      - name: Update
+        run: |
+          ./target/debug/ezno info
+          
+          ./target/debug/ezno experimental upgrade
+          
+          ./target/debug/ezno info
+
   get-flow:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    if: false
     steps:
       - name: Set-up OCaml
         uses: ocaml/setup-ocaml@v2
