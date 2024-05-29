@@ -28,20 +28,20 @@ cargo build --manifest-path ezno/Cargo.toml --release --bin ezno
 
 ./ezno/target/release/ezno info
 
-echo "::group::Build demo.ts"
-cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md ./demo.ts
+echo "::group::Build demo.tsx"
+cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md ./demo.tsx
 
 echo "<details>
 <summary>Input</summary>
 
 \`\`\`ts
-$(cat ./demo.ts)
+$(cat ./demo.tsx)
 \`\`\`
 
 </details>
 " >> $GITHUB_STEP_SUMMARY
 
-# rg --passthru -N 'satisfies' -r 'as' ./demo.ts > ./demo-flow.js
+# rg --passthru -N 'satisfies' -r 'as' ./demo.tsx > ./demo-flow.js
 
 echo "::endgroup::"
 
@@ -57,6 +57,10 @@ cd ..
 # [ -f cached_targets/stc ] && mv cached_targets/stc stc/target
 
 rustup toolchain install nightly-2023-06-20
+
+# Fix
+cargo update --manifest-path stc/crates/stc/Cargo.toml -p clap@4.3.0 --precise ver
+
 cargo +nightly-2023-06-20 install --path stc/crates/stc
 
 ./stc/target/release/stc --help
