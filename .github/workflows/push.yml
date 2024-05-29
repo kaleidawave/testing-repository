@@ -8,8 +8,8 @@ on:
 jobs:
   time-ezno-debug-and-does-cli-have-an-effect:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: false
+    timeout-minutes: 15
+    if: true
     steps:
       - uses: actions/checkout@v4
       - name: Clone repository
@@ -18,10 +18,12 @@ jobs:
 
       - name: Check build timings
         run: |
+          cat ../one-off/ezno/removed.diff
+
           cargo clean
           cargo build --bin ezno
 
-          git apply one-off/ezno/removed.diff
+          git apply ../one-off/ezno/removed.diff
 
           cargo clean
           cargo build --bin ezno
@@ -33,6 +35,7 @@ jobs:
           ./target/debug/ezno experimental upgrade
           
           ./target/debug/ezno info
+        working-directory: ezno
 
   get-flow:
     runs-on: ubuntu-latest
