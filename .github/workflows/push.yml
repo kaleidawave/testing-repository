@@ -5,11 +5,23 @@ on:
     paths:
       - ".github/workflows/push.yml"
       - "one-off"
+
 jobs:
+  download-ezno:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kaleidawave/release-downloader@add-rename-and-path-env
+        with:
+          repository: 'kaleidawave/ezno'
+          addToPath: true
+          as: 'ezno'
+      - run: |
+          ezno info
+
   time-ezno-debug-and-does-cli-have-an-effect:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: true
+    if: false
     steps:
       - uses: actions/checkout@v4
       - name: Clone repository
