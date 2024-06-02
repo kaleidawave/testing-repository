@@ -15,6 +15,7 @@ jobs:
           repository: 'kaleidawave/ezno'
           addToPath: true
           latest: true
+          out-file-path: ezno-binary
           as: 'ezno'
       - run: |
           ezno info
