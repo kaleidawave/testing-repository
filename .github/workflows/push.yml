@@ -16,7 +16,7 @@ jobs:
           addToPath: true
           latest: true
           out-file-path: ezno-binary
-          fileName: linux
+          fileName: '*-linux'
           as: 'ezno'
       - run: |
           ls
