@@ -29,7 +29,7 @@ cargo build --manifest-path ezno/Cargo.toml --release --bin ezno
 ./ezno/target/release/ezno info
 
 echo "::group::Build demo.tsx"
-cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md ./demo.tsx
+cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md --comment-headers --out ./demo.tsx
 
 echo "<details>
 <summary>Input</summary>
