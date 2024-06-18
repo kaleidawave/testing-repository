@@ -12,7 +12,7 @@ function run_tool {
 <details>
 <summary>Output</summary>
 
-\`\`\`ts
+\`\`\`
 $OUTPUT
 \`\`\`
 </details>
@@ -20,8 +20,8 @@ $OUTPUT
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.tsx --timings"
-run_tool "Ezno (no diagnostics printing)" "./ezno/target/release/ezno check demo.tsx --count-diagnostics --timings"
-run_tool "TSC" "tsc --pretty --noEmit --jsx preserve demo.tsx"
+run_tool "Ezno (no diagnostics printing)" "./ezno/target/release/ezno check demo.tsx --max-diagnostics 0 --timings"
+run_tool "TSC" "tsc --pretty --noEmit --jsx preserve --diagnostics demo.tsx"
 run_tool "STC" "./stc/target/release/stc test demo.tsx"
 
 echo "::endgroup::"
@@ -44,39 +44,41 @@ $H1
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
 for i in {1..8}; do
-    cat ./demo.tsx >> ./large.ts
+    cat ./demo.tsx >> ./large.tsx
 done
 
-echo "Given demo.tsx with $(wc -l demo.tsx) lines & large.ts with $(wc -l large.ts) lines" >> $GITHUB_STEP_SUMMARY
+echo "Given demo.tsx with $(wc -l < demo.tsx) lines & large.tsx with $(wc -l < large.tsx) lines" >> $GITHUB_STEP_SUMMARY
 
-# small (demo.tsx) and large.ts
 echo "\`\`\`
-// demo.tsx
+# simple.tsx
+$(./ezno/target/release/ezno check ./simple.tsx --max-diagnostics 0 --timings)
+
+# demo.tsx
 $(./ezno/target/release/ezno check ./demo.tsx --max-diagnostics 0 --timings)
 
-// large.ts
-$(./ezno/target/release/ezno check ./large.ts --max-diagnostics 0 --timings)
+# large.tsx
+$(./ezno/target/release/ezno check ./large.tsx --max-diagnostics 0 --timings)
 
-// comparison of small vs large (ezno)
-$(hyperfine -i './ezno/target/release/ezno check ./demo.tsx' './ezno/target/release/ezno check ./large.ts')
+# comparison of small vs large (ezno)
+$(hyperfine -i './ezno/target/release/ezno check ./simple.tsx' './ezno/target/release/ezno check ./demo.tsx' './ezno/target/release/ezno check ./large.tsx')
 
-// comparison of small vs large (tsc)
-$(hyperfine -i 'tsc --noEmit demo.tsx' 'tsc --noEmit large.ts')
+# comparison of simple vs small vs large (tsc)
+$(hyperfine -i 'tsc --noEmit simple.tsx' 'tsc --noEmit demo.tsx' 'tsc --noEmit large.tsx')
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
-# Ezno, STC and TSC
-H2=$(hyperfine -i './ezno/target/release/ezno check ./large.ts' './stc/target/release/stc test large.ts' 'tsc --pretty --noEmit --jsx preserve large.ts')
 
-echo "Large small etc
+# Ezno, STC and TSC on large
+H2=$(hyperfine -i './ezno/target/release/ezno check ./large.tsx' './stc/target/release/stc test large.tsx' 'tsc --pretty --noEmit --jsx preserve large.tsx')
+
+echo "On large
 \`\`\`
 $H2
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
-# Temporary what is going on
-# cat $GITHUB_STEP_SUMMARY >> "$ARTIFACTS_FOLDER/out.md"
-
 echo "::endgroup::"
 
+# Temporary what is going on
+# cat $GITHUB_STEP_SUMMARY >> "$ARTIFACTS_FOLDER/out.md"
 # mkdir -p cached_targets
 # mv stc/target cached_targets/stc
 # mv ezno/target cached_targets/ezno
