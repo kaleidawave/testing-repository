@@ -20,8 +20,9 @@ cargo add --manifest-path stc/crates/stc/Cargo.toml clap@=4.3.0
 cargo add --manifest-path stc/crates/stc/Cargo.toml clap_derive@=4.3.0
 cargo add --manifest-path stc/crates/stc/Cargo.toml clap_builder@=4.3.0
 cargo add --manifest-path stc/crates/stc/Cargo.toml clap_lex@=0.5
+cargo add --manifest-path stc/crates/stc/Cargo.toml triomphe@=0.1.8
 
-cargo +nightly-2023-06-20 install --path stc/crates/stc
+cargo +nightly-2023-06-20 install --path stc/crates/stc --no-default-features 
 
 ./stc/target/release/stc --help
 
@@ -70,7 +71,9 @@ echo "::endgroup::"
 echo "::endgroup::"
 
 echo "::group::Get TSC"
+
 npm install -g typescript
+
 echo "::endgroup"
 
 echo "::endgroup"

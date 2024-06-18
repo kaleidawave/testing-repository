@@ -20,10 +20,8 @@ jobs:
           as: 'ezno'
       - run: |
           ls
-          
           echo "---"
           echo $PATH
-
           echo "---"
           ezno info
 
