@@ -20,8 +20,11 @@ jobs:
           as: 'ezno'
       - run: |
           ls
+          find -maxdepth 2 -ls
           echo "---"
           echo $PATH
+          echo "---"
+          echo $GITHUB_PATH
           echo "---"
           ezno info
 

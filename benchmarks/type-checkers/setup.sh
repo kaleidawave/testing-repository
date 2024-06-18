@@ -16,13 +16,13 @@ git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
 cd ..
 
 # Fix
-cargo add --manifest-path stc/crates/stc/Cargo.toml clap@=4.3.0
-cargo add --manifest-path stc/crates/stc/Cargo.toml clap_derive@=4.3.0
-cargo add --manifest-path stc/crates/stc/Cargo.toml clap_builder@=4.3.0
-cargo add --manifest-path stc/crates/stc/Cargo.toml clap_lex@=0.5
-cargo add --manifest-path stc/crates/stc/Cargo.toml triomphe@=0.1.8
+# cargo add --manifest-path stc/crates/stc/Cargo.toml clap@=4.3.0
+# cargo add --manifest-path stc/crates/stc/Cargo.toml clap_derive@=4.3.0
+# cargo add --manifest-path stc/crates/stc/Cargo.toml clap_builder@=4.3.0
+# cargo add --manifest-path stc/crates/stc/Cargo.toml clap_lex@=0.5
+# cargo add --manifest-path stc/crates/stc/Cargo.toml triomphe@=0.1.8
 
-cargo +nightly-2023-06-20 install --path stc/crates/stc --no-default-features 
+cargo +nightly-2023-06-20 install --path stc/crates/stc --no-default-features --locked
 
 ./stc/target/release/stc --help
 
@@ -62,7 +62,7 @@ $(cat ./demo.tsx)
 </details>
 " >> $GITHUB_STEP_SUMMARY
 
-cat "const x: string = 4;" >> simple.tsx
+echo "const x: string = 4;" >> simple.tsx
 
 # rg --passthru -N 'satisfies' -r 'as' ./demo.tsx > ./demo-flow.js
 
