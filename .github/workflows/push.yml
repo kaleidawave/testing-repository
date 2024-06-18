@@ -18,12 +18,14 @@ jobs:
           out-file-path: ezno-binary
           as: 'ezno'
       - run: |
-          ezno info
+          ls
+          echo $PATH
+          # ezno info
 
   test-difference-in-cargo-fuzz:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
       - name: Clone
         run: |
           git clone https://github.com/rust-fuzz/cargo-fuzz.git old
