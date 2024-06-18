@@ -20,7 +20,8 @@ jobs:
       - run: |
           ls
           echo $PATH
-          # ezno info
+
+          ezno info
 
   test-difference-in-cargo-fuzz:
     runs-on: ubuntu-latest
@@ -28,16 +29,16 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Clone
         run: |
-          git clone https://github.com/rust-fuzz/cargo-fuzz.git old
-          git clone -b default-target https://github.com/taiki-e/cargo-fuzz.git new
+          git clone https://github.com/rust-fuzz/cargo-fuzz.git main
+          git clone -b default-target https://github.com/taiki-e/cargo-fuzz.git feature
 
-      - name: old
+      - name: main
         run: cargo clean && time cargo build
-        working-directory: old
+        working-directory: main
 
-      - name: new
+      - name: feature
         run: cargo clean && time cargo build
-        working-directory: new
+        working-directory: feature
 
   time-ezno-debug-and-does-cli-have-an-effect:
     runs-on: ubuntu-latest
