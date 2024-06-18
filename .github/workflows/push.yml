@@ -20,6 +20,23 @@ jobs:
       - run: |
           ezno info
 
+  test-difference-in-cargo-fuzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions-rs/toolchain@v1
+      - name: Clone
+        run: |
+          git clone https://github.com/rust-fuzz/cargo-fuzz.git old
+          git clone -b default-target https://github.com/taiki-e/cargo-fuzz.git new
+
+      - name: old
+        run: cargo clean && time cargo build
+        working-directory: old
+
+      - name: new
+        run: cargo clean && time cargo build
+        working-directory: new
+
   time-ezno-debug-and-does-cli-have-an-effect:
     runs-on: ubuntu-latest
     timeout-minutes: 15

@@ -20,7 +20,7 @@ rustup toolchain install stable
 # mv ezno2 ezno
 # ls ezno
 
-git clone https://github.com/kaleidawave/ezno ezno
+git clone -b parser-improvements-036 https://github.com/kaleidawave/ezno.git ezno
 
 cargo build --manifest-path ezno/Cargo.toml --release --bin ezno
 
@@ -60,6 +60,9 @@ rustup toolchain install nightly-2023-06-20
 
 # Fix
 cargo update --manifest-path stc/crates/stc/Cargo.toml -p clap@4.3.0 --precise ver
+cargo update --manifest-path stc/crates/stc/Cargo.toml -p clap_derive@4.3.0 --precise ver
+cargo update --manifest-path stc/crates/stc/Cargo.toml -p clap_builder@4.3.0 --precise ver
+cargo update --manifest-path stc/crates/stc/Cargo.toml -p clap_lex@0.5 --precise ver
 
 cargo +nightly-2023-06-20 install --path stc/crates/stc
 
