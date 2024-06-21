@@ -29,8 +29,11 @@ jobs:
           compgen -c
           echo "::endgroup::"
 
-          ezno info
-          /home/runner/work/testing-repository/testing-repository/ezno-binary/ezno info
+      - run: ezno info
+        continue-on-error: true
+      - run: /home/runner/work/testing-repository/testing-repository/ezno-binary/ezno info
+        continue-on-error: true
+        
 
   run-ezno-fuzzing:
     runs-on: ubuntu-latest
@@ -38,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        from_binstall: [true, false]
+        with_locked: [true, false]
         
     steps:
       - uses: dtolnay/rust-toolchain@stable
@@ -47,13 +50,16 @@ jobs:
           rustup install nightly
           rustup default nightly
 
-      - uses: brndnmtthws/rust-action-cargo-binstall@v1
-        if: ${{ matrix.from_binstall }}
-        with:
-          packages: cargo-fuzz
+      # - uses: brndnmtthws/rust-action-cargo-binstall@v1
+      #   if: ${{ matrix.with_binstall }}
+      #   with:
+      #     packages: cargo-fuzz
+
+      - run: cargo install --git https://github.com/rust-fuzz/cargo-fuzz.git --locked
+        if: ${{ matrix.with_locked }}
 
       - run: cargo install --git https://github.com/rust-fuzz/cargo-fuzz.git
-        if: ${{ !matrix.from_binstall }}
+        if: ${{ !matrix.with_locked }}
 
       - run: |
           git clone https://github.com/kaleidawave/ezno.git .
