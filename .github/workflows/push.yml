@@ -32,10 +32,10 @@ jobs:
   run-ezno-fuzzing:
     runs-on: ubuntu-latest
     if: true
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     version: [cargo-fuzz, cargo-fuzz@0.10, cargo-fuzz@0.11, cargo-fuzz@0.12]
+    strategy:
+      fail-fast: false
+      matrix:
+        from_binstall: [true, false]
         
     steps:
       - uses: dtolnay/rust-toolchain@stable
@@ -44,18 +44,18 @@ jobs:
           rustup install nightly
           rustup default nightly
 
-      # - uses: brndnmtthws/rust-action-cargo-binstall@v1
-      #   with:
-      #     packages: ${{ matrix.version }}
+      - uses: brndnmtthws/rust-action-cargo-binstall@v1
+        if: ${{ matrix.from_binstall }}
+        with:
+          packages: cargo-fuzz
+
+      - run: cargo install --git https://github.com/rust-fuzz/cargo-fuzz.git
+        if: ${{ !matrix.from_binstall }}
 
       - run: |
           git clone https://github.com/kaleidawave/ezno.git .
-
-          # cargo install --git https://github.com/taiki-e/cargo-fuzz.git
-          cargo install --git https://github.com/rust-fuzz/cargo-fuzz.git
-
           cd parser/fuzz
-          cargo fuzz run -s none module_roundtrip_naive -- -timeout=10 -use_value_profile=1 -max_total_time=60
+          cargo fuzz run -s none module_roundtrip_naive -- -timeout=10 -use_value_profile=1 -max_total_time=10
 
   test-difference-in-cargo-fuzz:
     runs-on: ubuntu-latest
