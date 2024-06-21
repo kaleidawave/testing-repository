@@ -26,7 +26,31 @@ jobs:
           echo "---"
           echo $GITHUB_PATH
           echo "---"
+          which ezno
+          ./ezno-binary/ezno info
           ezno info
+
+  run-ezno-fuzzing:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [cargo-fuzz, cargo-fuzz@10, cargo-fuzz@11, cargo-fuzz@12]
+        
+    steps:
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install latest nightly and set it as default
+        run: |
+          rustup install nightly
+          rustup default nightly
+
+      - uses: brndnmtthws/rust-action-cargo-binstall@v1
+        with:
+          packages: ${{ matrix.version }}
+
+      - run: |
+          git clone https://github.com/kaleidawave/ezno.git .
+          cd parser/fuzz
+          cargo fuzz run -s none module_roundtrip_naive -- -timeout=10 -use_value_profile=1 -max_total_time=60
 
   test-difference-in-cargo-fuzz:
     runs-on: ubuntu-latest
