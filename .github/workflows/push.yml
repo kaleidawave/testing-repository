@@ -25,19 +25,19 @@ jobs:
           echo "\$PATH & \$GITHUB_PATH"
           echo $PATH
           echo $GITHUB_PATH
-          echo "::group::compgen"
-          compgen -c
-          echo "::endgroup::"
 
+      - run: which ezno
+        continue-on-error: true
       - run: ezno info
         continue-on-error: true
       - run: /home/runner/work/testing-repository/testing-repository/ezno-binary/ezno info
         continue-on-error: true
-        
+      - run: compgen -c
+        continue-on-error: true
 
   run-ezno-fuzzing:
     runs-on: ubuntu-latest
-    if: false
+    if: true
     strategy:
       fail-fast: false
       matrix:
