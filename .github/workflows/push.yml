@@ -20,17 +20,13 @@ jobs:
           fileName: '*-linux'
           as: 'ezno'
       - run: |
-          ls
+          echo "paths:"
           find -maxdepth 2 -ls
-          echo "---"
+          echo "\$PATH & \$GITHUB_PATH"
           echo $PATH
-          echo "---"
           echo $GITHUB_PATH
-          echo "---"
-          which ezno
-          echo "---"
-          ./ezno-binary/ezno info
-          echo "---"
+          echo "compgen"
+          compgen -c
           ezno info
 
   run-ezno-fuzzing:
@@ -55,7 +51,8 @@ jobs:
       - run: |
           git clone https://github.com/kaleidawave/ezno.git .
 
-          cargo install --git https://github.com/taiki-e/cargo-fuzz.git
+          # cargo install --git https://github.com/taiki-e/cargo-fuzz.git
+          cargo install --git https://github.com/rust-fuzz/cargo-fuzz.git
 
           cd parser/fuzz
           cargo fuzz run -s none module_roundtrip_naive -- -timeout=10 -use_value_profile=1 -max_total_time=60
