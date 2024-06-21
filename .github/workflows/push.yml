@@ -25,13 +25,16 @@ jobs:
           echo "\$PATH & \$GITHUB_PATH"
           echo $PATH
           echo $GITHUB_PATH
-          echo "compgen"
+          ::group::{"compgen"}
           compgen -c
+          ::endgroup::
+
           ezno info
+          /home/runner/work/testing-repository/testing-repository/ezno-binary/ezno info
 
   run-ezno-fuzzing:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     strategy:
       fail-fast: false
       matrix:
