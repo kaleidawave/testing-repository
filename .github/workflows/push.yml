@@ -33,7 +33,7 @@ jobs:
           addToPath: true
           latest: true
           out-file-path: hyperfine-binary
-          fileName: '*-x86_64-unknown-linux-gnu*'
+          fileName: '*-x86_64-unknown-linux-musl*'
           extract: true
 
       - run: hyperfine --help
