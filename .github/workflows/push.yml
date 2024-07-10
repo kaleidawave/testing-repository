@@ -9,7 +9,7 @@ on:
 jobs:
   download-ezno:
     runs-on: ubuntu-latest
-    if: false
+    if: true
     steps:
       - uses: kaleidawave/release-downloader@add-rename-and-path-env
         with:
