@@ -20,7 +20,6 @@ jobs:
           fileName: '*-linux'
 
       - run: ezno info
-        continue-on-error: true
 
   download-hyperfine:
     runs-on: ubuntu-latest
@@ -38,7 +37,6 @@ jobs:
           extract: true
 
       - run: hyperfine --help
-        continue-on-error: true
 
   run-ezno-fuzzing:
     runs-on: ubuntu-latest
