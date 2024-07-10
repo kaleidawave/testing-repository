@@ -37,9 +37,10 @@ jobs:
           extract: true
 
       - run: file $(which hyperfine)
-      - run: ls $(dirname $(which hyperfine))
-      - run: which hyperfine | xargs dirname | xargs ls
       - run: which hyperfine | xargs dirname | xargs ls -l
+      - run: tar -xvzf $(which hyperfine)
+      - run: which hyperfine | xargs dirname | xargs ls -l
+      - run: ls -l
       - run: hyperfine --help
 
   run-ezno-fuzzing:
