@@ -18,7 +18,6 @@ jobs:
           latest: true
           out-file-path: ezno-binary
           fileName: '*-linux'
-
       - run: ezno info
 
   download-hyperfine:
@@ -30,18 +29,19 @@ jobs:
       - uses: kaleidawave/release-downloader@add-rename-and-path-env
         with:
           repository: 'sharkdp/hyperfine'
-          addToPath: true
+          # addToPath: true
           latest: true
-          out-file-path: hyperfine-binary
+          # out-file-path: hyperfine-binary
           fileName: '*-x86_64-unknown-linux-gnu*'
           extract: true
 
-      - run: file $(which hyperfine)
-      - run: which hyperfine | xargs dirname | xargs ls -l
-      - run: tar -xvzf $(which hyperfine)
-      - run: which hyperfine | xargs dirname | xargs ls -l
+      # - run: file $(which hyperfine)
+      # - run: which hyperfine | xargs dirname | xargs ls -l
+      # - run: tar -xvzf $(which hyperfine)
+      # - run: which hyperfine | xargs dirname | xargs ls -l
       - run: ls -l
-      - run: hyperfine --help
+      - run: find . | xargs file
+      # - run: hyperfine --help
 
   run-ezno-fuzzing:
     runs-on: ubuntu-latest
