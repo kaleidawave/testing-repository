@@ -7,9 +7,40 @@ on:
       - "one-off"
 
 jobs:
-  download-ezno:
+  run-ezno-perf:
     runs-on: ubuntu-latest
     if: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: kaleidawave/ezno
+          ref: checker-improvements-036
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build Ezno
+        run: cargo build
+        env:
+          CARGO_PROFILE_RELEASE_DEBUG: true
+      - name: Clone repository
+        run: |
+          cargo run -p ezno-parser --example code_blocks_to_script ./checker/specification/specification.md --comment-headers --out ./demo.tsx
+
+          echo demo.tsx
+
+          command_output=$(./target/debug/ezno check demo.tsx --timings --max-diagnostics all 2>&1 || true)
+          diagnostics=""; statistics=""; found_splitter=false;
+
+          while IFS= read -r line; do
+              if [[ "$line" == *"---"* ]]; then found_splitter=true;
+              elif [[ "$found_splitter"  == false ]]; then diagnostics+="$line"$'\n';
+              else statistics+="$line"$'\n'; fi
+          done <<< "$command_output"
+
+          echo "$diagnostics"
+          echo "$statistics"
+
+  download-ezno:
+    runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: kaleidawave/release-downloader@add-rename-and-path-env
         with:
@@ -29,7 +60,7 @@ jobs:
       - uses: kaleidawave/release-downloader@add-rename-and-path-env
         with:
           repository: 'sharkdp/hyperfine'
-          # addToPath: true
+          addToPath: true
           latest: true
           # out-file-path: hyperfine-binary
           fileName: '*-x86_64-unknown-linux-gnu*'
