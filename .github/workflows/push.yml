@@ -20,7 +20,7 @@ jobs:
         run: cargo build
         env:
           CARGO_PROFILE_RELEASE_DEBUG: true
-      - name: Clone repository
+      - name: Run action
         run: |
           cargo run -p ezno-parser --example code_blocks_to_script ./checker/specification/specification.md --comment-headers --out ./demo.tsx
 
@@ -31,8 +31,12 @@ jobs:
           command_output=$(./target/debug/ezno check demo.tsx --timings --max-diagnostics all 2>&1 || true)
           diagnostics=""; statistics=""; found_splitter=false;
 
+          echo "::group::Ouput"
+          echo $command_output
+          echo "::endgroup::"
+
           while IFS= read -r line; do
-              if [[ "$line" == *"---"* ]]; then found_splitter=true;
+              if [[ "$line" == "---"* ]]; then found_splitter=true;
               elif [[ "$found_splitter"  == false ]]; then diagnostics+="$line"$'\n';
               else statistics+="$line"$'\n'; fi
           done <<< "$command_output"
