@@ -41,7 +41,8 @@ rustup toolchain install stable
 # mv ezno2 ezno
 # ls ezno
 
-git clone -b parser-improvements-036 https://github.com/kaleidawave/ezno.git ezno
+# -b main
+git clone https://github.com/kaleidawave/ezno.git ezno
 
 cargo build --manifest-path ezno/Cargo.toml --release --bin ezno
 

@@ -43,7 +43,7 @@ echo "with STC
 $H1
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
-for i in {1..8}; do
+for i in {1..10}; do
     cat ./demo.tsx >> ./large.tsx
 done
 
@@ -61,9 +61,29 @@ $(./ezno/target/release/ezno check ./large.tsx --max-diagnostics 0 --timings)
 
 # comparison of small vs large (ezno)
 $(hyperfine -i './ezno/target/release/ezno check ./simple.tsx' './ezno/target/release/ezno check ./demo.tsx' './ezno/target/release/ezno check ./large.tsx')
+\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+echo "interface Array {}
+interface Boolean {}
+interface Function {}
+interface IArguments {}
+interface Number {}
+interface Object {}
+interface RegExp {}
+interface String {}" > overrides.d.ts
+
+echo "\`\`\`
+# simple.tsx
+$(tsc --pretty --diagnostics --noEmit --noLib ./simple.tsx overrides.d.ts)
+
+# demo.tsx
+$(tsc --pretty --diagnostics --noEmit --noLib ./demo.tsx overrides.d.ts)
+
+# large.tsx
+$(tsc --pretty --diagnostics --noEmit --noLib ./large.tsx overrides.d.ts)
 
 # comparison of simple vs small vs large (tsc)
-$(hyperfine -i 'tsc --noEmit simple.tsx' 'tsc --noEmit demo.tsx' 'tsc --noEmit large.tsx')
+$(hyperfine -i 'tsc --noEmit --noLib --pretty simple.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty demo.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty large.tsx overrides.d.ts')
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
 
