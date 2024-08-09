@@ -5,9 +5,7 @@ echo "::group::Run tools"
 
 function run_tool {
     OUTPUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
-    echo "
-    
-## $1
+    echo "## $1
 
 <details>
 <summary>Output</summary>
@@ -16,6 +14,7 @@ function run_tool {
 $OUTPUT
 \`\`\`
 </details>
+
 " >> $GITHUB_STEP_SUMMARY
 } 
 
@@ -43,14 +42,9 @@ echo "with STC
 $H1
 \`\`\`" >> $GITHUB_STEP_SUMMARY
 
-for i in {1..10}; do
-    cat ./demo.tsx >> ./large.tsx
-done
-
 echo "Given demo.tsx with $(wc -l < demo.tsx) lines & large.tsx with $(wc -l < large.tsx) lines" >> $GITHUB_STEP_SUMMARY
 
-echo "\`\`\`
-# simple.tsx
+echo "# simple.tsx
 $(./ezno/target/release/ezno check ./simple.tsx --max-diagnostics 0 --timings)
 
 # demo.tsx
@@ -60,20 +54,9 @@ $(./ezno/target/release/ezno check ./demo.tsx --max-diagnostics 0 --timings)
 $(./ezno/target/release/ezno check ./large.tsx --max-diagnostics 0 --timings)
 
 # comparison of small vs large (ezno)
-$(hyperfine -i './ezno/target/release/ezno check ./simple.tsx' './ezno/target/release/ezno check ./demo.tsx' './ezno/target/release/ezno check ./large.tsx')
-\`\`\`" >> $GITHUB_STEP_SUMMARY
+$(hyperfine -i './ezno/target/release/ezno check ./simple.tsx' './ezno/target/release/ezno check ./demo.tsx' './ezno/target/release/ezno check ./large.tsx')" >> "$ARTIFACTS_FOLDER/ezno-diff.txt"
 
-echo "interface Array {}
-interface Boolean {}
-interface Function {}
-interface IArguments {}
-interface Number {}
-interface Object {}
-interface RegExp {}
-interface String {}" > overrides.d.ts
-
-echo "\`\`\`
-# simple.tsx
+echo "# simple.tsx
 $(tsc --pretty --diagnostics --noEmit --noLib ./simple.tsx overrides.d.ts)
 
 # demo.tsx
@@ -83,9 +66,7 @@ $(tsc --pretty --diagnostics --noEmit --noLib ./demo.tsx overrides.d.ts)
 $(tsc --pretty --diagnostics --noEmit --noLib ./large.tsx overrides.d.ts)
 
 # comparison of simple vs small vs large (tsc)
-$(hyperfine -i 'tsc --noEmit --noLib --pretty simple.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty demo.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty large.tsx overrides.d.ts')
-\`\`\`" >> $GITHUB_STEP_SUMMARY
-
+$(hyperfine -i 'tsc --noEmit --noLib --pretty simple.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty demo.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty large.tsx overrides.d.ts')" >> "$ARTIFACTS_FOLDER/tsc-diff.txt"
 
 # Ezno, STC and TSC on large
 H2=$(hyperfine -i './ezno/target/release/ezno check ./large.tsx' './stc/target/release/stc test large.tsx' 'tsc --pretty --noEmit --jsx preserve large.tsx')
@@ -94,6 +75,20 @@ echo "On large
 \`\`\`
 $H2
 \`\`\`" >> $GITHUB_STEP_SUMMARY
+
+echo "::endgroup::"
+
+echo "::group::Each"
+for f in "./all"
+do
+if [[ "$f" != *\.* ]]
+then
+  echo "Item: $f" >> all.txt
+  ./ezno/target/release/ezno check $f --max-diagnostics 0 --timings >> all.txt
+fi
+done
+
+cp ./all.txt $ARTIFACTS_FOLDER
 
 echo "::endgroup::"
 

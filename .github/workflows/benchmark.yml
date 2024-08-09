@@ -53,7 +53,7 @@ jobs:
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
       - name: Make executable
         run: |
-          # run.sh might not be executable
+          # run.sh and setup.sh might not be executable
           chmod +x run.sh
           chmod +x setup.sh
 
