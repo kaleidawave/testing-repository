@@ -1,6 +1,9 @@
 NO_COLOR=1
 export NO_COLOR=1
 
+echo $ARTIFACTS_FOLDER
+echo $SOMETHING
+
 echo "::group::Run tools"
 
 function run_tool {
@@ -20,7 +23,7 @@ $OUTPUT
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.tsx --timings"
 run_tool "Ezno (no diagnostics printing)" "./ezno/target/release/ezno check demo.tsx --max-diagnostics 0 --timings"
-run_tool "TSC" "tsc --pretty --noEmit --jsx preserve --diagnostics demo.tsx"
+run_tool "TSC" "tsc --pretty --noEmit --jsx preserve --noLib --diagnostics demo.tsx overrides.d.ts"
 run_tool "STC" "./stc/target/release/stc test demo.tsx"
 
 echo "::endgroup::"
@@ -54,22 +57,22 @@ $(./ezno/target/release/ezno check ./demo.tsx --max-diagnostics 0 --timings)
 $(./ezno/target/release/ezno check ./large.tsx --max-diagnostics 0 --timings)
 
 # comparison of small vs large (ezno)
-$(hyperfine -i './ezno/target/release/ezno check ./simple.tsx' './ezno/target/release/ezno check ./demo.tsx' './ezno/target/release/ezno check ./large.tsx')" >> "$ARTIFACTS_FOLDER/ezno-diff.txt"
+$(hyperfine -i './ezno/target/release/ezno check ./simple.tsx' './ezno/target/release/ezno check ./demo.tsx' './ezno/target/release/ezno check ./large.tsx')" > "$ARTIFACTS_FOLDER/ezno-diff.txt"
 
 echo "# simple.tsx
-$(tsc --pretty --diagnostics --noEmit --noLib ./simple.tsx overrides.d.ts)
+$(tsc --pretty --diagnostics --noEmit --noLib --jsx preserve ./simple.tsx overrides.d.ts)
 
 # demo.tsx
-$(tsc --pretty --diagnostics --noEmit --noLib ./demo.tsx overrides.d.ts)
+$(tsc --pretty --diagnostics --noEmit --noLib --jsx preserve ./demo.tsx overrides.d.ts)
 
 # large.tsx
-$(tsc --pretty --diagnostics --noEmit --noLib ./large.tsx overrides.d.ts)
+$(tsc --pretty --diagnostics --noEmit --noLib --jsx preserve ./large.tsx overrides.d.ts)
 
 # comparison of simple vs small vs large (tsc)
-$(hyperfine -i 'tsc --noEmit --noLib --pretty simple.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty demo.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty large.tsx overrides.d.ts')" >> "$ARTIFACTS_FOLDER/tsc-diff.txt"
+$(hyperfine -i 'tsc --noEmit --noLib --pretty --jsx preserve simple.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty --jsx preserve demo.tsx overrides.d.ts' 'tsc --noEmit --noLib --pretty --jsx preserve large.tsx overrides.d.ts')" > "$ARTIFACTS_FOLDER/tsc-diff.txt"
 
 # Ezno, STC and TSC on large
-H2=$(hyperfine -i './ezno/target/release/ezno check ./large.tsx' './stc/target/release/stc test large.tsx' 'tsc --pretty --noEmit --jsx preserve large.tsx')
+H2=$(hyperfine -i './ezno/target/release/ezno check ./large.tsx' './stc/target/release/stc test large.tsx' 'tsc --pretty --noEmit --noLib --jsx preserve large.tsx overrides.d.ts')
 
 echo "On large
 \`\`\`
@@ -89,6 +92,8 @@ fi
 done
 
 cp ./all.txt $ARTIFACTS_FOLDER
+
+ls $ARTIFACTS_FOLDER
 
 echo "::endgroup::"
 

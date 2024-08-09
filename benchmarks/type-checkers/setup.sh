@@ -14,7 +14,7 @@ cd stc
 git reset --hard 693cf5a891c5580542811b906616f0c15d0dd0fc
 cd ..
 
-cargo +nightly-2023-06-20 install --path stc/crates/stc --no-default-features --locked
+cargo +nightly-2023-06-20 build --manifest-path stc/crates/stc/Cargo.toml --no-default-features --locked
 
 ./stc/target/release/stc --help
 
@@ -64,7 +64,9 @@ interface RegExp {}
 interface String {}" > overrides.d.ts
 
 mkdir all
-cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md --into-files all ts 
+cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md --into-files all ts
+
+ls all
 # --repeat 50
 
 echo "::endgroup::"
