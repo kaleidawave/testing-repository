@@ -7,9 +7,46 @@ on:
       - "one-off"
 
 jobs:
-  run-ezno-perf:
+  upload-artifacts:
     runs-on: ubuntu-latest
     if: true
+    steps:
+      - name: Build
+        run: mkdir src
+        shell: bash
+
+      - name: Build
+        run: | 
+          mkdir dist
+          echo "Hello" > dist/file.txt
+        working-directory: src
+        shell: bash
+
+      - name: Build 
+        run: ls -R
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: a
+          path: ./src/dist
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b
+          path: src/dist
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: c
+          path: src
+          retention-days: 3
+
+  run-ezno-perf:
+    runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v4
         with:
