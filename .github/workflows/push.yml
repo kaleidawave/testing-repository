@@ -7,9 +7,62 @@ on:
       - "one-off"
 
 jobs:
-  upload-artifacts:
+  valgrind:
     runs-on: ubuntu-latest
     if: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        continue-on-error: true
+        run: valgrind --help
+
+      - name: Install v2
+        run: |
+          sudo apt-get install valgrind
+
+      - name: Setup
+        run: |
+           curl https://github.com/kaleidawave/ezno/releases/download/release%2Fezno-0.0.22/ezno-0.0.22-x86_64-unknown-linux -o ezno
+           curl https://gist.githubusercontent.com/kaleidawave/c10ac35d841312b1c5c5da356cab13de/raw/d17a31bb3559fc9881ffc1b8f716f317bb0a1c04/example.tsx -o example.tsx
+           ezno info
+           ezno check example.tsx || true
+
+      - name: Run
+        run: |
+          valgrind --callgrind-out-file out1.txt ezno check example.tsx
+          valgrind --callgrind-out-file out2.txt --tool=callgrind ezno check example.tsx
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Out files
+          path: out*.txt
+          retention-days: 3
+
+
+  ezno-tsc-check-perf:
+    runs-on: ubuntu-latest
+    if: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      
+      - name: Install
+        run: |
+          npm -g install typescript
+          curl https://github.com/kaleidawave/ezno/releases/download/release%2Fezno-0.0.22/ezno-0.0.22-x86_64-unknown-linux -o ezno
+
+      - name: Run
+        run: |
+          bunx jsr add @ryweal/progress
+          for i in {1..10}; do
+            bun run ./one-off/tsc-perf-compare.ts
+          done
+
+  upload-artifacts:
+    runs-on: ubuntu-latest
+    if: false
     steps:
       - name: Build
         run: mkdir src
