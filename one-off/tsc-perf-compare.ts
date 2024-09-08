@@ -1,7 +1,9 @@
 import { $ } from "bun";
-import { progress } from '@ryweal/progress'
 
 $.nothrow();
+
+const command = await $`./ezno check ./private/tocheck/all.tsx --max-diagnostics 0 --timings 2>&1`.text();
+console.log({ command })
 
 class Duration {
   nanos: number
@@ -45,17 +47,15 @@ class Duration {
 
 let e = Duration.zero(), ts = Duration.zero();
 const total = 10;
-// const p = progress('Progress | [[bar]] | [[count]]/[[total]] [[rate]] [[eta]]\n', { total });
 
 for (let i = 0; i < total; i++) {
-  // p.next();
-
   {
     const command = $`./ezno check ./private/tocheck/all.tsx --max-diagnostics 0 --timings 2>&1`.lines();
 
     for await (let line of command) {
       if (line.startsWith("Checked")) {
         const [_, time] = line.split("\t");
+        console.log(line, time);
         e.add(Duration.fromString(time));
       }
     }
@@ -67,6 +67,7 @@ for (let i = 0; i < total; i++) {
     for await (let line of command) {
       if (line.startsWith("Check time")) {
         const [_, time] = line.split(":");
+        console.log(line, time);
         ts.add(Duration.fromString(time));
       }
     }
