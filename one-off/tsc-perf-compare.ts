@@ -2,9 +2,6 @@ import { $ } from "bun";
 
 $.nothrow();
 
-const command = await $`./ezno check ./one-off/example.tsx --max-diagnostics 0`.text();
-console.log({ command })
-
 class Duration {
   nanos: number
 
@@ -55,7 +52,6 @@ for (let i = 0; i < total; i++) {
     for await (let line of command) {
       if (line.startsWith("Checked")) {
         const [_, time] = line.split("\t");
-        console.log("ezno", line, time);
         e.add(Duration.fromString(time));
       }
     }
@@ -67,12 +63,10 @@ for (let i = 0; i < total; i++) {
     for await (let line of command) {
       if (line.startsWith("Check time")) {
         const [_, time] = line.split(":");
-        console.log("tsc", line, time);
         ts.add(Duration.fromString(time));
       }
     }
   }
 }
 
-console.log(ts.nanos, e.nanos);
-console.log(`Ezno ran ${ts.nanos / e.nanos} faster than TSC`);
+console.log(`Ezno ran ${ts.nanos / e.nanos} faster than TSC`, ts.nanos, e.nanos);

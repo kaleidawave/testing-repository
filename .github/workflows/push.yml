@@ -28,8 +28,8 @@ jobs:
 
       - name: Run
         run: |
-          valgrind --callgrind-out-file=out1.txt ./ezno check example.tsx
-          valgrind --callgrind-out-file=out2.txt --tool=callgrind ./ezno check example.tsx
+          valgrind --log-file=out1.txt ./ezno check example.tsx
+          valgrind --tool=callgrind --callgrind-out-file=out2.txt ./ezno check example.tsx
 
       - uses: actions/upload-artifact@v4
         with:
