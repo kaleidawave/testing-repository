@@ -20,7 +20,7 @@ class Duration {
 
   static zero() { return new Duration(0) }
 
-  static fromString(str) {
+  static fromString(str: string) {
     if (str.at(-1) === "s") {
       str = str.slice(0, -1);
       const modifier = str.at(-1);
@@ -45,13 +45,13 @@ class Duration {
 
 let e = Duration.zero(), ts = Duration.zero();
 const total = 10;
-const p = progress('Progress | [[bar]] | [[count]]/[[total]] [[rate]] [[eta]]\n', { total });
+// const p = progress('Progress | [[bar]] | [[count]]/[[total]] [[rate]] [[eta]]\n', { total });
 
 for (let i = 0; i < total; i++) {
-  p.next();
+  // p.next();
 
   {
-    const command = $`ezno check ./private/tocheck/all.tsx --max-diagnostics 0 --timings 2>&1`.lines();
+    const command = $`./ezno check ./private/tocheck/all.tsx --max-diagnostics 0 --timings 2>&1`.lines();
 
     for await (let line of command) {
       if (line.startsWith("Checked")) {
