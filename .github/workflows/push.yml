@@ -17,16 +17,19 @@ jobs:
 
       - name: Setup
         run: |
-           curl https://github.com/kaleidawave/ezno/releases/download/release%2Fezno-0.0.22/ezno-0.0.22-x86_64-unknown-linux -o ezno
+           curl https://github.com/kaleidawave/ezno/releases/download/release%2Fezno-0.0.22/ezno-0.0.22-x86_64-unknown-linux -L -o ezno
            curl https://gist.githubusercontent.com/kaleidawave/c10ac35d841312b1c5c5da356cab13de/raw/d17a31bb3559fc9881ffc1b8f716f317bb0a1c04/example.tsx -o example.tsx
            chmod +x ./ezno
-           ./ezno info
-           ./ezno check example.tsx || true
+
+      - name: Run example
+        run: |
+          ./ezno info
+          ./ezno check example.tsx || true
 
       - name: Run
         run: |
-          valgrind --callgrind-out-file out1.txt ./ezno check example.tsx
-          valgrind --callgrind-out-file out2.txt --tool=callgrind ./ezno check example.tsx
+          valgrind --callgrind-out-file=out1.txt ./ezno check example.tsx
+          valgrind --callgrind-out-file=out2.txt --tool=callgrind ./ezno check example.tsx
 
       - uses: actions/upload-artifact@v4
         with:
@@ -47,7 +50,8 @@ jobs:
       - name: Install
         run: |
           npm -g install typescript
-          curl https://github.com/kaleidawave/ezno/releases/download/release%2Fezno-0.0.22/ezno-0.0.22-x86_64-unknown-linux -o ezno
+          curl https://github.com/kaleidawave/ezno/releases/download/release%2Fezno-0.0.22/ezno-0.0.22-x86_64-unknown-linux -L -o ezno
+          curl https://gist.githubusercontent.com/kaleidawave/c10ac35d841312b1c5c5da356cab13de/raw/d17a31bb3559fc9881ffc1b8f716f317bb0a1c04/example.tsx -o one-off/example.tsx
           chmod +x ./ezno
 
       - name: Run

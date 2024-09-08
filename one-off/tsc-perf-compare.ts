@@ -2,7 +2,7 @@ import { $ } from "bun";
 
 $.nothrow();
 
-const command = await $`./ezno check ./private/tocheck/all.tsx --max-diagnostics 0 --timings 2>&1`.text();
+const command = await $`./ezno check ./one-off/example.tsx --max-diagnostics 0`.text();
 console.log({ command })
 
 class Duration {
@@ -50,28 +50,29 @@ const total = 10;
 
 for (let i = 0; i < total; i++) {
   {
-    const command = $`./ezno check ./private/tocheck/all.tsx --max-diagnostics 0 --timings 2>&1`.lines();
+    const command = $`./ezno check ./one-off/example.tsx --max-diagnostics 0 --timings 2>&1`.lines();
 
     for await (let line of command) {
       if (line.startsWith("Checked")) {
         const [_, time] = line.split("\t");
-        console.log(line, time);
+        console.log("ezno", line, time);
         e.add(Duration.fromString(time));
       }
     }
   }
 
   {
-    const command = $`tsc ./private/tocheck/all.tsx --noEmit --diagnostics --pretty --skipLibCheck`.lines();
+    const command = $`tsc ./one-off/example.tsx --noEmit --diagnostics --pretty --skipLibCheck`.lines();
 
     for await (let line of command) {
       if (line.startsWith("Check time")) {
         const [_, time] = line.split(":");
-        console.log(line, time);
+        console.log("tsc", line, time);
         ts.add(Duration.fromString(time));
       }
     }
   }
 }
 
+console.log(ts.nanos, e.nanos);
 console.log(`Ezno ran ${ts.nanos / e.nanos} faster than TSC`);
