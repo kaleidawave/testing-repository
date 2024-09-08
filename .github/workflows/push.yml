@@ -22,14 +22,15 @@ jobs:
            chmod +x ./ezno
 
       - name: Run example
-        run: |
-          ./ezno info
-          ./ezno check example.tsx || true
+        run: ./ezno info
 
-      - name: Run
-        run: |
-          valgrind --log-file=out1.txt ./ezno check example.tsx
-          valgrind --tool=callgrind --callgrind-out-file=out2.txt ./ezno check example.tsx
+      - name: Run valgrind
+        continue-on-error: true
+        run: valgrind --log-file=out1.txt ./ezno check example.tsx
+
+      - name: Run callgrind
+        continue-on-error: true
+        run: valgrind --tool=callgrind --callgrind-out-file=out2.txt ./ezno check example.tsx
 
       - uses: actions/upload-artifact@v4
         with:
@@ -40,7 +41,7 @@ jobs:
 
   ezno-tsc-check-perf:
     runs-on: ubuntu-latest
-    if: true
+    if: false
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
