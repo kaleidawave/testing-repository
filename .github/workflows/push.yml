@@ -7,9 +7,47 @@ on:
       - "one-off"
 
 jobs:
-  valgrind:
+  valgrind_example:
     runs-on: ubuntu-latest
     if: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        run: sudo apt-get install valgrind
+
+      - name: Build examples
+        working-directory: one-off/memory_and_cpu_cycles
+        run: |
+          cargo build --example cpu
+          cargo build --example memory
+
+      - name: Run valgrind
+        working-directory: one-off/memory_and_cpu_cycles
+        continue-on-error: true
+        run: |
+           valgrind --log-file=out-mem1.txt ./target/debug/examples/memory 100
+           valgrind --log-file=out-mem2.txt ./target/debug/examples/memory 1000
+           valgrind --log-file=out-mem3.txt ./target/debug/examples/memory 1000000
+           valgrind --log-file=out-mem4.txt ./target/debug/examples/memory 8000000
+
+      - name: Run callgrind
+        working-directory: one-off/memory_and_cpu_cycles
+        continue-on-error: true
+        run: |
+           valgrind --tool=callgrind --callgrind-out-file=out-cpu1.txt ./target/debug/examples/cpu 10
+           valgrind --tool=callgrind --callgrind-out-file=out-cpu2.txt ./target/debug/examples/cpu 1000
+           valgrind --tool=callgrind --callgrind-out-file=out-cpu3.txt ./target/debug/examples/cpu 8000
+           valgrind --tool=callgrind --callgrind-out-file=out-cpu4.txt ./target/debug/examples/cpu 12853
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Out files
+          path: out*.txt
+          retention-days: 3
+
+  valgrind_ezno:
+    runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v4
       - name: Install
@@ -37,7 +75,6 @@ jobs:
           name: Out files
           path: out*.txt
           retention-days: 3
-
 
   ezno-tsc-check-perf:
     runs-on: ubuntu-latest
