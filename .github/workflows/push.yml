@@ -42,7 +42,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: Out files
-          path: out*.txt
+          path: one-off/memory_and_cpu_cycles/out*.txt
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Out files (2)
+          path: '**/out*.txt'
           retention-days: 3
 
   valgrind_ezno:

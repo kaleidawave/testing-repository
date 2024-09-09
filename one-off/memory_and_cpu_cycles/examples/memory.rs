@@ -7,7 +7,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     eprintln!("Allocated {} bytes", vec.len());
     std::hint::black_box(vec);
 
-    std::thread::sleep(std::time::Duration::from_secs(10));
+    std::thread::sleep(std::time::Duration::from_secs(1));
 
     Ok(())
 }
