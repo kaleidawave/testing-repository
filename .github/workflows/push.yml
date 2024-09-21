@@ -22,31 +22,52 @@ jobs:
 
       - name: Run valgrind
         working-directory: one-off/memory_and_cpu_cycles
+        if: false
         continue-on-error: true
         run: |
-           valgrind --log-file=out-mem1.txt ./target/debug/examples/memory 100
-           valgrind --log-file=out-mem2.txt ./target/debug/examples/memory 1000
-           valgrind --log-file=out-mem3.txt ./target/debug/examples/memory 1000000
-           valgrind --log-file=out-mem4.txt ./target/debug/examples/memory 8000000
+          valgrind --log-file=out-mem1.txt ./target/debug/examples/memory 100
+          valgrind --log-file=out-mem2.txt ./target/debug/examples/memory 1000
 
-           valgrind --log-file=out-leak.txt ./target/debug/examples/leak
-           valgrind --log-file=out-leak_string.txt ./target/debug/examples/leak_string
+          # Doesn't count `stack`. (not sure if there is a flag)
+          # valgrind --log-file=out-stack-allocation.txt ./target/debug/examples/memory_stack
 
-           valgrind --log-file=out-stack-allocation.txt ./target/debug/examples/memory_stack
+          # All works well
+          # valgrind --log-file=out-mem3.txt ./target/debug/examples/memory 1000000
+          # valgrind --log-file=out-mem4.txt ./target/debug/examples/memory 8000000
+          # valgrind --log-file=out-leak.txt ./target/debug/examples/leak
+          # valgrind --log-file=out-leak_string.txt ./target/debug/examples/leak_string
 
       - name: Run callgrind
         working-directory: one-off/memory_and_cpu_cycles
         continue-on-error: true
         run: |
-           valgrind --tool=callgrind --callgrind-out-file=out-cpu1.txt ./target/debug/examples/cpu 10
-           valgrind --tool=callgrind --callgrind-out-file=out-cpu2.txt ./target/debug/examples/cpu 1000
-           valgrind --tool=callgrind --callgrind-out-file=out-cpu3.txt ./target/debug/examples/cpu 8000
-           valgrind --tool=callgrind --callgrind-out-file=out-cpu4.txt ./target/debug/examples/cpu 12853
+          valgrind --tool=callgrind --callgrind-out-file=out-cpu1-1.txt ./target/debug/examples/cpu 1000
+          valgrind --tool=callgrind --callgrind-out-file=out-cpu1-2.txt ./target/debug/examples/cpu 1000
 
-           valgrind --tool=callgrind --callgrind-out-file=out-cpu1-threads.txt ./target/debug/examples/cpu_threads 10
-           valgrind --tool=callgrind --callgrind-out-file=out-cpu2-threads.txt ./target/debug/examples/cpu_threads 1000
-           valgrind --tool=callgrind --callgrind-out-file=out-cpu3-threads.txt ./target/debug/examples/cpu_threads 8000
-           valgrind --tool=callgrind --callgrind-out-file=out-cpu4-threads.txt ./target/debug/examples/cpu_threads 12853
+          valgrind --tool=callgrind \
+          --callgrind-out-file=out-cpu1-threads1-1.txt \
+          ./target/debug/examples/cpu_threads 1000
+
+          valgrind --tool=callgrind \
+          --callgrind-out-file=out-cpu1-threads1-2.txt \
+          ./target/debug/examples/cpu_threads 1000
+
+      - name: Run callgrind (release)
+        working-directory: one-off/memory_and_cpu_cycles
+        continue-on-error: true
+        run: |
+          cargo build --release --example cpu; cargo build --release --example cpu_threads;
+
+          valgrind --tool=callgrind --callgrind-out-file=out-cpu2-1.txt ./target/debug/examples/cpu 1000
+          valgrind --tool=callgrind --callgrind-out-file=out-cpu2-2.txt ./target/debug/examples/cpu 1000
+
+          valgrind --tool=callgrind \
+          --callgrind-out-file=out-cpu2-threads1-1.txt \
+          ./target/debug/examples/cpu_threads 1000
+
+          valgrind --tool=callgrind \
+          --callgrind-out-file=out-cpu2-threads1-2.txt \
+          ./target/debug/examples/cpu_threads 1000
 
       - uses: actions/upload-artifact@v4
         with:
