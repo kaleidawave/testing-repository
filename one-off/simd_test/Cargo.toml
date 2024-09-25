@@ -1,5 +1,5 @@
 [package]
-name = "memory_and_cpu_cycles"
+name = "simd_test"
 version = "0.1.0"
 edition = "2021"
 publish = false

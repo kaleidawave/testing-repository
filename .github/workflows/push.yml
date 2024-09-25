@@ -22,7 +22,12 @@ jobs:
 
       - name: Get file
         working-directory: one-off/simd_test
-        run: curl https://esm.sh/v135/typescript@5.6.2/es2022/typescript.mjs > example
+        run: |
+          curl https://esm.sh/v135/typescript@5.6.2/es2022/typescript.mjs > file
+          cat file >> example
+          cat file >> example
+          cat file >> example
+          cat file >> example
         
       - name: Run test
         working-directory: one-off/simd_test
@@ -32,7 +37,7 @@ jobs:
         
       - name: Run benchmark
         working-directory: one-off/simd_test
-        run: hyperfine -L compiler 'simd,non_simd' 'target/release/examples/{compiler}'
+        run: hyperfine -L compiler 'simd,non_simd' 'target/release/examples/{compiler}' --warmup 15
 
   valgrind_example:
     runs-on: ubuntu-latest
