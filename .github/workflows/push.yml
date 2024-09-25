@@ -23,13 +23,15 @@ jobs:
       - name: Get file
         working-directory: one-off/simd_test
         run: curl https://esm.sh/v135/typescript@5.6.2/es2022/typescript.mjs > example
-
+        
       - name: Run test
+        working-directory: one-off/simd_test
         run: |
           target/release/examples/simd
           target/release/examples/non_simd
-
+        
       - name: Run benchmark
+        working-directory: one-off/simd_test
         run: hyperfine -L compiler 'simd,non_simd' 'target/release/examples/{compiler}'
 
   valgrind_example:
