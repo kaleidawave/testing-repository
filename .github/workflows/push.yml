@@ -7,9 +7,34 @@ on:
       - "one-off"
 
 jobs:
-  valgrind_example:
+  simd_example:
     runs-on: ubuntu-latest
     if: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build examples
+        working-directory: one-off/simd_test
+        run: RUSTC_BOOTSTRAP=1 cargo build --examples --release
+        
+      - uses: brndnmtthws/rust-action-cargo-binstall@v1
+        with:
+          packages: hyperfine
+
+      - name: Get file
+        working-directory: one-off/simd_test
+        run: curl https://esm.sh/v135/typescript@5.6.2/es2022/typescript.mjs > example
+
+      - name: Run test
+        run: |
+          target/release/examples/simd
+          target/release/examples/non_simd
+
+      - name: Run benchmark
+        run: hyperfine -L compiler 'simd,non_simd' 'target/release/examples/{compiler}'
+
+  valgrind_example:
+    runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v4
       - name: Install valgrind
