@@ -18,9 +18,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: TSC files
-          path: 
-            - src/compiler/checker.ts
-            - src/compiler/parser.ts
+          path: |
+            src/compiler/checker.ts
+            src/compiler/parser.ts
           retention-days: 14
   
   simd_example:
