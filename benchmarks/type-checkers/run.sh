@@ -23,8 +23,9 @@ $OUTPUT
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.tsx --timings"
 run_tool "Ezno (next)" "./ezno-next/target/release/ezno check demo.tsx --timings"
+run_tool "Ezno (next 2)" "./ezno-next/target/release/ezno check dēmo.tsx --timings"
 # run_tool "Ezno (no diagnostics printing)" "./ezno/target/release/ezno check demo.tsx --max-diagnostics 0 --timings"
-run_tool "TSC" "tsc --pretty --noEmit --noLibCheck --jsx preserve --diagnostics demo.tsx"
+run_tool "TSC" "tsc --pretty --noEmit --skipLibCheck --jsx preserve --diagnostics demo.tsx"
 # run_tool "STC" "./stc/target/release/stc test demo.tsx"
 
 echo "::endgroup::"
@@ -34,9 +35,27 @@ echo "::endgroup::"
 # echo "## Benchmark files" >> $GITHUB_STEP_SUMMARY
 
 # Ezno and TSC
-# echo "\`\`\`
-# $(hyperfine -i './ezno/target/release/ezno check ./demo.tsx' 'tsc --pretty --noEmit --jsx preserve demo.tsx')
-# \`\`\`" >> $GITHUB_STEP_SUMMARY
+echo "\`\`\`
+$(hyperfine -i \
+  './ezno/target/release/ezno check ./demo.tsx' \
+  './ezno-next/target/release/ezno check ./demo.tsx' \
+  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx' \
+)
+\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+echo "\`\`\`
+$(hyperfine -i \
+  './ezno/target/release/ezno check ./demo.tsx' \
+  './ezno-next/target/release/ezno check ./dēmo.tsx'
+)
+\`\`\`" >> $GITHUB_STEP_SUMMARY
+echo "\`\`\`
+
+$(hyperfine -i \
+  './ezno-next/target/release/ezno check ./dēmo.tsx' \
+  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./dēmo.tsx'
+)
+\`\`\`" >> $GITHUB_STEP_SUMMARY
 
 # # Ezno, STC and TSC
 # H1=$(hyperfine -i './ezno/target/release/ezno check ./demo.tsx' './stc/target/release/stc test demo.tsx' 'tsc --pretty --noEmit --jsx preserve demo.tsx')

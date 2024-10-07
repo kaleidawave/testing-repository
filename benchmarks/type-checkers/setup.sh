@@ -47,7 +47,11 @@ cargo build --manifest-path ezno-next/Cargo.toml --release --bin ezno
 ./ezno/target/release/ezno-next info
 
 echo "::group::Build demo files"
-cargo run --manifest-path ezno/Cargo.toml -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md --comment-headers --out ./demo.tsx
+cargo run --manifest-path ezno/Cargo.toml \
+    -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md \
+    --comment-headers --out ./demo.tsx
+
+cat demo.tsx demo.tsx demo.tsx > dēmo.tsx
 
 cp ./demo.tsx $ARTIFACTS_FOLDER
 

@@ -47,8 +47,9 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ~/home/linuxbrew/
-            /cached_targets/
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
+            **/target/*
+          key: ${{ runner.os }}
+          save-always: true
 
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
       - name: Make executable

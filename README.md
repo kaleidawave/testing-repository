@@ -1,4 +1,6 @@
-[testing_repo](https://github.com/kaleidawave/testing_repo)
+[testing-repository](https://github.com/kaleidawave/testing-repository).
+
+[See latest runs](https://github.com/kaleidawave/testing-repository/actions)
 
 ### Video requests
 
@@ -17,6 +19,13 @@ Items prefixed with
 - `video` only download video
 - nothing try to download the best audio and video
 
-- Add `(xxxxp)` after the URL to set the min height
+- Add `(XXXXp)` after the URL to set the min height
 - The next two items denote the timestamps from where to trim ( #TODO there should be a way to say the whole video )
 - Add `=...` to set the output name
+
+### Benchmarks
+
+Multiple can be run similatously by calculating path changes.
+
+- `setup.sh`: setup scripts
+- `run.sh`
