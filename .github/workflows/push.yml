@@ -22,6 +22,12 @@ jobs:
             src/compiler/checker.ts
             src/compiler/parser.ts
           retention-days: 14
+
+  call-workflow-passing-data:
+    uses: ./.github/workflows/reusable.yml
+    if: true
+    with:
+      something: test
   
   simd_example:
     runs-on: ubuntu-latest
