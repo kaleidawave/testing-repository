@@ -29,9 +29,15 @@ jobs:
     with:
       something: test
 
-  ezno-build-with-info:
+  get-ezno-information:
     if: true
     runs-on: ubuntu-latest
+    outputs:
+      LATEST_EZNO_VERSION: ${{ steps.get-version.outputs.LATEST_EZNO_VERSION }}
+      LATEST_EZNO_VERSION_DASH: ${{ steps.get-version.outputs.LATEST_EZNO_VERSION_DASH }}
+      SPONSORS: ${{ steps.get-sponsors-and-contributors.outputs.SPONSORS }}
+      CONTRIBUTORS: ${{ steps.get-sponsors-and-contributors.outputs.CONTRIBUTORS }}
+      
     steps:
       # - uses: actions/checkout@v4
       #   with:
@@ -39,14 +45,13 @@ jobs:
       #     ref: origin/cli-and-ci-improvements-and-others
       #     fetch-tags: true
       - name: get ezno
-        run: |
-          git clone https://github.com/kaleidawave/ezno.git --branch cli-and-ci-improvements-and-others .
+        run: git clone https://github.com/kaleidawave/ezno.git --branch cli-and-ci-improvements-and-others .
 
       - name: Get version
         id: get-version
         run: |
           # if [ $#{{ inputs.ezno-version }} = 'latest' ]; then
-            echo "::group::Ezno tags"
+            echo "::group::Listing ezno tags"
             git for-each-ref --sort=creatordate --format '%(refname:short)' 'refs/tags/release/ezno-[0-9]*'
             echo "::endgroup::"
 
@@ -63,7 +68,8 @@ jobs:
           #   echo "LATEST_EZNO_VERSION_DASH=${TAG//./-}" >> "$GITHUB_OUTPUT"
           # fi
 
-      - id: get-sponsors-and-contributors
+      - name: Get sponsors and contributors 
+        id: get-sponsors-and-contributors
         run: |
           SQP='.data.user.sponsorshipsAsMaintainer.edges | map(.node.sponsor.name // .node.sponsor.login) | join(",")'
           GQL_SQ='{ user(login: "kaleidawave") { sponsorshipsAsMaintainer(first: 100, activeOnly: false) { edges { node { sponsor { name, login } } } } } }'
@@ -80,36 +86,55 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      - name: Build binary
-        run: cargo build
-        env:
-          SPONSORS: ${{ steps.get-sponsors-and-contributors.outputs.SPONSORS }}
-          CONTRIBUTORS: ${{ steps.get-sponsors-and-contributors.outputs.CONTRIBUTORS }}
+  build-ezno:
+    if: true
+    needs: [get-ezno-information]
+    strategy:
+      matrix:
+        os: 
+          # - ubuntu-latest 
+          - windows-latest
+        include:
+          - os: windows-latest
+            platform-name: x86_64-pc-windows
+            executable-extension: ".exe"
+          - os: ubuntu-latest
+            platform-name: x86_64-unknown-linux
+      fail-fast: false
 
-      - name: Build JS
-        run: |
-          npm ci
-          npm run build
-          # TODO temp check
-          ls dist
-        working-directory: src/js-cli-and-library
-        env:
-          SPONSORS: ${{ steps.get-sponsors-and-contributors.outputs.SPONSORS }}
-          CONTRIBUTORS: ${{ steps.get-sponsors-and-contributors.outputs.CONTRIBUTORS }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: get ezno
+      run: git clone https://github.com/kaleidawave/ezno.git --branch cli-and-ci-improvements-and-others .
+    - name: Build binary
+      run: cargo build
+      env:
+        SPONSORS: ${{ needs.get-ezno-information.outputs.SPONSORS }}
+        CONTRIBUTORS: ${{ needs.get-ezno-information.outputs.CONTRIBUTORS }}
 
-        # mv "target/release/ezno$#{{ matrix.executable-extension }}" "artifacts/ezno-$#{{ needs.get-build-info.outputs.LATEST_EZNO_VERSION_DASH }}-$#{{ matrix.platform_name }}$#{{ matrix.executable-extension }}"
-      - name: Rename and move release assets
-        run: |
-          mkdir artifacts
-          mv target/release/ezno.exe artifacts/ezno-latest-window.exe
-          mv src/js-cli-and-library/dist artifacts/wasm
+    - name: Build JS
+      run: |
+        npm ci
+        npm run build
+        # TODO temp check
+        ls dist
+      working-directory: src/js-cli-and-library
+      env:
+        SPONSORS: ${{ needs.get-ezno-information.outputs.SPONSORS }}
+        CONTRIBUTORS: ${{ needs.get-ezno-information.outputs.CONTRIBUTORS }}
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts-test
-          path: artifacts/*
-          if-no-files-found: error
-          retention-days: 7
+    - name: Rename and move release assets
+      run: |
+        mkdir artifacts
+        mv "target/release/ezno${{ matrix.executable-extension }}" "artifacts/ezno-${{ needs.get-ezno-information.outputs.LATEST_EZNO_VERSION_DASH }}-${{ matrix.os }}${{ matrix.executable-extension }}"
+        mv src/js-cli-and-library/dist artifacts/wasm
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-test
+        path: artifacts/*
+        if-no-files-found: error
+        retention-days: 7
       
   lean-4-ffi:
     if: true
@@ -124,6 +149,7 @@ jobs:
             executable-extension: ".exe"
           - os: ubuntu-latest
             elan: elan-x86_64-unknown-linux-gnu.tar.gz
+            # elan_path: /home/runner/.elan/bin
       fail-fast: false
 
     steps:
@@ -143,6 +169,7 @@ jobs:
         run: |
           ../elan-init${{ matrix.executable-extension }} -V
           ../elan-init${{ matrix.executable-extension }} -y -v
+          echo "$GITHUB_WORKSPACE/.elan/bin" >> $GITHUB_PATH
 
           lean --help
           elan --help
