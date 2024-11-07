@@ -65,18 +65,12 @@ jobs:
 
       - id: get-sponsors-and-contributors
         run: |
-          QUERY_PATH="'.data.user.sponsorshipsAsMaintainer.edges | map(.node.sponsor.name // .node.sponsor.login) | join(",")'"
-          SPONSORS=$(gh api graphql -f query='{
-            user(login: "kaleidawave") {
-              sponsorshipsAsMaintainer(first: 100, activeOnly: false) {
-                edges { node { sponsor { name, login } } }
-              }
-            }
-          }' -q $QUERY_PATH)
+          SQP='.data.user.sponsorshipsAsMaintainer.edges | map(.node.sponsor.name // .node.sponsor.login) | join(",")'
+          GQL_SQ='{ user(login: "kaleidawave") { sponsorshipsAsMaintainer(first: 100, activeOnly: false) { edges { node { sponsor { name, login } } } } } }'
+          SPONSORS=$(gh api graphql -f query="$GQL_SQ" -q "$SQP")
 
-          CONTRIBUTORS=$(
-            gh pr list --state merged --json author | jq 'map(.author.name // .author.login) | unique | join(",")' --raw-output
-          )
+          CQP='map(.author.name // .author.login) | unique | join(",")'
+          CONTRIBUTORS=$(gh pr list --state merged --json author | jq "$CQP" --raw-output)
             
           echo "SPONSORS=$SPONSORS" >> "$GITHUB_OUTPUT"
           echo "CONTRIBUTORS=$CONTRIBUTORS" >> "$GITHUB_OUTPUT"
@@ -147,7 +141,12 @@ jobs:
 
       - name: Install Lean here
         run: |
-          ../elan-init${{ matrix.executable-extension }} -y
+          ../elan-init${{ matrix.executable-extension }} -V
+          ../elan-init${{ matrix.executable-extension }} -y -v
+
+          lean --help
+          elan --help
+          lake --help
         working-directory: RustFFI
         
       - name: Run RustFFI
@@ -157,24 +156,24 @@ jobs:
 
 
         
-      - uses: actions/checkout@v4
-        with:
-          repository: marcusrossel/lean-egg
-          path: lean-egg
+      # - uses: actions/checkout@v4
+      #   with:
+      #     repository: marcusrossel/lean-egg
+      #     path: lean-egg
 
-      - name: Install Lean here
-        run: |
-          ../elan-init${{ matrix.executable-extension }} -y
-        working-directory: lean-egg
+      # - name: Install Lean here
+      #   run: |
+      #     ../elan-init${{ matrix.executable-extension }} -y
+      #   working-directory: lean-egg
 
-      - uses: leanprover/lean-action@v1
-        with:
-          lake-package-directory: lean-egg
+      # - uses: leanprover/lean-action@v1
+      #   with:
+      #     lake-package-directory: lean-egg
 
-      - name: Run lean-egg
-        run: lake build
-        working-directory: lean-egg
-        continue-on-error: true
+      # - name: Run lean-egg
+      #   run: lake build
+      #   working-directory: lean-egg
+      #   continue-on-error: true
   
   simd_example:
     runs-on: ubuntu-latest
