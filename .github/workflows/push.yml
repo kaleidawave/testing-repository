@@ -65,7 +65,7 @@ jobs:
 
       - id: get-sponsors-and-contributors
         run: |
-          QUERY_PATH=".data.user.sponsorshipsAsMaintainer.edges | map(.node.sponsor.name // .node.sponsor.login) | join(",")"
+          QUERY_PATH="'.data.user.sponsorshipsAsMaintainer.edges | map(.node.sponsor.name // .node.sponsor.login) | join(",")'"
           SPONSORS=$(gh api graphql -f query='{
             user(login: "kaleidawave") {
               sponsorshipsAsMaintainer(first: 100, activeOnly: false) {
@@ -142,6 +142,7 @@ jobs:
         with:
           repository: leanprover/elan
           fileName: ${{ matrix.elan }}
+          tag: v3.1.1
           extract: true
 
       - name: Install Lean here
