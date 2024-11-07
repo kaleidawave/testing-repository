@@ -33,11 +33,14 @@ jobs:
     if: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: kaleidwave/ezno
-          ref: origin/cli-and-ci-improvements-and-others
-          fetch-tags: true
+      # - uses: actions/checkout@v4
+      #   with:
+      #     repository: kaleidwave/ezno
+      #     ref: origin/cli-and-ci-improvements-and-others
+      #     fetch-tags: true
+      - name: get ezno
+        run: |
+          git clone https://github.com/kaleidawave/ezno.git --branch cli-and-ci-improvements-and-others
 
       - name: Get version
         id: get-version
@@ -121,16 +124,23 @@ jobs:
           repository: argumentcomputer/RustFFI.lean
           path: RustFFI
         
-      - uses: leanprover/lean-action@v1
       - name: Run RustFFI
         run: lake exe ffi
         working-directory: RustFFI
         continue-on-error: true
 
+      - uses: leanprover/lean-action@v1
+        with: 
+          lake-package-directory: RustFFI
+
       - uses: actions/checkout@v4
         with:
           repository: marcusrossel/lean-egg
           path: lean-egg
+
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: lean-egg
 
       - name: Run lean-egg
         run: lake build
