@@ -25,9 +25,88 @@ jobs:
 
   call-workflow-passing-data:
     uses: ./.github/workflows/reusable.yml
-    if: true
+    if: false
     with:
       something: test
+
+  ezno-build-with-info:
+    if: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: kaleidwave/ezno
+          ref: cli-and-ci-improvements-and-others
+          fetch-tags: true
+
+      - name: Get version
+        id: get-version
+        run: |
+          # if [ $#{{ inputs.ezno-version }} = 'latest' ]; then
+            echo "::group::Ezno tags"
+            git for-each-ref --sort=creatordate --format '%(refname:short)' 'refs/tags/release/ezno-[0-9]*'
+            echo "::endgroup::"
+
+            TAG=$(git for-each-ref --sort=creatordate --format '%(refname:short)' 'refs/tags/release/ezno-[0-9]*' | tail -n 1 | cut -c 14-)
+
+            echo "::debug::Releasing with found version $TAG"
+            echo "LATEST_EZNO_VERSION=${TAG}" >> "$GITHUB_OUTPUT"
+            echo "LATEST_EZNO_VERSION_DASH=${TAG//./-}" >> "$GITHUB_OUTPUT"
+          # else
+          #   TAG="$#{{ inputs.ezno-version }}"
+
+          #   echo "::debug::Releasing with specific version $TAG"
+          #   echo "LATEST_EZNO_VERSION=${TAG}" >> "$GITHUB_OUTPUT"
+          #   echo "LATEST_EZNO_VERSION_DASH=${TAG//./-}" >> "$GITHUB_OUTPUT"
+          # fi
+
+      - id: get-sponsors-and-contributors
+        run: |
+          SPONSORS=$(gh api graphql -f query='{
+            user(login: "kaleidawave") {
+              sponsorshipsAsMaintainer(first: 100, activeOnly: false) {
+                edges {
+                  node {
+                    sponsor {
+                      name, login
+                    }
+                  }
+                }
+              }
+            }
+          }' -q '.data.user.sponsorshipsAsMaintainer.edges | map(.node.sponsor.name // .node.sponsor.login) | join(",")')
+
+          CONTRIBUTORS=$(
+            gh pr list --state merged --json author | jq 'map(.author.name // .author.login) | unique | join(",")' --raw-output
+          )
+            
+          echo "SPONSORS=$SPONSORS" >> "$GITHUB_OUTPUT"
+          echo "CONTRIBUTORS=$CONTRIBUTORS" >> "$GITHUB_OUTPUT"
+          echo "::debug::CONTRIBUTORS=$CONTRIBUTORS and SPONSORS=$SPONSORS"
+
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Build binary
+        run: cargo build
+        env:
+          SPONSORS: ${{ steps.get-sponsors-and-contributors.outputs.SPONSORS }}
+          CONTRIBUTORS: ${{ steps.get-sponsors-and-contributors.outputs.CONTRIBUTORS }}
+
+      - name: Rename and move release assets
+        run: |
+          mkdir artifacts
+          # mv target/release/ezno$#{{ matrix.executable-extension }} "artifacts/ezno-$#{{ needs.get-build-info.outputs.LATEST_EZNO_VERSION_DASH }}-$#{{ matrix.platform_name }}$#{{ matrix.executable-extension }}"
+          mv target/release/ezno.exe "artifacts/ezno-latest-window.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-test
+          path: artifacts/*
+          if-no-files-found: error
+          retention-days: 1
+      
   
   simd_example:
     runs-on: ubuntu-latest
