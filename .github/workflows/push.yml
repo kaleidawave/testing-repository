@@ -52,32 +52,27 @@ jobs:
 
             TAG=$(git for-each-ref --sort=creatordate --format '%(refname:short)' 'refs/tags/release/ezno-[0-9]*' | tail -n 1 | cut -c 14-)
 
-            echo "::debug::Releasing with found version $TAG"
+            echo "::notice::Releasing with found version $TAG"
             echo "LATEST_EZNO_VERSION=${TAG}" >> "$GITHUB_OUTPUT"
             echo "LATEST_EZNO_VERSION_DASH=${TAG//./-}" >> "$GITHUB_OUTPUT"
           # else
           #   TAG="$#{{ inputs.ezno-version }}"
 
-          #   echo "::debug::Releasing with specific version $TAG"
+          #   echo "::notice::Releasing with specific version $TAG"
           #   echo "LATEST_EZNO_VERSION=${TAG}" >> "$GITHUB_OUTPUT"
           #   echo "LATEST_EZNO_VERSION_DASH=${TAG//./-}" >> "$GITHUB_OUTPUT"
           # fi
 
       - id: get-sponsors-and-contributors
         run: |
+          QUERY_PATH=".data.user.sponsorshipsAsMaintainer.edges | map(.node.sponsor.name // .node.sponsor.login) | join(",")"
           SPONSORS=$(gh api graphql -f query='{
             user(login: "kaleidawave") {
               sponsorshipsAsMaintainer(first: 100, activeOnly: false) {
-                edges {
-                  node {
-                    sponsor {
-                      name, login
-                    }
-                  }
-                }
+                edges { node { sponsor { name, login } } }
               }
             }
-          }' -q '.data.user.sponsorshipsAsMaintainer.edges | map(.node.sponsor.name // .node.sponsor.login) | join(",")')
+          }' -q $QUERY_PATH)
 
           CONTRIBUTORS=$(
             gh pr list --state merged --json author | jq 'map(.author.name // .author.login) | unique | join(",")' --raw-output
@@ -85,7 +80,7 @@ jobs:
             
           echo "SPONSORS=$SPONSORS" >> "$GITHUB_OUTPUT"
           echo "CONTRIBUTORS=$CONTRIBUTORS" >> "$GITHUB_OUTPUT"
-          echo "::debug::CONTRIBUTORS=$CONTRIBUTORS and SPONSORS=$SPONSORS"
+          echo "::notice::CONTRIBUTORS=$CONTRIBUTORS and SPONSORS=$SPONSORS"
 
         shell: bash
         env:
@@ -97,18 +92,30 @@ jobs:
           SPONSORS: ${{ steps.get-sponsors-and-contributors.outputs.SPONSORS }}
           CONTRIBUTORS: ${{ steps.get-sponsors-and-contributors.outputs.CONTRIBUTORS }}
 
+      - name: Build JS
+        run: |
+          npm ci
+          npm run build
+          # TODO temp check
+          ls dist
+        working-directory: src/js-cli-and-library
+        env:
+          SPONSORS: ${{ steps.get-sponsors-and-contributors.outputs.SPONSORS }}
+          CONTRIBUTORS: ${{ steps.get-sponsors-and-contributors.outputs.CONTRIBUTORS }}
+
+        # mv "target/release/ezno$#{{ matrix.executable-extension }}" "artifacts/ezno-$#{{ needs.get-build-info.outputs.LATEST_EZNO_VERSION_DASH }}-$#{{ matrix.platform_name }}$#{{ matrix.executable-extension }}"
       - name: Rename and move release assets
         run: |
           mkdir artifacts
-          # mv target/release/ezno$#{{ matrix.executable-extension }} "artifacts/ezno-$#{{ needs.get-build-info.outputs.LATEST_EZNO_VERSION_DASH }}-$#{{ matrix.platform_name }}$#{{ matrix.executable-extension }}"
-          mv target/release/ezno.exe "artifacts/ezno-latest-window.exe
+          mv target/release/ezno.exe artifacts/ezno-latest-window.exe
+          mv src/js-cli-and-library/dist artifacts/wasm
 
       - uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-test
           path: artifacts/*
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 7
       
   lean-4-ffi:
     if: true
@@ -117,6 +124,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            elan: elan-x86_64-pc-windows-msvc.zip
+            executable-extension: ".exe"
+          - os: ubuntu-latest
+            elan: elan-x86_64-unknown-linux-gnu.tar.gz
       fail-fast: false
 
     steps:
@@ -125,8 +138,15 @@ jobs:
           repository: argumentcomputer/RustFFI.lean
           path: RustFFI
 
-      - run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
-        shell: bash
+      - uses: robinraju/release-downloader@v1
+        with:
+          repository: leanprover/elan
+          fileName: ${{ matrix.elan }}
+          extract: true
+
+      - name: Install Lean here
+        run: |
+          ../elan-init${{ matrix.executable-extension }} -y
         working-directory: RustFFI
         
       - name: Run RustFFI
@@ -141,8 +161,9 @@ jobs:
           repository: marcusrossel/lean-egg
           path: lean-egg
 
-      - run: curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
-        shell: bash
+      - name: Install Lean here
+        run: |
+          ../elan-init${{ matrix.executable-extension }} -y
         working-directory: lean-egg
 
       - uses: leanprover/lean-action@v1
@@ -204,32 +225,32 @@ jobs:
         if: false
         continue-on-error: true
         run: |
-          valgrind --log-file=out-mem1.txt ./target/debug/examples/memory 100
-          valgrind --log-file=out-mem2.txt ./target/debug/examples/memory 1000
+          valgrind --log-file=out-mem1.txt ./target/notice/examples/memory 100
+          valgrind --log-file=out-mem2.txt ./target/notice/examples/memory 1000
 
           # Doesn't count `stack`. (not sure if there is a flag)
-          # valgrind --log-file=out-stack-allocation.txt ./target/debug/examples/memory_stack
+          # valgrind --log-file=out-stack-allocation.txt ./target/notice/examples/memory_stack
 
           # All works well
-          # valgrind --log-file=out-mem3.txt ./target/debug/examples/memory 1000000
-          # valgrind --log-file=out-mem4.txt ./target/debug/examples/memory 8000000
-          # valgrind --log-file=out-leak.txt ./target/debug/examples/leak
-          # valgrind --log-file=out-leak_string.txt ./target/debug/examples/leak_string
+          # valgrind --log-file=out-mem3.txt ./target/notice/examples/memory 1000000
+          # valgrind --log-file=out-mem4.txt ./target/notice/examples/memory 8000000
+          # valgrind --log-file=out-leak.txt ./target/notice/examples/leak
+          # valgrind --log-file=out-leak_string.txt ./target/notice/examples/leak_string
 
       - name: Run callgrind
         working-directory: one-off/memory_and_cpu_cycles
         continue-on-error: true
         run: |
-          valgrind --tool=callgrind --callgrind-out-file=out-cpu1-1.txt ./target/debug/examples/cpu 1000
-          valgrind --tool=callgrind --callgrind-out-file=out-cpu1-2.txt ./target/debug/examples/cpu 1000
+          valgrind --tool=callgrind --callgrind-out-file=out-cpu1-1.txt ./target/notice/examples/cpu 1000
+          valgrind --tool=callgrind --callgrind-out-file=out-cpu1-2.txt ./target/notice/examples/cpu 1000
 
           valgrind --tool=callgrind \
           --callgrind-out-file=out-cpu1-threads1-1.txt \
-          ./target/debug/examples/cpu_threads 1000
+          ./target/notice/examples/cpu_threads 1000
 
           valgrind --tool=callgrind \
           --callgrind-out-file=out-cpu1-threads1-2.txt \
-          ./target/debug/examples/cpu_threads 1000
+          ./target/notice/examples/cpu_threads 1000
 
       - name: Run callgrind (release)
         working-directory: one-off/memory_and_cpu_cycles
@@ -237,16 +258,16 @@ jobs:
         run: |
           cargo build --release --example cpu; cargo build --release --example cpu_threads;
 
-          valgrind --tool=callgrind --callgrind-out-file=out-cpu2-1.txt ./target/debug/examples/cpu 1000
-          valgrind --tool=callgrind --callgrind-out-file=out-cpu2-2.txt ./target/debug/examples/cpu 1000
+          valgrind --tool=callgrind --callgrind-out-file=out-cpu2-1.txt ./target/notice/examples/cpu 1000
+          valgrind --tool=callgrind --callgrind-out-file=out-cpu2-2.txt ./target/notice/examples/cpu 1000
 
           valgrind --tool=callgrind \
           --callgrind-out-file=out-cpu2-threads1-1.txt \
-          ./target/debug/examples/cpu_threads 1000
+          ./target/notice/examples/cpu_threads 1000
 
           valgrind --tool=callgrind \
           --callgrind-out-file=out-cpu2-threads1-2.txt \
-          ./target/debug/examples/cpu_threads 1000
+          ./target/notice/examples/cpu_threads 1000
 
       - uses: actions/upload-artifact@v4
         with:
@@ -365,7 +386,7 @@ jobs:
           cat demo.tsx
           echo "::endgroup::"
 
-          command_output=$(./target/debug/ezno check demo.tsx --timings --max-diagnostics all 2>&1 || true)
+          command_output=$(./target/notice/ezno check demo.tsx --timings --max-diagnostics all 2>&1 || true)
           diagnostics=""; statistics=""; found_splitter=false;
 
           echo "::group::Ouput"
@@ -471,7 +492,7 @@ jobs:
         run: cargo clean && time cargo build
         working-directory: feature
 
-  time-ezno-debug-and-does-cli-have-an-effect:
+  time-ezno-notice-and-does-cli-have-an-effect:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: false
@@ -500,11 +521,11 @@ jobs:
         working-directory: ezno
       - name: Update
         run: |
-          ./target/debug/ezno info
+          ./target/notice/ezno info
           
-          ./target/debug/ezno experimental upgrade
+          ./target/notice/ezno experimental upgrade
           
-          ./target/debug/ezno info
+          ./target/notice/ezno info
         working-directory: ezno
 
   get-flow:
