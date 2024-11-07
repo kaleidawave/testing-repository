@@ -98,16 +98,19 @@ jobs:
           - os: windows-latest
             platform-name: x86_64-pc-windows
             executable-extension: ".exe"
-          - os: ubuntu-latest
-            platform-name: x86_64-unknown-linux
+          # - os: ubuntu-latest
+          #   platform-name: x86_64-unknown-linux
       fail-fast: false
+
+    env:
+      LEVEL: debug
 
     runs-on: ${{ matrix.os }}
     steps:
     - name: get ezno
       run: git clone https://github.com/kaleidawave/ezno.git --branch cli-and-ci-improvements-and-others .
     - name: Build binary
-      run: cargo build
+      run: cargo build --profile ${{ env.LEVEL }}
       env:
         SPONSORS: ${{ needs.get-ezno-information.outputs.SPONSORS }}
         CONTRIBUTORS: ${{ needs.get-ezno-information.outputs.CONTRIBUTORS }}
@@ -126,7 +129,7 @@ jobs:
     - name: Rename and move release assets
       run: |
         mkdir artifacts
-        mv "target/release/ezno${{ matrix.executable-extension }}" "artifacts/ezno-${{ needs.get-ezno-information.outputs.LATEST_EZNO_VERSION_DASH }}-${{ matrix.os }}${{ matrix.executable-extension }}"
+        mv "target/${{ env.LEVEL }}/ezno${{ matrix.executable-extension }}" "artifacts/ezno-${{ needs.get-ezno-information.outputs.LATEST_EZNO_VERSION_DASH }}-${{ matrix.os }}${{ matrix.executable-extension }}"
         mv src/js-cli-and-library/dist artifacts/wasm
 
     - uses: actions/upload-artifact@v4
@@ -147,9 +150,10 @@ jobs:
           - os: windows-latest
             elan: elan-x86_64-pc-windows-msvc.zip
             executable-extension: ".exe"
+            elan_path: \home\runner\.elan\bin
           - os: ubuntu-latest
             elan: elan-x86_64-unknown-linux-gnu.tar.gz
-            # elan_path: /home/runner/.elan/bin
+            elan_path: /home/runner/.elan/bin
       fail-fast: false
 
     steps:
@@ -169,7 +173,11 @@ jobs:
         run: |
           ../elan-init${{ matrix.executable-extension }} -V
           ../elan-init${{ matrix.executable-extension }} -y -v
+          echo "::notice::$GITHUB_WORKSPACE/.elan/bin"
+          ls $GITHUB_WORKSPACE/.elan/bin
           echo "$GITHUB_WORKSPACE/.elan/bin" >> $GITHUB_PATH
+          # Try this
+          echo "${{ matrix.elan_path }}" >> $GITHUB_PATH
 
           lean --help
           elan --help
