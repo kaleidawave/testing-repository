@@ -24,22 +24,21 @@ jobs:
         run: | 
           wasm-pack build --target web --out-name build
 
-          jq --help
+          # Add type definition references
+          build_ts_reference='/// <reference types="./build.d.ts"/>'
+          mv pkg/build.js temp
+          cat <(echo "$build_ts_reference") temp >> pkg/build.js
+          rm temp
 
-          echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' > pkg/main.js
+          # Create main.js with same reference and auto-initialisation
+          echo "$build_ts_reference" > pkg/main.js
+          echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
 
           modifications='.module = "main.js" | .main = "main.js" | .exports["./uninitialised"] = "./build.js" | .exports["."] = "./main.js"'
-
           cat pkg/package.json | jq "$modifications" > pkg/package.json
-
-          echo "/// <reference types="./build.d.ts" />" >> pkg/main.js
-          echo "/// <reference types="./build.d.ts" />" >> pkg/build.js
 
           selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
           cat pkg/package.json | jq "$selections" > pkg/jsr.json
-
-          cat pkg/package.json | jq
-          cat pkg/jsr.json | jq
 
           cd pkg && deno publish --dry-run && cd ..
 
