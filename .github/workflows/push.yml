@@ -20,7 +20,49 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: vx.x.x
-      - name: Build and publish JS packages
+      - name: Build and publish JS packages 1
+        continue-on-error: true
+        run: | 
+          wasm-pack build --target web --out-name build
+
+          # Add type definition references
+          build_ts_reference='/// <reference types="./build.d.ts"/>'
+          mv pkg/build.js temp
+          cat <(echo "$build_ts_reference") temp >> pkg/build.js
+          rm temp
+
+          # Create main.js with same reference and auto-initialisation
+          echo "$build_ts_reference" > pkg/main.js
+          echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
+
+          echo "::group::Files"
+          ls pkg
+          cat pkg/main.js
+          echo "::endgroup::"
+          
+          modifications='.module = "main.js" | .main = "main.js" | .exports["./uninitialised"] = "./build.js" | .exports["."] = "./main.js"'
+          cat pkg/package.json | jq "$modifications" > pkg/package.json
+
+          selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
+          cat pkg/package.json | jq "$selections" > pkg/jsr.json
+
+          echo "::group::Files"
+          cat pkg/package.json | jq "$modifications"
+          cat pkg/package.json | jq "$selections"
+          jq "$modifications" pkg/package.json
+          jq "$selections" pkg/package.json
+          echo "::endgroup::"
+          
+          cd pkg && deno publish --dry-run && cd ..
+          
+          echo "::group::Files2"
+          jq "$modifications" pkg/package.json > pkg/package.json
+          jq "$selections" pkg/package.json > pkg/jsr.json
+          cd pkg && deno publish --dry-run && cd ..
+          echo "::endgroup::"
+
+      - name: Build and publish JS packages 2
+        continue-on-error: true
         run: | 
           wasm-pack build --target web --out-name build
 
@@ -35,11 +77,11 @@ jobs:
           echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
 
           modifications='.module = "main.js" | .main = "main.js" | .exports["./uninitialised"] = "./build.js" | .exports["."] = "./main.js"'
-          cat pkg/package.json | jq "$modifications" > pkg/package.json
+          jq "$modifications" pkg/package.json > pkg/package.json
 
           selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
-          cat pkg/package.json | jq "$selections" > pkg/jsr.json
-
+          jq "$selections" pkg/package.json > pkg/jsr.json
+          
           cd pkg && deno publish --dry-run && cd ..
 
   # Because of a current problem with the GitHub website
