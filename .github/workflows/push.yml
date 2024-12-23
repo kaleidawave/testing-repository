@@ -23,10 +23,11 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: vx.x.x
-      - run: git apply testing-repository/one-off/simple-markdown-parser.diff
+      - run: |
+          git apply testing-repository/one-off/simple-markdown-parser.diff
+          echo src/extras/emit.rs
         
       - name: Build and publish JS packages 1
-        continue-on-error: true
         run: | 
           wasm-pack build --target web --out-name build
 
@@ -41,17 +42,17 @@ jobs:
           echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
           
           modifications='.module = "main.js" | .main = "main.js" | .exports["./uninitialised"] = "./build.js" | .exports["."] = "./main.js"'
-          cat pkg/package.json | jq "$modifications" > pkg/package.json
+          jq "$modifications" pkg/package.json > pkg/package.json
 
           selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
-          cat pkg/package.json | jq "$selections" > pkg/jsr.json
+          jq "$selections" pkg/package.json > pkg/jsr.json
 
-          # sleep 2
-
-          cd pkg && deno publish --dry-run && cd ..
+      - name: Publish 2
+        continue-on-error: true
+        run: deno publish --dry-run
+        working-directory: pkg
 
       - name: Build and publish JS packages 2
-        continue-on-error: true
         run: | 
           wasm-pack build --target web --out-name build
 
@@ -71,9 +72,12 @@ jobs:
           selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
           cat pkg/package.json | jq "$selections" > pkg/jsr.json
 
-          sleep 2
+          cat pkg/package.json pkg/jsr.json
 
-          cd pkg && deno publish --dry-run && cd ..
+      - name: Publish 2
+        continue-on-error: true
+        run: deno publish --dry-run
+        working-directory: pkg
 
   # Because of a current problem with the GitHub website
   download_typescript_files:
