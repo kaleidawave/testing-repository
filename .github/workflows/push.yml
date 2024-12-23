@@ -42,7 +42,7 @@ jobs:
           echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
 
           echo "::group::a"
-          cat pkg/buid.js
+          cat pkg/build.js
           cat pkg/main.js
           echo "::endgroup::"
           
