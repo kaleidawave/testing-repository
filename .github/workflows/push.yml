@@ -14,12 +14,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: kaleidawave/simple-markdown-parser
+      - uses: actions/checkout@v4
+        with:
+          path: testing-repository
       - uses: jetli/wasm-pack-action@v0.4.0
         with:
           version: 'latest'
       - uses: denoland/setup-deno@v1
         with:
           deno-version: vx.x.x
+      - run: git apply testing-repository/one-off/simple-markdown-parser.diff
+        
       - name: Build and publish JS packages 1
         continue-on-error: true
         run: | 
@@ -34,11 +39,6 @@ jobs:
           # Create main.js with same reference and auto-initialisation
           echo "$build_ts_reference" > pkg/main.js
           echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
-
-          echo "::group::Files"
-          ls pkg
-          cat pkg/main.js
-          echo "::endgroup::"
           
           modifications='.module = "main.js" | .main = "main.js" | .exports["./uninitialised"] = "./build.js" | .exports["."] = "./main.js"'
           cat pkg/package.json | jq "$modifications" > pkg/package.json
@@ -46,20 +46,9 @@ jobs:
           selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
           cat pkg/package.json | jq "$selections" > pkg/jsr.json
 
-          echo "::group::Files"
-          cat pkg/package.json | jq "$modifications"
-          cat pkg/package.json | jq "$selections"
-          jq "$modifications" pkg/package.json
-          jq "$selections" pkg/package.json
-          echo "::endgroup::"
-          
+          # sleep 2
+
           cd pkg && deno publish --dry-run && cd ..
-          
-          echo "::group::Files2"
-          jq "$modifications" pkg/package.json > pkg/package.json
-          jq "$selections" pkg/package.json > pkg/jsr.json
-          cd pkg && deno publish --dry-run && cd ..
-          echo "::endgroup::"
 
       - name: Build and publish JS packages 2
         continue-on-error: true
@@ -75,13 +64,15 @@ jobs:
           # Create main.js with same reference and auto-initialisation
           echo "$build_ts_reference" > pkg/main.js
           echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
-
+          
           modifications='.module = "main.js" | .main = "main.js" | .exports["./uninitialised"] = "./build.js" | .exports["."] = "./main.js"'
-          jq "$modifications" pkg/package.json > pkg/package.json
+          cat pkg/package.json | jq "$modifications" > pkg/package.json
 
           selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
-          jq "$selections" pkg/package.json > pkg/jsr.json
-          
+          cat pkg/package.json | jq "$selections" > pkg/jsr.json
+
+          sleep 2
+
           cd pkg && deno publish --dry-run && cd ..
 
   # Because of a current problem with the GitHub website
