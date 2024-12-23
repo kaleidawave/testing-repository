@@ -28,67 +28,29 @@ jobs:
           cat src/extras/emit.rs
         
       - name: Build 1
+        continue-on-error: true
         run: | 
           wasm-pack build --target web --out-name build
 
           # Add type definition references
           build_ts_reference='/// <reference types="./build.d.ts"/>'
-          mv pkg/build.js temp.js
-          cat <(echo "$build_ts_reference") temp.js >> pkg/build.js
-          rm temp.js
+          mv pkg/build.js temp.build.js
+          cat <(echo "$build_ts_reference") temp.build.js >> pkg/build.js
+          rm temp.build.js
 
           # Create main.js with same reference and auto-initialisation
           echo "$build_ts_reference" > pkg/main.js
           echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
 
-          echo "::group::a"
-          cat pkg/build.js
-          cat pkg/main.js
-          echo "::endgroup::"
-          
-          echo "::group::b"
-          jq "$modifications" pkg/package.json > pkg/package.json
-          jq "$selections" pkg/package.json > pkg/jsr.json
-          echo "::endgroup::"
-          
           modifications='.module = "main.js" | .main = "main.js" | .exports["./uninitialised"] = "./build.js" | .exports["."] = "./main.js"'
-          jq "$modifications" pkg/package.json > pkg/package.json
-
           selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
-          jq "$selections" pkg/package.json > pkg/jsr.json
 
-          echo "::group::b"
-          cat pkg/package.json
-          cat pkg/jsr.json
-          echo "::endgroup::"
+          mv pkg/package.json temp.package.json
+          jq "$modifications" temp.package.json > pkg/package.json
+          rm temp.package.json
+          jq "$selections" pkg/package.json > pkg/jsr.json
 
       - name: Publish 1
-        continue-on-error: true
-        run: deno publish --dry-run
-        working-directory: pkg
-
-      - name: Build 2
-        run: |
-          rm pkg
-          wasm-pack build --target web --out-name build
-
-          # Add type definition references
-          build_ts_reference='/// <reference types="./build.d.ts"/>'
-          mv pkg/build.js temp.js
-          cat <(echo "$build_ts_reference") temp.js >> pkg/build.js
-          rm temp.js
-
-          # Create main.js with same reference and auto-initialisation
-          echo "$build_ts_reference" > pkg/main.js
-          echo 'import{initSync}from"./build.js";initSync({module:await fetch(import.meta.resolve("./build_bg.wasm")).then(r=>r.arrayBuffer())});export*from"./build.js";' >> pkg/main.js
-          
-          modifications='.module = "main.js" | .main = "main.js" | .exports["./uninitialised"] = "./build.js" | .exports["."] = "./main.js"'
-          cat pkg/package.json | jq "$modifications" > pkg/package.json
-
-          selections='{ name: ("@bengineering/" + .name), version: .version, license: .license, exclude: (.files | .[length] |= "main.js" | map("!./" + .)), exports: .exports }'
-          cat pkg/package.json | jq "$selections" > pkg/jsr.json
-
-      - name: Publish 2
         continue-on-error: true
         run: deno publish --dry-run
         working-directory: pkg
