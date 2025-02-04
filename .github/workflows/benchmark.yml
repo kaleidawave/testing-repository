@@ -68,21 +68,10 @@ jobs:
           ARTIFACTS_FOLDER: ${{ env.ARTIFACTS_FOLDER }}
         timeout-minutes: 5
 
-      - name: List artifacts
-        run: ls $ARTIFACTS_FOLDER
-        env:
-          ARTIFACTS_FOLDER: ${{ env.ARTIFACTS_FOLDER }}
-
-      - name: Upload artifacts 1
-        uses: actions/upload-artifact@v4
-        with:
-          if-no-files-found: ignore
-          name: artifacts-${{ matrix.path }}-1
-          path: ${{ env.ARTIFACTS_FOLDER }}
-
       - name: Upload artifacts 2
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: ignore
-          name: artifacts-${{ matrix.path }}-2
+          name: artifacts-${{ matrix.path }}
+          # Does not respect 'working_directory'
           path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}

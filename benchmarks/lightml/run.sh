@@ -1,3 +1,5 @@
+PROFILES="release,debug"
+
 CODE_FENCE='```'
 OUTPUT="
 ### Output
@@ -7,11 +9,7 @@ $CODE_FENCE
 
 ### Hyperfine
 "$CODE_FENCE"shell
-$(hyperfine ./target/release/example)
-$CODE_FENCE
-
-"$CODE_FENCE"shell
-$(hyperfine ./target/release/example ./target/debug/example)
+$(hyperfine -L profile $PROFILES './target/{profile}/example')
 $CODE_FENCE"
 
 echo "$OUTPUT" > $GITHUB_STEP_SUMMARY
@@ -22,6 +20,11 @@ valgrind --tool=callgrind --callgrind-out-file="$ARTIFACTS_FOLDER/out-cpu-releas
 valgrind --log-file="$ARTIFACTS_FOLDER/out-mem-debug.txt" ./target/debug/example
 valgrind --tool=callgrind --callgrind-out-file="$ARTIFACTS_FOLDER/out-cpu-debug.txt" ./target/debug/example
 
-ls $ARTIFACTS_FOLDER
+# Analyse results
+rg "summary: (.*)" -or '$1' -N --color never $ARTIFACTS_FOLDER/out-cpu-debug.txt
+rg "summary: (.*)" -or '$1' -N --color never $ARTIFACTS_FOLDER/out-cpu-release.txt
+
+rg "([0-9,]*) bytes allocated" -or '$1' -N --color never $ARTIFACTS_FOLDER/out-mem-debug.txt
+rg "([0-9,]*) bytes allocated" -or '$1' -N --color never $ARTIFACTS_FOLDER/out-mem-release.txt
 
 # samply record -s -o "$ARTIFACTS_FOLDER/out-samply.json.gz" ./target/release/example
