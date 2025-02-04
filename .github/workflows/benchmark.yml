@@ -49,7 +49,7 @@ jobs:
           key: ${{ runner.os }}
 
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
-      
+
       - name: Make executable
         run: |
           # run.sh and setup.sh might not be executable
@@ -68,9 +68,21 @@ jobs:
           ARTIFACTS_FOLDER: ${{ env.ARTIFACTS_FOLDER }}
         timeout-minutes: 5
 
-      - name: Upload artifacts
+      - name: List artifacts
+        run: ls $ARTIFACTS_FOLDER
+        env:
+          ARTIFACTS_FOLDER: ${{ env.ARTIFACTS_FOLDER }}
+
+      - name: Upload artifacts 1
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: ignore
-          name: artifacts-${{ matrix.path }}
+          name: artifacts-${{ matrix.path }}-1
           path: ${{ env.ARTIFACTS_FOLDER }}
+
+      - name: Upload artifacts 2
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: ignore
+          name: artifacts-${{ matrix.path }}-2
+          path: benchmarks/${{ matrix.path }}/${{ env.ARTIFACTS_FOLDER }}
