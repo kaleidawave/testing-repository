@@ -10,5 +10,8 @@ valgrind --help
 # Example file
 curl https://www.theguardian.com/uk > ./example.html
 
+# Build (debug) binary
+cargo build
+
 # Build (release) binary
 cargo build --release
