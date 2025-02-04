@@ -1,10 +1,10 @@
 # Performance tools
 brew install hyperfine
 sudo apt-get install valgrind
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/mstange/samply/releases/download/samply-v0.13.1/samply-installer.sh | sh
+# curl --proto '=https' --tlsv1.2 -LsSf https://github.com/mstange/samply/releases/download/samply-v0.13.1/samply-installer.sh | sh
 
 # Check they exist
-samply --help
+# samply --help
 valgrind --help
 
 # Example file
