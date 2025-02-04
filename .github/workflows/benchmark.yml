@@ -68,7 +68,7 @@ jobs:
           ARTIFACTS_FOLDER: ${{ env.ARTIFACTS_FOLDER }}
         timeout-minutes: 5
 
-      - name: Upload artifacts 2
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: ignore
