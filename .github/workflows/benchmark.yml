@@ -63,6 +63,8 @@ jobs:
 
       - name: Run benchmark
         run: ./run.sh
+        env:
+          ARTIFACTS_FOLDER: ${{ env.ARTIFACTS_FOLDER }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
