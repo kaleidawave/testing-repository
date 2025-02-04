@@ -34,8 +34,7 @@ jobs:
 
       - name: Get Date
         id: get-date
-        run: |
-          echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+        run: echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
         shell: bash
 
       - uses: actions/cache@v4
@@ -49,7 +48,6 @@ jobs:
             ~/home/linuxbrew/
             **/target/*
           key: ${{ runner.os }}
-          save-always: true
 
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
       - name: Make executable
@@ -60,11 +58,11 @@ jobs:
 
       - name: Run setup
         run: ./setup.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Run benchmark
         run: ./run.sh
-        env:
-          SOMETHING: 'hi'
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
