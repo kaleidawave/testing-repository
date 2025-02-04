@@ -9,7 +9,6 @@ on:
 jobs:
   run-benchmarks:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
 
     if: ${{ github.event.inputs.benchmarks == '' }}
     strategy:
@@ -50,6 +49,7 @@ jobs:
           key: ${{ runner.os }}
 
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
+      
       - name: Make executable
         run: |
           # run.sh and setup.sh might not be executable
@@ -60,15 +60,17 @@ jobs:
         run: ./setup.sh
         env:
           GH_TOKEN: ${{ github.token }}
+        timeout-minutes: 15
 
       - name: Run benchmark
         run: ./run.sh
         env:
           ARTIFACTS_FOLDER: ${{ env.ARTIFACTS_FOLDER }}
+        timeout-minutes: 5
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: ignore
           name: artifacts-${{ matrix.path }}
-          path: ./${{ env.ARTIFACTS_FOLDER }}
+          path: ${{ env.ARTIFACTS_FOLDER }}

@@ -2,7 +2,7 @@ CODE_FENCE='```'
 OUTPUT="
 ### Output
 "$CODE_FENCE"shell
-$(./target/release/example)
+$(./target/release/example 2>&1)
 $CODE_FENCE
 
 ### Hyperfine
