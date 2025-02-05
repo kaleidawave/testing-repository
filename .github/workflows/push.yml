@@ -7,8 +7,19 @@ on:
       - "one-off"
 
 jobs:
-  wasm_markdown_parser:
+  github_file_annotation:
     if: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun run run.ts
+        working-directory: one-off/github-file-annotations
+
+  wasm_markdown_parser:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
