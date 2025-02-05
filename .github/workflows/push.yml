@@ -401,7 +401,7 @@ jobs:
 
   ezno-tsc-check-perf:
     runs-on: ubuntu-latest
-    if: false
+    if: true
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
