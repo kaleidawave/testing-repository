@@ -418,7 +418,7 @@ jobs:
       - name: Run
         run: |
           for i in {1..10}; do
-            bun run ./one-off/tsc-perf-compare.ts
+            bun run ./one-off/tsc-perf-compare/run.ts
           done
 
   upload-artifacts:
