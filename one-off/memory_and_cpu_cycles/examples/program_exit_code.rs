@@ -4,9 +4,12 @@ use std::process::ExitCode;
 fn program(_i: i32) {}
 
 fn main() -> ExitCode {
-    for i in 0..10 {
-        black_box(program(i));
-    }
-    black_box(vec![0u8; 1000]);
+    let args = std::env::args().skip(1).collect::<Vec<_>>();
+    let to_allocate: usize = args.first().ok_or("expected memory size")?.parse()?;
+
+    let vec = vec![0u8; to_allocate];
+
+    eprintln!("Allocated {} bytes", vec.len());
+    std::hint::black_box(vec);
     ExitCode::FAILURE
 }

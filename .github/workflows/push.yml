@@ -317,8 +317,13 @@ jobs:
         if: true
         continue-on-error: true
         run: |
-          valgrind --error-exitcode=2 --log-file=out-mem1.txt ./target/debug/examples/program_exit_code
-          ls
+          { 
+            valgrind --log-file=out-mem1.txt ./target/debug/examples/program_exit_code 1000
+          } || true
+          { 
+            valgrind --log-file=out-mem2.txt ./target/debug/examples/program_exit_code 10000
+            echo $?
+          } || true
           cat out-mem1.txt
         
           # Doesn't count `stack`. (not sure if there is a flag)
@@ -337,7 +342,10 @@ jobs:
         if: true
         continue-on-error: true
         run: |
-          valgrind --error-exitcode=2 --tool=callgrind --callgrind-out-file=out-cpu1.txt ./target/debug/examples/program_exit_code
+          {
+            valgrind --tool=callgrind --callgrind-out-file=out-cpu1.txt ./target/debug/examples/program_exit_code 1000
+            echo $?
+          } || true
           cat out-cpu1.txt
           exit 0
 
