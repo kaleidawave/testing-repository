@@ -1,5 +1,5 @@
-use std::process::ExitCode;
 use std::hint::black_box;
+use std::process::ExitCode;
 
 fn program(_i: i32) {}
 

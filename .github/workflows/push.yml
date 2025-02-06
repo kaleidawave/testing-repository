@@ -317,7 +317,9 @@ jobs:
         if: true
         continue-on-error: true
         run: |
-          valgrind --log-file=out-mem1.txt ./target/debug/examples/program_exit_code
+          valgrind --error-exitcode=2 --log-file=out-mem1.txt ./target/debug/examples/program_exit_code
+          ls
+          cat out-mem1.txt
         
           # Doesn't count `stack`. (not sure if there is a flag)
           # valgrind --log-file=out-stack-allocation.txt ./target/debug/examples/memory_stack
@@ -335,7 +337,9 @@ jobs:
         if: true
         continue-on-error: true
         run: |
-          valgrind -tool=callgrind --callgrind-out-file=out-cpu1.txt ./target/debug/examples/program_exit_code
+          valgrind --error-exitcode=2 --tool=callgrind --callgrind-out-file=out-cpu1.txt ./target/debug/examples/program_exit_code
+          cat out-cpu1.txt
+          exit 0
 
           # All works well
           # valgrind --tool=callgrind --callgrind-out-file=out-cpu1-1.txt ./target/debug/examples/cpu 1000
