@@ -11,7 +11,7 @@ fn main() {
 
     let mut completed = 0;
     visit_dirs(path, &mut |path| {
-        if let Some("snap") = path.extension().and_then(std::ffi::OsStr::to_str) {
+        if let Some("case" | "template") = path.extension().and_then(std::ffi::OsStr::to_str) {
             let Ok(source) = read_to_string(path) else {
                 eprintln!("Could not read {path}", path=path.display());
                 return;
@@ -44,7 +44,7 @@ fn main() {
     
             completed += 1;
         } else {
-            eprintln!("Non .snap file {path}", path=path.display());
+            eprintln!("Non case/template file {path}", path=path.display());
         }
     });
 
