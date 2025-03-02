@@ -9,40 +9,49 @@ fn main() {
     let mut valid = String::new();
     let mut invalid = String::new();
 
+    let mut completed = 0;
     visit_dirs(path, &mut |path| {
-        let Ok(source) = read_to_string(path) else {
-			eprintln!("Could not read {path}", path=path.display());
-			return;
-		};
-
-		let Some(start) = source.find("/*---") else {
-			eprintln!("No /*--- under {path}", path=path.display());
-			return
-		};
-        let start = start + "/*---".len();
-        let remaining = &source[start..];
-		let Some(end) = remaining.find("---*/") else {
-			eprintln!("No ---*/ under {path}", path=path.display());
-			return
-		};
-
-        {
-            let options = &remaining[..end];
-            let result = simple_yaml_parser::parse(options, |_key, _value| {
-                // ...
-            });
-
-            match result {
-                Ok(..) => writeln!(&mut valid, "{path}", path = path.display()).unwrap(),
-                Err(err) => {
-                    writeln!(&mut invalid, "{path} {err:?}", path = path.display()).unwrap()
-                }
+        if let Some("snap") = path.extension().and_then(std::ffi::OsStr::to_str) {
+            let Ok(source) = read_to_string(path) else {
+                eprintln!("Could not read {path}", path=path.display());
+                return;
             };
+    
+            let Some(start) = source.find("/*---") else {
+                eprintln!("No /*--- under {path}", path=path.display());
+                return
+            };
+            let start = start + "/*---".len();
+            let remaining = &source[start..];
+            let Some(end) = remaining.find("---*/") else {
+                eprintln!("No ---*/ under {path}", path=path.display());
+                return
+            };
+    
+            {
+                let options = &remaining[..end];
+                let result = simple_yaml_parser::parse(options, |_key, _value| {
+                    // ...
+                });
+    
+                match result {
+                    Ok(..) => writeln!(&mut valid, "{path}", path = path.display()).unwrap(),
+                    Err(err) => {
+                        writeln!(&mut invalid, "{path} {err:?}", path = path.display()).unwrap()
+                    }
+                };
+            }
+    
+            completed += 1;
+        } else {
+            eprintln!("Non .snap file {path}", path=path.display());
         }
     });
 
-    write("out/valid.txt", valid).unwrap();
-    write("out/invalid.txt", invalid).unwrap();
+    eprintln!("Completed {completed} files");
+
+    write("valid.txt", valid).unwrap();
+    write("invalid.txt", invalid).unwrap();
 }
 
 fn visit_dirs(path: &Path, cb: &mut impl FnMut(&Path)) {
