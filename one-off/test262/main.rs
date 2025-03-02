@@ -10,11 +10,21 @@ fn main() {
     let mut invalid = String::new();
 
     visit_dirs(path, &mut |path| {
-        let source = read_to_string(path).unwrap();
+        let Ok(source) = read_to_string(path) else {
+			eprintln!("Could not read {path}", path=path.display());
+			return;
+		};
 
-        let start = source.find("/*---").unwrap() + "/*---".len();
+		let Some(start) = source.find("/*---") else {
+			eprintln!("No /*--- under {path}", path=path.display());
+			return
+		};
+        let start = start + "/*---".len();
         let remaining = &source[start..];
-        let end = remaining.find("---*/").unwrap();
+		let Some(end) = remaining.find("---*/") else {
+			eprintln!("No ---*/ under {path}", path=path.display());
+			return
+		};
 
         {
             let options = &remaining[..end];
