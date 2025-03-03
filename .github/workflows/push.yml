@@ -30,7 +30,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: result
-          path: one-off/test262/**/*.txt
+          path: one-off/test262/out
           retention-days: 14
 
   wasm_markdown_parser:
