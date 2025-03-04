@@ -2,6 +2,16 @@ use std::borrow::Cow;
 use std::fs::{create_dir, read_dir, read_to_string};
 use std::path::{Path, PathBuf};
 
+// TODO temp
+pub fn raw_string_value<'a>(value: simple_yaml_parser::RootYAMLValue<'a>) -> Option<&'a str> {
+    match value {
+        simple_yaml_parser::RootYAMLValue::String(value) => Some(value),
+        simple_yaml_parser::RootYAMLValue::MultiLineString(mls) => Some(mls.on),
+        _ => None,
+    }
+}
+
+// TODO split up performance timings, write more metadata and as JSON.
 fn main() {
     let path: &Path = &PathBuf::from("./test262/test");
 
@@ -16,14 +26,18 @@ fn main() {
     let query = "CREATE TABLE results (
     path        TEXT PRIMARY KEY,
     info        TEXT,
-    negative    INTEGER,
+    description TEXT,
+    features    TEXT,
+    negative    INTEGER NOT NULL,
     code        TEXT,
-    pass        INTEGER,
+    pass        INTEGER NOT NULL,
     parser_out  TEXT
 );";
     connection.execute(query).unwrap();
 
-    let query = "INSERT INTO results VALUES (:path, :info, :negative, :code, :pass, :parser_out)";
+    let query = "INSERT INTO results VALUES (
+        :path, :info, :description, :features, :negative, :code, :pass, :parser_out
+    )";
     let mut statement = connection.prepare(query).unwrap();
 
     visit_dirs(path, &mut |path| {
@@ -58,26 +72,31 @@ fn main() {
 
             // Set by metadata
             let mut should_not_parse = false;
-            let mut info = "";
+            let mut info = None;
+            let mut description = None;
+            let mut features = None::<String>;
 
             {
                 let result = simple_yaml_parser::parse(metadata, |key, value| {
+                    use simple_yaml_parser::YAMLKey::Slice;
+
                     // TODO description. negative.type, flags, locale
                     if let (
-                        &[
-                            simple_yaml_parser::YAMLKey::Slice("negative"),
-                            simple_yaml_parser::YAMLKey::Slice("phase"),
-                        ],
+                        &[Slice("negative"), Slice("phase")],
                         simple_yaml_parser::RootYAMLValue::String("parse"),
                     ) = (key, &value)
                     {
                         should_not_parse = true;
-                    } else if let (
-                        &[simple_yaml_parser::YAMLKey::Slice("info")],
-                        simple_yaml_parser::RootYAMLValue::String(content),
-                    ) = (key, value)
-                    {
-                        info = content;
+                    } else if let [Slice("info")] = key {
+                        info = raw_string_value(value);
+                    } else if let [Slice("description")] = key {
+                        description = raw_string_value(value);
+                    } else if let [Slice("features")] = key {
+                        let f = features.get_or_insert_default();
+                        if !f.is_empty() {
+                            f.push(',');
+                        }
+                        f.push_str(raw_string_value(value).unwrap_or_default());
                     }
                 });
 
@@ -111,9 +130,11 @@ fn main() {
                 let values = &[
                     (":path", path.display().to_string().into()),
                     (":info", info.into()),
+                    (":description", description.into()),
+                    (":features", features.into()),
                     (":negative", (should_not_parse as i64).into()),
                     // space saving measure
-                    (":code", (if matched { "" } else { code }).into()),
+                    (":code", (if matched { None } else { Some(code) }).into()),
                     (":pass", (matched as i64).into()),
                     (":parser_out", (&*reason).into()),
                 ];
