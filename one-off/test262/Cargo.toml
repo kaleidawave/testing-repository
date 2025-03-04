@@ -8,6 +8,8 @@ simple-yaml-parser = { git = "https://github.com/kaleidawave/simple-yaml-parser.
 ezno-parser = { git = "https://github.com/kaleidawave/ezno.git", branch = "general-fixes", package = "ezno-parser" }
 sqlite = "0.36"
 
+# ezno-parser = { path = "../../../rust/ezno/parser", version = "*", package = "ezno-parser" }
+
 [[bin]]
 name = "test262"
 path = "main.rs"

@@ -11,23 +11,29 @@ pub fn raw_string_value<'a>(value: simple_yaml_parser::RootYAMLValue<'a>) -> Opt
     }
 }
 
-// TODO split up performance timings, write more metadata and as JSON.
+#[allow(unused_mut)]
 fn main() {
     let path: &Path = &PathBuf::from("./test262/test");
 
     let mut completed = 0;
     let mut successful = 0;
 
+    let add_to_db = true;
+
     let now = std::time::Instant::now();
+    let mut yaml_parsing = std::time::Duration::default();
+    let mut parsing = std::time::Duration::default();
 
     let _ = create_dir("out");
     let connection = sqlite::open("out/database.db").unwrap();
 
-    let query = "CREATE TABLE results (
+    let query = "CREATE TABLE IF NOT EXISTS results (
     path        TEXT PRIMARY KEY,
     info        TEXT,
     description TEXT,
     features    TEXT,
+    flags       TEXT,
+    es5id       TEXT,
     negative    INTEGER NOT NULL,
     code        TEXT,
     pass        INTEGER NOT NULL,
@@ -36,7 +42,7 @@ fn main() {
     connection.execute(query).unwrap();
 
     let query = "INSERT INTO results VALUES (
-        :path, :info, :description, :features, :negative, :code, :pass, :parser_out
+        :path, :info, :description, :features, :flags, :es5id, :negative, :code, :pass, :parser_out
     )";
     let mut statement = connection.prepare(query).unwrap();
 
@@ -72,11 +78,14 @@ fn main() {
 
             // Set by metadata
             let mut should_not_parse = false;
-            let mut info = None;
-            let mut description = None;
+            let mut info = None::<&str>;
+            let mut description = None::<&str>;
+            let mut es5id = None::<&str>;
             let mut features = None::<String>;
+            let mut flags = None::<String>;
 
             {
+                let now = std::time::Instant::now();
                 let result = simple_yaml_parser::parse(metadata, |key, value| {
                     use simple_yaml_parser::YAMLKey::Slice;
 
@@ -87,16 +96,28 @@ fn main() {
                     ) = (key, &value)
                     {
                         should_not_parse = true;
-                    } else if let [Slice("info")] = key {
-                        info = raw_string_value(value);
-                    } else if let [Slice("description")] = key {
-                        description = raw_string_value(value);
-                    } else if let [Slice("features")] = key {
-                        let f = features.get_or_insert_default();
-                        if !f.is_empty() {
-                            f.push(',');
+                    } 
+
+                    if add_to_db {
+                        if let [Slice("info")] = key {
+                            info = raw_string_value(value);
+                        } else if let [Slice("description")] = key {
+                            description = raw_string_value(value);
+                        } else if let [Slice("es5id")] = key {
+                            es5id = raw_string_value(value);
+                        } else if let [Slice("features"), _] = key {
+                            let f = features.get_or_insert_default();
+                            if !f.is_empty() {
+                                f.push(',');
+                            }
+                            f.push_str(raw_string_value(value).unwrap_or_default());
+                        } else if let [Slice("flags"), _] = key {
+                            let f = flags.get_or_insert_default();
+                            if !f.is_empty() {
+                                f.push(',');
+                            }
+                            f.push_str(raw_string_value(value).unwrap_or_default());
                         }
-                        f.push_str(raw_string_value(value).unwrap_or_default());
                     }
                 });
 
@@ -104,13 +125,17 @@ fn main() {
                     eprintln!("yaml-parse {path} {err:?}", path = path.display());
                     return;
                 }
+
+                yaml_parsing += now.elapsed();
             };
 
+            let now = std::time::Instant::now();
             let result = <ezno_parser::Module as ezno_parser::ASTNode>::from_string_with_options(
                 code.into(),
                 Default::default(),
                 None,
             );
+            parsing += now.elapsed();
 
             let (matched, reason) = match result {
                 Ok(_) if should_not_parse => {
@@ -125,13 +150,15 @@ fn main() {
                 }
             };
 
-            {
+            if add_to_db {
                 // let query = "INSERT INTO results VALUES (:path, :info, :negative, :code, :pass, :parser_out)";
                 let values = &[
                     (":path", path.display().to_string().into()),
                     (":info", info.into()),
                     (":description", description.into()),
                     (":features", features.into()),
+                    (":flags", flags.into()),
+                    (":es5id", es5id.into()),
                     (":negative", (should_not_parse as i64).into()),
                     // space saving measure
                     (":code", (if matched { None } else { Some(code) }).into()),
@@ -147,13 +174,17 @@ fn main() {
             }
 
             completed += 1;
+
+            if completed % 1000 == 0 {
+                eprintln!("Completed {completed} tests");
+            }
         } else {
             eprintln!("Not a test file: {path}", path = path.display());
         }
     });
 
     eprintln!(
-        "Completed {completed} tests in {duration:?}. {successful} successful passes. {errors} fails",
+        "Completed {completed} tests in {duration:?} (yaml_parsing={yaml_parsing:?}, parsing={parsing:?}). {successful} successful passes. {errors} fails",
         errors = completed - successful,
         duration = now.elapsed()
     );
