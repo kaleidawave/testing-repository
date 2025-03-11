@@ -22,7 +22,7 @@ $OUTPUT
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.tsx --timings"
-run_tool "TSC" "./tsc-go/built/local/tsgo --pretty --noEmit --skipLibCheck --jsx preserve --diagnostics demo.tsx"
+run_tool "TSC" "./tsc-go/built/local/tsgo -pretty -noEmit -skipLibCheck demo.tsx"
 
 echo "::endgroup::"
 
@@ -38,7 +38,7 @@ echo "##### `demo.tsx`
 \`\`\`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./demo.tsx' \
-  './tsc-go/built/local/tsgo --skipLibCheck ./demo.tsx' \
+  './tsc-go/built/local/tsgo -skipLibCheck ./demo.tsx' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx' \
 )
 \`\`\`
@@ -48,28 +48,31 @@ $(hyperfine -i \
 \`\`\`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./large.tsx' \
-  './tsc-go/built/local/tsgo --skipLibCheck ./large.tsx' \
+  './tsc-go/built/local/tsgo -skipLibCheck ./large.tsx' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.tsx' \
 )
 \`\`\`
+" >> $GITHUB_STEP_SUMMARY
 
 ### Valgrind
+valgrind --log-file="ezno.txt" ./ezno/target/release/ezno check ./demo.tsx
+valgrind --log-file="tsc-go.txt" ./tsc-go/built/local/tsgo -skipLibCheck ./demo.tsx
+valgrind --log-file="tsc.txt" tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx
 
-ezno
+echo "ezno
 \`\`\`
-$(valgrind ./ezno/target/release/ezno check ./demo.tsx)
-\`\`\`
-
-tsc
-\`\`\`
-$(valgrind tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx)
+$(cat ezno.txt)
 \`\`\`
 
 tsc-go
 \`\`\`
-$(valgrind ./tsc-go/built/local/tsgo --skipLibCheck ./demo.tsx)
+$(cat tsc-go.txt)
 \`\`\`
 
+tsc
+\`\`\`
+$(cat tsc.txt)
+\`\`\`
 " >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"

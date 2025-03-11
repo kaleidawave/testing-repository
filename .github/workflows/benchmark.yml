@@ -39,13 +39,16 @@ jobs:
       - uses: actions/cache@v4
         if: env.cache
         with:
-          # **/target/*
           path: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ~/home/linuxbrew/
+            **/target/*
+            **/examples/*
+            **/built/local/*
+            **/Cargo.toml
           key: ${{ runner.os }}
 
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}
@@ -60,13 +63,13 @@ jobs:
         run: ./setup.sh
         env:
           GH_TOKEN: ${{ github.token }}
-        timeout-minutes: 15
+        timeout-minutes: 30
 
       - name: Run benchmark
         run: ./run.sh
         env:
           ARTIFACTS_FOLDER: ${{ env.ARTIFACTS_FOLDER }}
-        timeout-minutes: 5
+        timeout-minutes: 10
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
