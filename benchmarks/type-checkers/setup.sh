@@ -31,11 +31,14 @@ echo "::endgroup"
 # ---
 
 echo "::group::Get (new) TSC"
+npm i -D hereby
 
 # new tsc
-git clone --recurse-submodules https://github.com/microsoft/typescript-go.git .
+git clone --recurse-submodules https://github.com/microsoft/typescript-go.git tsc-go
+cd tsc-go
 git submodule update --init --recursive
 hereby build
+cd ..
 
 echo "::endgroup"
 
@@ -47,8 +50,10 @@ echo "::endgroup::"
 
 echo "::group::Build demo files"
 cargo run --manifest-path ezno/Cargo.toml \
-    -p ezno-parser --example code_blocks_to_script ./ezno/checker/specification/specification.md \
-    --comment-headers --out ./demo.tsx
+    -p ezno-checker-specification \
+    --example amalgamate ezno/checker/specification/specification.md \
+    --comment-headers \
+    --out ./demo.tsx
 
 cp ./demo.tsx $ARTIFACTS_FOLDER
 

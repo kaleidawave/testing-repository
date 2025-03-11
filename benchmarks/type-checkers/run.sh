@@ -22,7 +22,7 @@ $OUTPUT
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.tsx --timings"
-run_tool "TSC" "./built/local/tsgo --pretty --noEmit --skipLibCheck --jsx preserve --diagnostics demo.tsx"
+run_tool "TSC" "./tsc-go/built/local/tsgo --pretty --noEmit --skipLibCheck --jsx preserve --diagnostics demo.tsx"
 
 echo "::endgroup::"
 
@@ -38,7 +38,7 @@ echo "##### `demo.tsx`
 \`\`\`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./demo.tsx' \
-  './built/local/tsgo --skipLibCheck ./demo.tsx' \
+  './tsc-go/built/local/tsgo --skipLibCheck ./demo.tsx' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx' \
 )
 \`\`\`
@@ -48,7 +48,7 @@ $(hyperfine -i \
 \`\`\`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./large.tsx' \
-  './built/local/tsgo --skipLibCheck ./large.tsx' \
+  './tsc-go/built/local/tsgo --skipLibCheck ./large.tsx' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.tsx' \
 )
 \`\`\`" >> $GITHUB_STEP_SUMMARY
