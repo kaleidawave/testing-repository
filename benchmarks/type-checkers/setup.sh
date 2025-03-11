@@ -1,16 +1,27 @@
+echo "::group::Get tools"
 # Install hyperfine
 brew install hyperfine
+echo "::endgroup::"
+
+# ---
+
+ls
 
 echo "::group::Get tools"
 
 echo "::group::Build Ezno (and demo.tsx)"
+
 rustc --version
 rustup toolchain install stable
 
+time
+
 # ezno main
-git clone https://github.com/kaleidawave/ezno.git ezno -b general-fixes
+git -C ezno pull || git clone https://github.com/kaleidawave/ezno.git ezno -b general-fixes
 cargo build --manifest-path ezno/Cargo.toml --release --bin ezno
 ./ezno/target/release/ezno info
+
+time
 
 # and new parser
 # git clone https://github.com/kaleidawave/ezno.git ezno-next -b merge-lexer
@@ -31,14 +42,18 @@ echo "::endgroup"
 # ---
 
 echo "::group::Get (new) TSC"
-npm i -D hereby
+npm i -g hereby
+
+time
 
 # new tsc
-git clone --recurse-submodules https://github.com/microsoft/typescript-go.git tsc-go
+git -C tsc-go pull || git clone --recurse-submodules https://github.com/microsoft/typescript-go.git tsc-go
 cd tsc-go
 git submodule update --init --recursive
 hereby build
 cd ..
+
+time
 
 echo "::endgroup"
 
@@ -49,19 +64,27 @@ echo "::endgroup::"
 # ---
 
 echo "::group::Build demo files"
+
+time
 cargo run --manifest-path ezno/Cargo.toml \
     -p ezno-checker-specification \
     --example amalgamate ezno/checker/specification/specification.md \
-    --comment-headers \
+    --comment-headers
+    --repeat 1 \
     --out ./demo.tsx
 
 cp ./demo.tsx $ARTIFACTS_FOLDER
 
-for i in {1..10}; do
-    cat ./demo.tsx >> large.tsx
-done
+cargo run --manifest-path ezno/Cargo.toml \
+    -p ezno-checker-specification \
+    --example amalgamate ezno/checker/specification/specification.md \
+    --comment-headers
+    --repeat 40 \
+    --out ./large.tsx
 
 cp ./large.tsx $ARTIFACTS_FOLDER
+
+time
 
 # # Simple
 # echo "const x: string = 4;" >> simple.tsx
