@@ -39,13 +39,13 @@ jobs:
       - uses: actions/cache@v4
         if: env.cache
         with:
+          # **/target/*
           path: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ~/home/linuxbrew/
-            **/target/*
           key: ${{ runner.os }}
 
       - run: mkdir -p ${{ env.ARTIFACTS_FOLDER }}

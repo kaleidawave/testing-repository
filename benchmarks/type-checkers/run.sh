@@ -11,7 +11,7 @@ function run_tool {
     echo "## $1
 
 <details>
-<summary>Output of `$2`</summary>
+<summary>Output</summary>
 
 \`\`\`
 $OUTPUT

@@ -7,7 +7,7 @@ echo "::endgroup::"
 
 # ---
 
-echo "::group::Get tools"
+echo "::group::Build checkers"
 
 echo "::group::Build Ezno (and demo.tsx)"
 
@@ -15,6 +15,12 @@ rustc --version
 rustup toolchain install stable
 
 date
+
+ls
+
+echo "nnnnn"
+
+ls ezno
 
 # ezno main
 git -C ezno pull || git clone https://github.com/kaleidawave/ezno.git ezno -b general-fixes
@@ -49,9 +55,8 @@ date
 git -C tsc-go pull || git clone --recurse-submodules https://github.com/microsoft/typescript-go.git tsc-go
 cd tsc-go
 git submodule update --init --recursive
-npm i -D hereby
-
-hereby build
+npm i
+npm run build
 cd ..
 
 date
