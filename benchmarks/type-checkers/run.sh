@@ -51,6 +51,25 @@ $(hyperfine -i \
   './tsc-go/built/local/tsgo --skipLibCheck ./large.tsx' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.tsx' \
 )
-\`\`\`" >> $GITHUB_STEP_SUMMARY
+\`\`\`
+
+### Valgrind
+
+ezno
+\`\`\`
+$(valgrind ./ezno/target/release/ezno check ./demo.tsx)
+\`\`\`
+
+tsc
+\`\`\`
+$(valgrind tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx)
+\`\`\`
+
+tsc-go
+\`\`\`
+$(valgrind ./tsc-go/built/local/tsgo --skipLibCheck ./demo.tsx)
+\`\`\`
+
+" >> $GITHUB_STEP_SUMMARY
 
 echo "::endgroup::"
