@@ -23,7 +23,17 @@ echo "nnnnn"
 ls ezno
 
 # ezno main
-git -C ezno pull || git clone https://github.com/kaleidawave/ezno.git ezno -b general-fixes
+if [ -d "ezno" ]; then
+    cd ezno
+    git init
+    git remote add origin https://github.com/kaleidawave/ezno.git
+    git fetch
+    git checkout origin/general-fixes -ft
+    cd ..
+else
+    git clone https://github.com/kaleidawave/ezno.git ezno -b general-fixes
+fi
+
 cargo build --manifest-path ezno/Cargo.toml --release --bin ezno
 ./ezno/target/release/ezno info
 
@@ -52,7 +62,17 @@ echo "::group::Get (new) TSC"
 date
 
 # new tsc
-git -C tsc-go pull || git clone --recurse-submodules https://github.com/microsoft/typescript-go.git tsc-go
+if [ -d "tsc-go" ]; then
+    cd tsc-go
+    git init
+    git remote add origin https://github.com/microsoft/typescript-go.git
+    git fetch
+    git checkout origin/main -ft
+    cd ..
+else
+    git clone --recurse-submodules https://github.com/microsoft/typescript-go.git tsc-go
+fi
+
 cd tsc-go
 git submodule update --init --recursive
 npm i
@@ -78,18 +98,18 @@ cargo run --manifest-path ezno/Cargo.toml \
     --example amalgamate ezno/checker/specification/specification.md \
     --comment-headers \
     --repeat 1 \
-    --out ./demo.tsx
+    --out ./demo.ts
 
-cp ./demo.tsx $ARTIFACTS_FOLDER
+cp ./demo.ts $ARTIFACTS_FOLDER
 
 cargo run --manifest-path ezno/Cargo.toml \
     -p ezno-checker-specification \
     --example amalgamate ezno/checker/specification/specification.md \
     --comment-headers \
     --repeat 40 \
-    --out ./large.tsx
+    --out ./large.ts
 
-cp ./large.tsx $ARTIFACTS_FOLDER
+cp ./large.ts $ARTIFACTS_FOLDER
 
 date
 
