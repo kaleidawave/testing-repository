@@ -1,8 +1,7 @@
 NO_COLOR=1
 export NO_COLOR=1
 
-echo $ARTIFACTS_FOLDER
-echo $SOMETHING
+ls
 
 echo "::group::Run tools"
 
@@ -22,7 +21,7 @@ $OUTPUT
 } 
 
 run_tool "Ezno" "./ezno/target/release/ezno check demo.tsx --timings"
-run_tool "TSC" "./tsc-go/built/local/tsgo -pretty -noEmit -skipLibCheck demo.tsx"
+run_tool "TSC" "./tsc-go/built/local/tsgo tsc -pretty -noEmit -skipLibCheck demo.tsx"
 
 echo "::endgroup::"
 
@@ -32,13 +31,26 @@ echo "::group::Run benchmarks"
 
 echo "## Benchmark files" >> $GITHUB_STEP_SUMMARY
 
+./tsc-go/built/local/tsgo --help
+./tsc-go/built/local/tsgo tsc --help
+
+hyperfine -i \
+  './ezno/target/release/ezno check ./demo.tsx' \
+  './tsc-go/built/local/tsgo tsc -skipLibCheck ./demo.tsx' \
+  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx'
+
+hyperfine -i \
+  './ezno/target/release/ezno check ./large.tsx' \
+  './tsc-go/built/local/tsgo tsc -skipLibCheck ./large.tsx' \
+  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.tsx'
+
 # Ezno and TSC
 echo "##### `demo.tsx`
 
 \`\`\`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./demo.tsx' \
-  './tsc-go/built/local/tsgo -skipLibCheck ./demo.tsx' \
+  './tsc-go/built/local/tsgo tsc -skipLibCheck ./demo.tsx' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx' \
 )
 \`\`\`
@@ -48,7 +60,7 @@ $(hyperfine -i \
 \`\`\`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./large.tsx' \
-  './tsc-go/built/local/tsgo -skipLibCheck ./large.tsx' \
+  './tsc-go/built/local/tsgo tsc -skipLibCheck ./large.tsx' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.tsx' \
 )
 \`\`\`
@@ -56,7 +68,7 @@ $(hyperfine -i \
 
 ### Valgrind
 valgrind --log-file="ezno.txt" ./ezno/target/release/ezno check ./demo.tsx
-valgrind --log-file="tsc-go.txt" ./tsc-go/built/local/tsgo -skipLibCheck ./demo.tsx
+valgrind --log-file="tsc-go.txt" ./tsc-go/built/local/tsgo tsc -skipLibCheck ./demo.tsx
 valgrind --log-file="tsc.txt" tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.tsx
 
 echo "ezno
