@@ -7,19 +7,24 @@ on:
       - "one-off/**/*"
 
 jobs:
-  test_262_preview_for_ezno:
+  type_sizes:
     if: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: bash run.sh
-        working-directory: one-off/test262
-      - uses: actions/upload-artifact@v4
         with:
-          name: result
-          path: one-off/test262/out
-          retention-days: 3
-          
+          repository: kaleidawave/ezno
+          ref: general-fixes
+          path: ezno
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
+      - name: Count sizes
+        run: |
+          RUSTFLAGS=-Zprint-type-sizes cargo +nightly build --release -p ezno-parser
+          RUSTFLAGS=-Zprint-type-sizes cargo +nightly build --release -p ezno-checker
+        working-directory: ezno
+   
   github_file_annotation:
     if: false
     runs-on: ubuntu-latest
