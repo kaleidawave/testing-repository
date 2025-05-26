@@ -16,14 +16,23 @@ jobs:
           repository: kaleidawave/ezno
           ref: general-fixes
           path: ezno
+
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
-      - name: Count sizes
-        run: |
-          RUSTFLAGS=-Zprint-type-sizes cargo +nightly build --release -p ezno-parser
-          RUSTFLAGS=-Zprint-type-sizes cargo +nightly build --release -p ezno-checker
+
+      - uses: brndnmtthws/rust-action-cargo-binstall@v1
+        with:
+          packages: top-type-sizes
+
+      - name: Run type sizes
         working-directory: ezno
+        run: |
+          RUSTFLAGS=-Zprint-type-sizes cargo +nightly build -j 1 > type-sizes.txt
+          echo "### Type sizes
+          \`\`\`shell
+          $(top-type-sizes < type-sizes.txt)
+          \`\`\`" >> $GITHUB_STEP_SUMMARY
    
   github_file_annotation:
     if: false
@@ -37,7 +46,7 @@ jobs:
         working-directory: one-off/github-file-annotations
 
   bash_on_windows:
-    if: true
+    if: false
 
     strategy:
       matrix:

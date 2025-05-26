@@ -51,7 +51,7 @@ echo "##### `demo.ts`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./demo.ts' \
   './tsc-go/built/local/tsgo tsc -skipLibCheck ./demo.ts' \
-  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts' \
+  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts'
 )
 \`\`\`
 
@@ -61,7 +61,7 @@ $(hyperfine -i \
 $(hyperfine -i \
   './ezno/target/release/ezno check ./large.ts' \
   './tsc-go/built/local/tsgo tsc -skipLibCheck ./large.ts' \
-  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.ts' \
+  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.ts'
 )
 \`\`\`
 " >> $GITHUB_STEP_SUMMARY
