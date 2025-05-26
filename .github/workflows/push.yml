@@ -29,10 +29,30 @@ jobs:
         working-directory: ezno
         run: |
           RUSTFLAGS=-Zprint-type-sizes cargo +nightly build -j 1 > type-sizes.txt
-          echo "### Type sizes
-          \`\`\`shell
-          $(top-type-sizes < type-sizes.txt)
-          \`\`\`" >> $GITHUB_STEP_SUMMARY
+          top-type-sizes < type-sizes.txt >> out.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: type-sizes
+          path: out.txt
+          retention-days: 7
+ 
+  data_across_jobs:
+    if: true
+    runs-on: ubuntu-latest
+    steps:
+      - id: step1
+        run: |
+          echo "data='something
+          here
+          across
+          multiple
+          lines'" >> "$GITHUB_OUTPUT"
+      - id: step2
+        env:
+          data: ${{ steps.step1.outputs.data }}
+        run: |
+          echo "Here! Across a job. $data"
    
   github_file_annotation:
     if: false

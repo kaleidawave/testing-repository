@@ -59,27 +59,25 @@ echo "::endgroup"
 
 echo "::group::Get (new) TSC"
 
-date
+
 
 # new tsc
-if [ -d "tsc-go" ]; then
-    cd tsc-go
-    git init
-    git remote add origin https://github.com/microsoft/typescript-go.git
-    git fetch
-    git checkout origin/main -ft
-    cd ..
-else
-    git clone --recurse-submodules https://github.com/microsoft/typescript-go.git tsc-go
-fi
+# if [ -d "tsc-go" ]; then
+#     cd tsc-go
+#     git init
+#     git remote add origin https://github.com/microsoft/typescript-go.git
+#     git fetch
+#     git checkout origin/main -ft
+#     cd ..
+# else
+#     git clone --recurse-submodules https://github.com/microsoft/typescript-go.git tsc-go
+# fi
 
-cd tsc-go
-git submodule update --init --recursive
-npm i
-npm run build
-cd ..
-
-date
+# cd tsc-go
+# git submodule update --init --recursive
+# npm i
+# npm run build
+# cd ..
 
 echo "::endgroup"
 
@@ -88,6 +86,7 @@ echo "::endgroup"
 echo "::endgroup::"
 
 # ---
+npm install -D @typescript/native-preview
 
 echo "::group::Build demo files"
 

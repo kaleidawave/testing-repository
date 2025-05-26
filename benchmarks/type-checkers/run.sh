@@ -20,8 +20,8 @@ $OUTPUT
 " >> $GITHUB_STEP_SUMMARY
 } 
 
-run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --timings"
-run_tool "TSC" "./tsc-go/built/local/tsgo tsc -pretty -noEmit -skipLibCheck demo.ts"
+run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --max-diagnostics 0 --timings"
+run_tool "TSC" "./node_modules/.bin/tsgo -pretty -noEmit -skipLibCheck -diagnostics demo.ts"
 
 echo "::endgroup::"
 
@@ -31,17 +31,16 @@ echo "::group::Run benchmarks"
 
 echo "## Benchmark files" >> $GITHUB_STEP_SUMMARY
 
-./tsc-go/built/local/tsgo --help
-./tsc-go/built/local/tsgo tsc --help
+./node_modules/.bin/tsgo --help
 
 hyperfine -i \
   './ezno/target/release/ezno check ./demo.ts' \
-  './tsc-go/built/local/tsgo tsc -skipLibCheck ./demo.ts' \
+  './node_modules/.bin/tsgo -skipLibCheck ./demo.ts' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts'
 
 hyperfine -i \
   './ezno/target/release/ezno check ./large.ts' \
-  './tsc-go/built/local/tsgo tsc -skipLibCheck ./large.ts' \
+  './node_modules/.bin/tsgo -skipLibCheck ./large.ts' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.ts'
 
 # Ezno and TSC
@@ -50,7 +49,7 @@ echo "##### `demo.ts`
 \`\`\`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./demo.ts' \
-  './tsc-go/built/local/tsgo tsc -skipLibCheck ./demo.ts' \
+  './node_modules/.bin/tsgo -skipLibCheck ./demo.ts' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts'
 )
 \`\`\`
@@ -60,7 +59,7 @@ $(hyperfine -i \
 \`\`\`
 $(hyperfine -i \
   './ezno/target/release/ezno check ./large.ts' \
-  './tsc-go/built/local/tsgo tsc -skipLibCheck ./large.ts' \
+  './node_modules/.bin/tsgo -skipLibCheck ./large.ts' \
   'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.ts'
 )
 \`\`\`
@@ -68,8 +67,8 @@ $(hyperfine -i \
 
 ### Valgrind
 valgrind --log-file="ezno.txt" ./ezno/target/release/ezno check ./demo.ts
-valgrind --log-file="tsc-go.txt" ./tsc-go/built/local/tsgo tsc -skipLibCheck ./demo.ts
-valgrind --log-file="tsc.txt" tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts
+# valgrind --log-file="tsc-go.txt" ./node_modules/.bin/tsgo -skipLibCheck ./demo.ts
+# valgrind --log-file="tsc.txt" tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts
 
 echo "ezno
 \`\`\`
