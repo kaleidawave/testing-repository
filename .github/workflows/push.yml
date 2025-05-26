@@ -34,7 +34,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: type-sizes
-          path: out.txt
+          path: ezno/out.txt
           retention-days: 7
  
   data_across_jobs:
@@ -43,16 +43,23 @@ jobs:
     steps:
       - id: step1
         run: |
-          echo "data='something
+          data='something
           here
           across
           multiple
-          lines'" >> "$GITHUB_OUTPUT"
+          lines
+          with lots of data
+          kjasiodjiasoj
+          iahwiudiwjdo
+          kajisdjiawjsd
+          data here
+          and here'
+          echo "data=$(echo -n "$data" | base64 --wrap=0)" >> "$GITHUB_OUTPUT"
       - id: step2
         env:
           data: ${{ steps.step1.outputs.data }}
         run: |
-          echo "Here! Across a job. $data"
+          echo "Here! Across a job. $(echo $data | base64 --decode)"
    
   github_file_annotation:
     if: false
