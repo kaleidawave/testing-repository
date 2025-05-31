@@ -15,9 +15,12 @@ jobs:
       run: gh release download -R kaleidawave/experiments assets -p shell-language
       env:
         GH_TOKEN: ${{ github.token }}
+    - run: |
+        ls
+        echo "./shell-language" >> "$GITHUB_PATH"
    
     - name: Run shell one
-      shell: shell-language -e {0}
+      shell: ./shell-language -e {0}
       run: |
         let what = literal test
         echo "This is a $what"
@@ -27,7 +30,7 @@ jobs:
         echo $thing
     
     - name: Run shell two
-      shell: shell-language --evaluate {0}
+      shell: ./shell-language --evaluate {0}
       run: |
         let what = literal "Some text"
         let to = env GITHUB_STEP_SUMMARY
