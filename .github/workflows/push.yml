@@ -16,8 +16,13 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
     - run: |
-        ls
-        echo "./shell-language" >> "$GITHUB_PATH"
+        mkdir bin
+        mv ./shell-language bin
+        ls bin
+        pwd
+        echo $HOME
+        echo "$HOME/bin" >> "$GITHUB_PATH"
+        echo "$(pwd)/bin" >> "$GITHUB_PATH"
    
     - name: Run shell one
       shell: shell-language -e {0}
