@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download experiment
-      run: gh release download -R kaleidawave/experiments --pattern shell-language
+      run: gh release download -R kaleidawave/experiments assets -p shell-language
       env:
         GH_TOKEN: ${{ github.token }}
    
