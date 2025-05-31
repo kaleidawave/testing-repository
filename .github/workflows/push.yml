@@ -22,7 +22,7 @@ jobs:
         echo "$(pwd)/bin" >> "$GITHUB_PATH"
    
     - name: Run shell one
-      shell: shell-language -e {0}
+      shell: shell-language {0}
       run: |
         let what = literal test
         echo "This is a $what"
@@ -32,7 +32,7 @@ jobs:
         echo $thing
     
     - name: Run shell two
-      shell: shell-language --evaluate {0}
+      shell: shell-language {0}
       run: |
         let what = literal "Some text"
         let to = env GITHUB_STEP_SUMMARY
