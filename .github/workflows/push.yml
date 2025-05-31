@@ -7,8 +7,32 @@ on:
       - "one-off/**/*"
 
 jobs:
-  type_sizes:
+  ben-shell:
     if: true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download experiment
+      run: gh release download -R kaleidawave/experiments --pattern shell-language
+   
+    - name: Run shell one
+      shell: shell-language -e {0}
+      run: |
+        let what = literal test
+        echo "This is a $what"
+
+        let thing = literal "After"
+        let thing = after $thing f
+        echo $thing
+    
+    - name: Run shell two
+      shell: shell-language --evaluate {0}
+      run: |
+        let what = literal "Some text"
+        let to = env GITHUB_STEP_SUMMARY
+        write $to "### $what"
+
+  type_sizes:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +62,7 @@ jobs:
           retention-days: 7
  
   data_across_jobs:
-    if: true
+    if: false
     runs-on: ubuntu-latest
     steps:
       - id: step1
