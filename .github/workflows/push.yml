@@ -18,10 +18,7 @@ jobs:
     - run: |
         mkdir bin
         mv ./shell-language bin
-        ls bin
-        pwd
-        echo $HOME
-        echo "$HOME/bin" >> "$GITHUB_PATH"
+        chmod +x ./bin/shell-language
         echo "$(pwd)/bin" >> "$GITHUB_PATH"
    
     - name: Run shell one
