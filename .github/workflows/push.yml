@@ -13,9 +13,14 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            const query = `mutation($repositoryId:ID!,$body:String!,$title:String!) {
+            const query = `mutation($repositoryId:ID!,$categoryId:ID!,$body:String!,$title:String!) {
               # input type: CreateDiscussionInput
-              createDiscussion(input: {repositoryId: $repositoryId, categoryId: "5678", body: $body, title: $title}) {
+              createDiscussion(input: {
+                repositoryId: $repositoryId, 
+                categoryId: $categoryId, 
+                body: $body, 
+                title: $title
+              }) {
 
                 # response type: CreateDiscussionPayload
                 discussion {
@@ -23,8 +28,10 @@ jobs:
                 }
               }
             }`;
+            
             const variables = {
               repositoryId: 'R_kgDOHITK2Q',
+              categoryId: 'DIC_kwDOHITK2c4CTuRQ',
               title: 'Hello World',
               body: 'Discussion',
             }
