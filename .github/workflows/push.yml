@@ -13,7 +13,7 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            const query = `mutation($repositoryId:String!,$body:String!,$title:String!) {
+            const query = `mutation($repositoryId:ID!,$body:String!,$title:String!) {
               # input type: CreateDiscussionInput
               createDiscussion(input: {repositoryId: $repositoryId, categoryId: "5678", body: $body, title: $title}) {
 
