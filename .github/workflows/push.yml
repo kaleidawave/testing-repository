@@ -7,118 +7,27 @@ on:
       - "one-off/**/*"
 
 jobs:
-  ben-shell:
-    if: true
+  start_discussion:
     runs-on: ubuntu-latest
     steps:
-    - name: Download experiment
-      run: gh release download -R kaleidawave/experiments assets -p shell-language
-      env:
-        GH_TOKEN: ${{ github.token }}
-    - run: |
-        mkdir bin
-        mv ./shell-language bin
-        chmod +x ./bin/shell-language
-        echo "$(pwd)/bin" >> "$GITHUB_PATH"
-   
-    - name: Run shell one
-      shell: shell-language {0}
-      run: |
-        let what = literal test
-        echo "This is a $what"
-
-        let thing = literal "After"
-        let thing = after $thing f
-        echo $thing
-    
-    - name: Run shell two
-      shell: shell-language {0}
-      run: |
-        let what = literal "Some text"
-        let to = env GITHUB_STEP_SUMMARY
-        write $to "### $what"
-
-  type_sizes:
-    if: false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - uses: actions/github-script@v6
         with:
-          repository: kaleidawave/ezno
-          ref: general-fixes
-          path: ezno
+          script: |
+            const query = `mutation {
+              # input type: CreateDiscussionInput
+              createDiscussion(input: {repositoryId: $repositoryId, categoryId: "5678", body: $body, title: $title}) {
 
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: nightly
-
-      - uses: brndnmtthws/rust-action-cargo-binstall@v1
-        with:
-          packages: top-type-sizes
-
-      - name: Run type sizes
-        working-directory: ezno
-        run: |
-          RUSTFLAGS=-Zprint-type-sizes cargo +nightly build -j 1 > type-sizes.txt
-          top-type-sizes < type-sizes.txt >> out.txt
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: type-sizes
-          path: ezno/out.txt
-          retention-days: 7
- 
-  data_across_jobs:
-    if: false
-    runs-on: ubuntu-latest
-    steps:
-      - id: step1
-        run: |
-          data='something
-          here
-          across
-          multiple
-          lines
-          with lots of data
-          kjasiodjiasoj
-          iahwiudiwjdo
-          kajisdjiawjsd
-          data here
-          and here'
-          echo "data=$(echo -n "$data" | base64 --wrap=0)" >> "$GITHUB_OUTPUT"
-      - id: step2
-        env:
-          data: ${{ steps.step1.outputs.data }}
-        run: |
-          echo "Here! Across a job. $(echo $data | base64 --decode)"
-   
-  github_file_annotation:
-    if: false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - run: bun run run.ts
-        working-directory: one-off/github-file-annotations
-
-  bash_on_windows:
-    if: false
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      # TODO experiment with some date flags here
-      - name: Specified shell
-        run: ls -l
-        continue-on-error: true
-        shell: bash
-
-      - name: Unspecified shell
-        run: ls -l
-        continue-on-error: true
+                # response type: CreateDiscussionPayload
+                discussion {
+                  id
+                }
+              }
+            }`;
+            const variables = {
+              repositoryId: 'R_kgDOHITK2Q',
+              title: 'Hello World',
+              body: 'Discussion',
+            }
+            const result = await github.graphql(query, variables)
+            console.log(result)
+  
