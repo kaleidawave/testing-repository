@@ -7,41 +7,47 @@ on:
       - "one-off/**/*"
 
 jobs:
-  start_discussion:
+  upload_and_download:
     runs-on: ubuntu-latest
-    permissions:
-      discussions: write  # Needed to create discussions
-      contents: read
 
     steps:
-      - uses: actions/github-script@v6
+      - name: Create data
+        run: |
+          mkdir content123123
+          cat "Hello World" > content123123/hello1.tsx
+
+      - name: Upload data
+        uses: actions/upload-artifact@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const query = `mutation($repositoryId:ID!,$categoryId:ID!,$body:String!,$title:String!) {
-              # input type: CreateDiscussionInput
-              createDiscussion(input: {
-                repositoryId: $repositoryId, 
-                categoryId: $categoryId, 
-                body: $body, 
-                title: $title
-              }) {
+          name: data-${{ github.run_id }}-1
+          path: content123123
 
-                # response type: CreateDiscussionPayload
-                discussion {
-                  id, url
-                }
-              }
-            }`;
+      - name: Create more data
+        run: |
+          rm content123123/hello1.tsx
+          cat "Hello World" > content123123/hello2.tsx
 
-            const variables = {
-              repositoryId: 'R_kgDOHITK2Q',
-              categoryId: 'DIC_kwDOHITK2c4CTuRQ',
-              title: 'Hello World',
-              body: 'Discussion',
-            }
-            const result = await github.graphql(query, variables)
-            console.log(result)
-            
-            core.info(`Discussion created: ${discussion.createDiscussion.discussion.url}`);
-  
+      - name: Upload more data
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-${{ github.run_id }}-2
+          path: content123123
+          
+      - name: Clean
+        run: |
+          rm content123123/*
+          ls -R .
+
+      # ---
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: data-${{ github.run_id }}-*
+          path: out
+          merge-multiple: true
+
+      - name: Clean
+        run: |
+          ls -R .
+          echo "---"
+          ls -R out
