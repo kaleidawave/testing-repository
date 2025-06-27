@@ -57,6 +57,8 @@ jobs:
 
     timeout-minutes: 20
 
+    # https://crates.io/crates/toml-span and https://crates.io/crates/naga_oil
+
     strategy:
       matrix: 
         repository:
@@ -81,7 +83,7 @@ jobs:
       - run: echo "'${{ matrix.path }}'"
 
       - name: Run check that it works
-        run: cargo pkgid
+        run: cargo locate-project
         working-directory: ${{ matrix.path }}
 
       - name: Update dependency
@@ -93,6 +95,8 @@ jobs:
         working-directory: ${{ matrix.path }}
 
       - name: Run check
-        run: cargo check --examples
+        run: | 
+          cargo check
+          cargo check --examples
         working-directory: ${{ matrix.path }}
       
