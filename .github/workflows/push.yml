@@ -51,3 +51,48 @@ jobs:
           ls -R .
           echo "---"
           ls -R out
+
+  try_out_codespan_pr:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 20
+
+    strategy:
+      matrix: 
+        repository:
+          - dtolnay/cxx
+          - gfx-rs/wgpu
+          - bevyengine/bevy
+        include:
+          - repository: gfx-rs/wgpu
+            path: naga
+          - repository: bevyengine/bevy
+            path: crates/bevy_render
+      fail-fast: false
+
+    steps:
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.repository }}
+
+      - run: echo "'${{ matrix.path }}'"
+
+      - name: Run check that it works
+        run: cargo pkgid
+        working-directory: ${{ matrix.path }}
+
+      - name: Update dependency
+        run: cargo add codespan-reporting --git https://github.com/urisinger/codespan-style-writer.git --branch master
+        working-directory: ${{ matrix.path }}
+
+      - name: Run cargo tree
+        run: cargo tree
+        working-directory: ${{ matrix.path }}
+
+      - name: Run check
+        run: cargo check --examples
+        working-directory: ${{ matrix.path }}
+      
