@@ -115,13 +115,14 @@ jobs:
       - name: Build latest version of binaries
         shell: shell-language {0}
         run: |
-          echo run cargo build --release
+          echo run cargo build --debug
           copy target/release/ezno binaries/latest/ezno
+          echo run stat --format '%a' binaries/latest/ezno
 
       # TEMP
       - name: TEMP list 'binaries' folder
         continue-on-error: true
-        run: ls -R binaries
+        run: ls -R -l binaries
 
       # start of performance
 
@@ -132,7 +133,7 @@ jobs:
           ee binaries
           
           let to = env GITHUB_STEP_SUMMARY
-          let binaries = files "binaries/*"
+          let binaries = files "binaries/**/ezno"
           let binaries = replace $binaries "\n" ","
 
           echo "Found $binaries"
@@ -140,6 +141,10 @@ jobs:
           append $to "### Checking\n"
           let output = run hyperfine -i -L binary $binaries './{binary} check demo.tsx'
           append $to "```shell\n$output\n```"
+
+      - name: TEMP list 'binaries' folder 2
+        continue-on-error: true
+        run: ls -R -l binaries
 
       - name: Print input
         shell: shell-language {0}
@@ -155,7 +160,7 @@ jobs:
         shell: shell-language {0}
         run: |
           let to = env GITHUB_STEP_SUMMARY
-          for files "binaries/*" each
+          for files "binaries/**/ezno" each
             append $to "#### $file: `demo.tsx`"
             let out = run "./$file" check demo.tsx --timings --max-diagnostics all --merge-stdout-and-stderr
 
@@ -175,7 +180,7 @@ jobs:
           write "./large.tsx" $large
 
           let to = env GITHUB_STEP_SUMMARY
-          for files "binaries/*" each
+          for files "binaries/**/ezno" each
             append $to "#### $file: `large.tsx`"
             echo "Running $file"
             let out = run "./$file" check large.tsx --timings --merge-stdout-and-stderr
@@ -192,7 +197,7 @@ jobs:
         continue-on-error: true
         run: |
           let to = env GITHUB_STEP_SUMMARY
-          for files "binaries/*" each
+          for files "binaries/**/ezno" each
             append $to "#### $file: instructions and memory usage"
 
             let output = run valgrind $file "./demo.tsx" --check --merge-stdout-and-stderr
