@@ -7,53 +7,32 @@ on:
       - "one-off/**/*"
 
 jobs:
-  try_out_codespan_pr:
+  reply_to_conversation:
     runs-on: ubuntu-latest
-
-    timeout-minutes: 20
-
-    strategy:
-      matrix: 
-        repository:
-          # - dtolnay/cxx WORKS!
-          # - gfx-rs/wgpu naga/src/error.rs:50:17 & naga/src/span.rs:330:20
-          # - bevyengine/bevy WORKS!
-          - EmbarkStudios/toml-span
-          # - bevyengine/naga_oil src/compose/error.rs:295:20
-        include:
-          - repository: gfx-rs/wgpu
-            path: naga
-          - repository: bevyengine/bevy
-            path: crates/bevy_render
-          - repository: EmbarkStudios/toml-span
-            path: toml-span
-      fail-fast: false
-
     steps:
-      - uses: dtolnay/rust-toolchain@stable
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/github-script@v6
         with:
-          repository: ${{ matrix.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const query = `mutation($discussionId:ID!, $body:String!) {
+              # input type: AddDiscussionCommentInput
+              addDiscussionComment(input: {
+                discussionId: $discussionId, 
+                body: $body
+              }) {
 
-      - run: echo "'${{ matrix.path }}'"
+                # response type: DiscussionComment
+                comment {
+                  author, updatedAt, id, databaseId, bodyText, url
+                }
+              }
+            }`;
 
-      - name: Run check that it works
-        run: cargo locate-project
-        working-directory: ${{ matrix.path }}
+            const variables = {
+              discussionId: 'D_kwDOHITK2c4AgQ1N',
+              body: 'this is a reply',
+            }
+            const result = await github.graphql(query, variables)
 
-      - name: Update dependency
-        run: cargo add codespan-reporting --git https://github.com/urisinger/codespan-style-writer.git --branch master
-        working-directory: ${{ matrix.path }}
-
-      - name: Run cargo tree
-        run: cargo tree
-        working-directory: ${{ matrix.path }}
-
-      - name: Run check
-        run: | 
-          cargo check
-          cargo check --examples
-        working-directory: ${{ matrix.path }}
-      
+            core.info(`Discussion reply created: ${result.createDiscussion.discussion.url}`);
+            core.info(`Discussion reply created: ${JSON.stringify(result)}`);
