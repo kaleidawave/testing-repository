@@ -23,7 +23,10 @@ jobs:
 
                 # response type: DiscussionComment
                 comment {
-                  author, updatedAt, id, databaseId, bodyText, url
+                  updatedAt, id, databaseId, bodyText, url,
+                  author {
+                    ...
+                  }
                 }
               }
             }`;
