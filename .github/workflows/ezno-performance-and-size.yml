@@ -81,9 +81,9 @@ jobs:
         continue-on-error: true
         run: sudo apt-get install valgrind
 
-      - name: TEMP create 'binaries' folder
+      - name: Git status
         continue-on-error: true
-        run: git status
+        run: git log
 
       # - name: Get latest version of demo.tsx
       #   uses: actions/download-artifact@v4
@@ -115,9 +115,8 @@ jobs:
       - name: Build latest version of binaries
         shell: shell-language {0}
         run: |
-          echo run cargo build --debug
+          echo run cargo build --release
           copy target/release/ezno binaries/latest/ezno
-          echo run stat --format '%a' binaries/latest/ezno
 
       # TEMP
       - name: TEMP list 'binaries' folder
@@ -133,13 +132,13 @@ jobs:
           ee binaries
           
           let to = env GITHUB_STEP_SUMMARY
-          let binaries = files "binaries/**/ezno"
-          let binaries = replace $binaries "\n" ","
+          let binaries = files "binaries/**/ezno" then replace "\n" ","
 
           echo "Found $binaries"
 
-          append $to "### Checking\n"
           let output = run hyperfine -i -L binary $binaries './{binary} check demo.tsx'
+
+          append $to "### Checking\n"
           append $to "```shell\n$output\n```"
 
       - name: TEMP list 'binaries' folder 2
@@ -147,10 +146,12 @@ jobs:
         run: ls -R -l binaries
 
       - name: Print input
+        if: false
         shell: shell-language {0}
         run: |
           let to = env GITHUB_STEP_SUMMARY
           let content = read ./demo.tsx
+
           append $to "<details><summary>Input</summary>\n"
           append $to "```tsx\n$content\n```\n</details>"
           
@@ -161,34 +162,34 @@ jobs:
         run: |
           let to = env GITHUB_STEP_SUMMARY
           for files "binaries/**/ezno" each
-            append $to "#### $file: `demo.tsx`"
+            append $to "#### `$file check demo.tsx`"
             let out = run "./$file" check demo.tsx --timings --max-diagnostics all --merge-stdout-and-stderr
 
             let diagnostics = rbefore $out "---"
             let statistics = rafter $out "---"
 
-            append $to "<details><summary>Diagnostics</summary>\n"
-            append $to "```$diagnostics\n```\n</details>"
-            append $to "<details><summary>Statistics</summary>\n"
-            append $to "```$statistics\n```\n</details>"
+            # append $to "<details><summary>Diagnostics</summary>\n"
+            # append $to "```\n$diagnostics\n```\n</details>"
+
+            append $to "\n<details><summary>Statistics</summary>\n"
+            append $to "```\n$statistics\n```\n</details>"
 
       - name: Run checker performance on large file
         shell: shell-language {0}
         run: |
-          let demo = read "./demo.tsx"
-          let large = repeat $demo 10
+          let large = read "./demo.tsx" then repeat 10
           write "./large.tsx" $large
 
           let to = env GITHUB_STEP_SUMMARY
           for files "binaries/**/ezno" each
-            append $to "#### $file: `large.tsx`"
-            echo "Running $file"
+            append $to "#### `$file check large.tsx`"
             let out = run "./$file" check large.tsx --timings --merge-stdout-and-stderr
 
             let statistics = rafter $out "---"
-            append $to "<details><summary>Statistics</summary>\n\n```$statistics\n```\n</details>"
+            append $to "<details><summary>Statistics</summary>\n"
+            append $to "```\n$statistics\n```\n</details>"
             
-            let out = run hyperfine -i "./$file" check large.tsx
+            let out = run hyperfine -i "./$file check large.tsx"
             append $to "```shell\n$out\n```"
 
       - name: Valgrind and Callgrind statistics
@@ -202,14 +203,12 @@ jobs:
 
             let output = run valgrind $file "./demo.tsx" --check --merge-stdout-and-stderr
             let allocated = regexp $output "(?<bytes>[\\d,]+) bytes allocated" extract bytes
-            let allocated = replace $allocated "," ""
-            let allocated = format_number $allocated
+            let allocated = replace $allocated "," "" then format_number
 
             let output = run valgrind --tool=callgrind $file "./demo.tsx" --check --merge-stdout-and-stderr
-            let instructions = regexp $output "Collected : (?<name>\\d+?)\\b" extract name
-            let instructions = format_number $instructions
+            let instructions = regexp $output "Collected : (?<name>\\d+?)\\b" extract name then format_number
 
-            append $to "- `$file`: `$allocated` allocated and $instructions` instructions"
+            append $to "- `$file`: `$allocated` allocated and `$instructions` instructions"
 
       # final steps
 
