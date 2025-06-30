@@ -82,7 +82,7 @@ jobs:
         run: sudo apt-get install valgrind
 
       - name: Git status
-        continue-on-error: true
+        if: false
         run: git log
 
       # - name: Get latest version of demo.tsx
@@ -132,13 +132,21 @@ jobs:
           ee binaries
           
           let to = env GITHUB_STEP_SUMMARY
-          let binaries = files "binaries/**/ezno" then replace "\n" ","
 
+          # Does not work
+          let binaries = files "binaries/**/*" then replace $piped "\n" ","
+          echo "Found 1 ($binaries)"
+
+          let binaries = files "binaries/**/*" then replace "\n" ","
+          echo "Found 2 ($binaries)"
+
+          let binaries = files "binaries/**/*"
+          set binaries = replace $binaries "\n" ","
           echo "Found $binaries"
 
           let output = run hyperfine -i -L binary $binaries './{binary} check demo.tsx'
 
-          append $to "### Checking\n"
+          append $to "### Checking `demo.tsx`\n"
           append $to "```shell\n$output\n```"
 
       - name: TEMP list 'binaries' folder 2
@@ -161,18 +169,18 @@ jobs:
         shell: shell-language {0}
         run: |
           let to = env GITHUB_STEP_SUMMARY
-          for files "binaries/**/ezno" each
+          for files "binaries/**/*" each
             append $to "#### `$file check demo.tsx`"
             let out = run "./$file" check demo.tsx --timings --max-diagnostics all --merge-stdout-and-stderr
 
-            let diagnostics = rbefore $out "---"
-            let statistics = rafter $out "---"
+            let diagnostics = rbefore $out "---" then trim
+            let statistics = rafter $out "---" then trim
 
             # append $to "<details><summary>Diagnostics</summary>\n"
-            # append $to "```\n$diagnostics\n```\n</details>"
+            # append $to "```\n$diagnostics\n```\n</details>\n"
 
             append $to "\n<details><summary>Statistics</summary>\n"
-            append $to "```\n$statistics\n```\n</details>"
+            append $to "```\n$statistics\n```\n</details>\n"
 
       - name: Run checker performance on large file
         shell: shell-language {0}
@@ -181,16 +189,25 @@ jobs:
           write "./large.tsx" $large
 
           let to = env GITHUB_STEP_SUMMARY
-          for files "binaries/**/ezno" each
+          for files "binaries/**/*" each
             append $to "#### `$file check large.tsx`"
             let out = run "./$file" check large.tsx --timings --merge-stdout-and-stderr
 
             let statistics = rafter $out "---"
             append $to "<details><summary>Statistics</summary>\n"
-            append $to "```\n$statistics\n```\n</details>"
+            append $to "```\n$statistics\n```\n</details>\n"
             
             let out = run hyperfine -i "./$file check large.tsx"
             append $to "```shell\n$out\n```"
+
+          let binaries = files "binaries/**/*"
+          set binaries = replace $binaries "\n" ","
+          echo "Found $binaries"
+
+          let output = run hyperfine -i -L binary $binaries './{binary} check large.tsx'
+
+          append $to "### Checking `large.tsx`\n"
+          append $to "```shell\n$output\n```"
 
       - name: Valgrind and Callgrind statistics
         shell: shell-language {0}
@@ -198,8 +215,8 @@ jobs:
         continue-on-error: true
         run: |
           let to = env GITHUB_STEP_SUMMARY
-          for files "binaries/**/ezno" each
-            append $to "#### $file: instructions and memory usage"
+          for files "binaries/**/*" each
+            append $to "#### `$file`: instructions and memory usage"
 
             let output = run valgrind $file "./demo.tsx" --check --merge-stdout-and-stderr
             let allocated = regexp $output "(?<bytes>[\\d,]+) bytes allocated" extract bytes
@@ -207,14 +224,15 @@ jobs:
 
             let output = run valgrind --tool=callgrind $file "./demo.tsx" --check --merge-stdout-and-stderr
             let instructions = regexp $output "Collected : (?<name>\\d+?)\\b" extract name then format_number
+            let raw_instructions = regexp $output "Collected : (?<name>\\d+?)\\b" extract name
 
-            append $to "- `$file`: `$allocated` allocated and `$instructions` instructions"
+            append $to "- `$file`: `$allocated` allocated and `$instructions` ($raw_instructions) instructions\n"
 
       # final steps
 
       - name: Upload binaries
         shell: shell-language {0}
-        run: copy target/releases/ezno binary-${{ runner.os }}${{ runner.arch }}-${{ 'general-fixes' }}-last
+        run: copy target/releases/ezno binaries/binary-${{ runner.os }}${{ runner.arch }}-${{ 'general-fixes' }}-last
 
       # TEMP
       - name: TEMP what context
@@ -225,7 +243,7 @@ jobs:
         with:
           # TODO TEMP branch
           name: binary-${{ runner.os }}${{ runner.arch }}-${{ 'general-fixes' }}-last
-          path: binaries/ezno/binary-${{ runner.os }}${{ runner.arch }}-${{ 'general-fixes' }}-last
+          path: binaries/binary-${{ runner.os }}${{ runner.arch }}-${{ 'general-fixes' }}-last
           overwrite: true
           retention-days: 30
 
