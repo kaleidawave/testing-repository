@@ -7,57 +7,10 @@ on:
       - "one-off/**/*"
 
 jobs:
-  upload_and_download:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Create data
-        run: |
-          mkdir content123123
-          echo "Hello World" > content123123/hello1.tsx
-
-      - name: Upload data
-        uses: actions/upload-artifact@v4
-        with:
-          name: data-${{ github.run_id }}-1
-          path: content123123
-
-      - name: Create more data
-        run: |
-          rm content123123/hello1.tsx
-          echo "Hello World" > content123123/hello2.tsx
-
-      - name: Upload more data
-        uses: actions/upload-artifact@v4
-        with:
-          name: data-${{ github.run_id }}-2
-          path: content123123
-          
-      - name: Clean
-        run: |
-          rm content123123/*
-          ls -R .
-
-      # ---
-
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: data-${{ github.run_id }}-*
-          path: out
-          merge-multiple: true
-
-      - name: Clean
-        run: |
-          ls -R .
-          echo "---"
-          ls -R out
-
   try_out_codespan_pr:
     runs-on: ubuntu-latest
 
     timeout-minutes: 20
-
-    # https://crates.io/crates/toml-span and https://crates.io/crates/naga_oil
 
     strategy:
       matrix: 
@@ -65,6 +18,8 @@ jobs:
           - dtolnay/cxx
           - gfx-rs/wgpu
           - bevyengine/bevy
+          - EmbarkStudios/toml-span
+          - bevyengine/naga_oil
         include:
           - repository: gfx-rs/wgpu
             path: naga
