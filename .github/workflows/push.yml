@@ -15,16 +15,18 @@ jobs:
     strategy:
       matrix: 
         repository:
-          - dtolnay/cxx
-          - gfx-rs/wgpu
-          - bevyengine/bevy
+          # - dtolnay/cxx WORKS!
+          # - gfx-rs/wgpu naga/src/error.rs:50:17 & naga/src/span.rs:330:20
+          # - bevyengine/bevy WORKS!
           - EmbarkStudios/toml-span
-          - bevyengine/naga_oil
+          # - bevyengine/naga_oil src/compose/error.rs:295:20
         include:
           - repository: gfx-rs/wgpu
             path: naga
           - repository: bevyengine/bevy
             path: crates/bevy_render
+          - repository: EmbarkStudios/toml-span
+            path: toml-span
       fail-fast: false
 
     steps:
