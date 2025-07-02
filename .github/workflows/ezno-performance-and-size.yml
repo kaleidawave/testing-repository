@@ -208,6 +208,9 @@ jobs:
 
           append $to "### Checking `large.tsx`\n"
           append $to "```shell\n$output\n```"
+          
+          echo run hyperfine -i -L binary $binaries './{binary} check large.tsx' --export-markdown out.md
+          read out.md then append $to $piped
 
       - name: Valgrind and Callgrind statistics
         shell: shell-language {0}
@@ -215,14 +218,16 @@ jobs:
         continue-on-error: true
         run: |
           let to = env GITHUB_STEP_SUMMARY
-          for files "binaries/**/*" each
-            append $to "#### `$file`: instructions and memory usage"
+          append $to "#### Instructions and memory usage"
 
+          for files "binaries/**/*" each
             let output = run valgrind $file "./demo.tsx" --check --merge-stdout-and-stderr
+            echo "'$output'\n---"
             let allocated = regexp $output "(?<bytes>[\\d,]+) bytes allocated" extract bytes
             let allocated = replace $allocated "," "" then format_number
 
             let output = run valgrind --tool=callgrind $file "./demo.tsx" --check --merge-stdout-and-stderr
+            echo "'$output'\n---"
             let instructions = regexp $output "Collected : (?<name>\\d+?)\\b" extract name then format_number
             let raw_instructions = regexp $output "Collected : (?<name>\\d+?)\\b" extract name
 
@@ -233,10 +238,6 @@ jobs:
       - name: Upload binaries
         shell: shell-language {0}
         run: copy target/releases/ezno binaries/binary-${{ runner.os }}${{ runner.arch }}-${{ 'general-fixes' }}-last
-
-      # TEMP
-      - name: TEMP what context
-        run: echo '::debug::${{ toJson(github) }}'
 
       - name: Upload current binary
         uses: actions/upload-artifact@v4
