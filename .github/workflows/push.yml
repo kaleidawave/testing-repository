@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: kaleidawave/release-downloader@main
       with:
-        items: kaleidawave/experiements@assets[shell-language],kaleidawave/experiements@assets[spectra]
+        items: kaleidawave/experiments@assets[shell-language],kaleidawave/experiments@assets[spectra]
       
     - name: Test 1
       run: spectra
