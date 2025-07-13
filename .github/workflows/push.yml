@@ -23,3 +23,7 @@ jobs:
 
     - name: Test 2
       run: shell-language
+
+    - name: Test 3
+      run: echo hi
+      shell: shell-language {0}
