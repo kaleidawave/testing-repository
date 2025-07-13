@@ -7,35 +7,19 @@ on:
       - "one-off/**/*"
 
 jobs:
-  reply_to_conversation:
-    permissions: write-all
+  download-binaries:
     runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
     steps:
-      - uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const query = `mutation($discussionId:ID!, $body:String!) {
-              # input type: AddDiscussionCommentInput
-              addDiscussionComment(input: {
-                discussionId: $discussionId, 
-                body: $body
-              }) {
+    - uses: kaleidawave/release-downloader@main
+      with:
+        items: kaleidawave/experiements@assets[spectra],kaleidawave/experiements@assets[shell-language]
+      
+    - name: Test 1
+      run: spectra
 
-                # response type: DiscussionComment
-                comment {
-                  # , author { ... }
-                  updatedAt, id, databaseId, bodyText, url 
-                }
-              }
-            }`;
-
-            const variables = {
-              discussionId: 'D_kwDOI5gUEc4AUH0N',
-              # discussionId: 'D_kwDOHITK2c4AgQ1N',
-              body: 'this is a reply',
-            }
-            const result = await github.graphql(query, variables)
-
-            # core.info(`Discussion reply created: ${result.createDiscussion.discussion.url}`);
-            core.info(`Discussion reply created: ${JSON.stringify(result)}`);
+    - name: Test 2
+      run: shell-language
