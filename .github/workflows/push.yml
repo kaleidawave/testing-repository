@@ -14,7 +14,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
 
     steps:
-    - uses: kaleidawave/release-downloader@main
+    - uses: kaleidawave/release-downloader@improvements
       with:
         items: kaleidawave/experiments@assets[shell-language],kaleidawave/experiments@assets[spectra],sharkdp/hyperfine@v1.19.0[hyperfine-*x86*linux-gnu*]
       
@@ -40,9 +40,12 @@ jobs:
         sudo apt-get install valgrind
 
     - name: Print path
+      continue-on-error: true
       run: |
         which valgrind
         valgrind --help
+        ls "$(dirname $(which valgrind))"
+        file $(which valgrind)
 
     - id: get-file
       run: echo "valgrind=$(which valgrind)" >> $GITHUB_OUTPUT
@@ -51,4 +54,4 @@ jobs:
       with:
         name: valgrind
         path: ${{ steps.get-file.outputs.valgrind }}
-        retention-days: 3
+        retention-days: 1
