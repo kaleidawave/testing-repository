@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: kaleidawave/release-downloader@main
       with:
-        items: kaleidawave/experiments@assets[shell-language],kaleidawave/experiments@assets[spectra],sharkdp/hyperfine@v1.19.0[hyperfine]
+        items: kaleidawave/experiments@assets[shell-language],kaleidawave/experiments@assets[spectra],sharkdp/hyperfine@v1.19.0[hyperfine-*x86*linux-gnu*]
       
     - name: Test 1
       run: spectra
@@ -35,10 +35,14 @@ jobs:
 
     steps:
     - name: Install valgrind
-      run: sudo apt-get install valgrind
+      run: |
+        sudo apt-get update
+        sudo apt-get install valgrind
 
     - name: Print path
-      run: which valgrind
+      run: |
+        which valgrind
+        valgrind --help
 
     - id: get-file
       run: echo "valgrind=$(which valgrind)" >> $GITHUB_OUTPUT
