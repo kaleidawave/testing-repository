@@ -82,17 +82,18 @@ jobs:
         run: |
           ls out
           mv out/valgrind.bin out/valgrind
+          chmod +x out/valgrind
           echo "$(pwd)/out" >> "$GITHUB_PATH"
           ls out
 
       - name: Run 1
         continue-on-error: true  
         run: |
-          ./valgrind --tool=callgrind ./valgrind --help
-          ./valgrind ./valgrind --help
+          valgrind --tool=callgrind valgrind --help
+          valgrind valgrind --help
 
       - name: Run 2
         continue-on-error: true  
         run: |
-          valgrind --tool=callgrind valgrind --help
-          valgrind valgrind --help
+          ./out/valgrind --tool=callgrind ./out/valgrind --help
+          ./out/valgrind ./out/valgrind --help
