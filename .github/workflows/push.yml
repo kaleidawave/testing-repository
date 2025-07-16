@@ -32,7 +32,7 @@ jobs:
   get-valgrind:
     runs-on: ubuntu-latest
 
-    if: false
+    if: true
 
     env:
       GH_TOKEN: ${{ github.token }}
@@ -43,17 +43,22 @@ jobs:
         sudo apt-get update
         sudo apt-get install valgrind
 
-    - name: Print path
-      if: false
+    - name: Print 1
       continue-on-error: true
-      run: |
-        which valgrind
-        valgrind --help
-        ls "$(dirname $(which valgrind))"
-        file $(which valgrind)
+      run: valgrind --help
+        
+    - name: Print 2
+      continue-on-error: true
+      run: valgrind --tool=callgrind --help
+
+    - name: Print 3
+      continue-on-error: true
+      run: callgrind_control --help
 
     - id: get-file
-      run: echo "valgrind=$(which valgrind).bin" >> $GITHUB_OUTPUT
+      run: |
+        echo "valgrind=$(which valgrind).bin" >> $GITHUB_OUTPUT
+        echo "callgrind_control=$(which callgrind_control)" >> $GITHUB_OUTPUT
 
     - id: echo-run-id
       run: echo "::notice::$(cat ${{ runner.temp }}) @ ${{ github.run_id }}"
@@ -61,7 +66,10 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: valgrind
-        path: ${{ steps.get-file.outputs.valgrind }}
+        path: |
+          ${{ steps.get-file.outputs.valgrind }}
+          ${{ steps.get-file.outputs.callgrind_control }}
+          /usr/local/libexec/valgrind
         retention-days: 1
 
   run-valgrind:
@@ -80,20 +88,24 @@ jobs:
 
       - name: Setup
         run: |
-          ls out
           mv out/valgrind.bin out/valgrind
           chmod +x out/valgrind
           echo "$(pwd)/out" >> "$GITHUB_PATH"
-          ls out
+
+      - name: ls
+        continue-on-error: true  
+        run: ls -R out
 
       - name: Run 1
         continue-on-error: true  
+        run: valgrind valgrind --help
+      
+      - name: Run 1.1
+        continue-on-error: true  
         run: |
-          valgrind --tool=callgrind valgrind --help
+          export VALGRIND_LIB=out/usr/local/libexec/valgrind
           valgrind valgrind --help
 
       - name: Run 2
         continue-on-error: true  
-        run: |
-          ./out/valgrind --tool=callgrind ./out/valgrind --help
-          ./out/valgrind ./out/valgrind --help
+        run: valgrind --tool=callgrind valgrind --help
