@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: kaleidawave/release-downloader@main
       with:
-        items: kaleidawave/experiments@assets[shell-language],kaleidawave/experiments@assets[spectra]
+        items: kaleidawave/experiments@assets[shell-language],kaleidawave/experiments@assets[spectra],sharkdp/hyperfine@v1.19.0[hyperfine]
       
     - name: Test 1
       run: spectra
@@ -25,5 +25,26 @@ jobs:
       run: shell-language
 
     - name: Test 3
-      run: echo hi
-      shell: shell-language {0}
+      run: hyperfine --help
+
+  get-valgrind:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+    - name: Install valgrind
+      run: sudo apt-get install valgrind
+
+    - name: Print path
+      run: which valgrind
+
+    - id: get-file
+      run: echo "valgrind=$(which valgrind)" >> $GITHUB_OUTPUT
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: valgrind
+        path: ${{ steps.get-file.outputs.valgrind }}
+        retention-days: 3
