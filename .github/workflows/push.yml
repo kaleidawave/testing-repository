@@ -82,9 +82,10 @@ jobs:
         run: |
           ls out
           mv out/valgrind.bin out/valgrind
-          echo "out" >> "$GITHUB_PATH"
+          echo "$(pwd)/out" >> "$GITHUB_PATH"
+          ls out
 
-          valgrind --tool=callgrind echo "Hi"
+          valgrind --tool=callgrind valgrind --help
 
-          valgrind echo "Hi"
+          valgrind valgrind --help
 
