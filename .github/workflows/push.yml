@@ -10,39 +10,41 @@ jobs:
   publish-things:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        crate: [demo-crate-6154, demo-crate-6155, demo-crate-6156]
-
     steps:
       - id: checkout
         uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
 
-      - name: Crates publish
+      # - uses: rust-lang/crates-io-auth-action@v1
+      #   id: auth
+      #   CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+
+      - name: Crates publish 1
         uses: kaleidawave/crates-release-gh-action@improvements
-        id: release
         with:
           version: patch
           crates-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-          working-directory: one-off/${{ matrix.crate }}
+          working-directory: one-off/demo-crate-6154
 
-    outputs:
-      out: ${{ steps.release.outputs.new-versions-description }}
+      - name: Crates publish 2
+        uses: kaleidawave/crates-release-gh-action@improvements
+        with:
+          version: patch
+          crates-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          working-directory: one-off/demo-crate-6155
 
-  finish:
-    needs: publish-things
-    runs-on: ubuntu-latest
+      - name: Crates publish 3
+        uses: kaleidawave/crates-release-gh-action@improvements
+        with:
+          version: patch
+          crates-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          working-directory: one-off/demo-crate-6156
 
-    steps:
-      - id: checkout
-        uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
       - name: Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git status
           git add .
-          git commit -m "Releases: ${{ toJson(needs.publish-things.outputs.out) }}"
+          git commit -m "Update `Cargo.toml`s"
           git push origin ${{ steps.checkout.outputs.ref }}
