@@ -7,105 +7,42 @@ on:
       - "one-off/**/*"
 
 jobs:
-  download-binaries:
+  publish-things:
     runs-on: ubuntu-latest
 
-    if: false
-
-    env:
-      GH_TOKEN: ${{ github.token }}
-
-    steps:
-    - uses: kaleidawave/release-downloader@improvements
-      with:
-        items: kaleidawave/experiments@assets[shell-language],kaleidawave/experiments@assets[spectra],sharkdp/hyperfine@v1.19.0[hyperfine-*x86*linux-gnu*]
-      
-    - name: Test 1
-      run: spectra
-
-    - name: Test 2
-      run: shell-language
-
-    - name: Test 3
-      run: hyperfine --help
-
-  get-valgrind:
-    runs-on: ubuntu-latest
-
-    if: true
-
-    env:
-      GH_TOKEN: ${{ github.token }}
+    strategy:
+      matrix:
+        crate: [demo-crate-6154, demo-crate-6155, demo-crate-6156]
 
     steps:
-    - name: Install valgrind
-      run: |
-        sudo apt-get update
-        sudo apt-get install valgrind
+      - id: checkout
+        uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
 
-    - name: Print 1
-      continue-on-error: true
-      run: valgrind --help
-        
-    - name: Print 2
-      continue-on-error: true
-      run: valgrind --tool=callgrind --help
-
-    - name: Print 3
-      continue-on-error: true
-      run: callgrind_control --help
-
-    - id: get-file
-      run: |
-        echo "valgrind=$(which valgrind).bin" >> $GITHUB_OUTPUT
-        echo "callgrind_control=$(which callgrind_control)" >> $GITHUB_OUTPUT
-
-    - id: echo-run-id
-      run: echo "::notice::$(cat ${{ runner.temp }}) @ ${{ github.run_id }}"
-
-    - uses: actions/upload-artifact@v4
-      with:
-        name: valgrind
-        path: |
-          ${{ steps.get-file.outputs.valgrind }}
-          ${{ steps.get-file.outputs.callgrind_control }}
-          /usr/local/libexec/valgrind
-        retention-days: 1
-
-  run-valgrind:
-    runs-on: ubuntu-latest
-    needs: get-valgrind
-
-    if: ${{ always() }}
-
-    steps:
-      - uses : actions/download-artifact@v4
+      - name: Crates publish
+        uses: kaleidawave/crates-release-gh-action@improvements
+        id: release
         with:
-          run-id: 16326197118
-          name: valgrind
-          path: out
-          github-token: ${{ github.token }}
+          version: patch
+          crates-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          working-directory: one-off/${{ matrix.crate }}
 
-      - name: Setup
+    outputs:
+      out: ${{ steps.release.outputs.new-versions-description }}
+
+  finish:
+    needs: publish-things
+    runs-on: ubuntu-latest
+
+    steps:
+      - id: checkout
+        uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Push
         run: |
-          mv out/valgrind.bin out/valgrind
-          chmod +x out/valgrind
-          echo "$(pwd)/out" >> "$GITHUB_PATH"
-
-      - name: ls
-        continue-on-error: true  
-        run: ls -R out
-
-      - name: Run 1
-        continue-on-error: true  
-        run: valgrind valgrind --help
-      
-      - name: Run 1.1
-        continue-on-error: true  
-        run: |
-          export VALGRIND_LIB=out/usr/local/libexec/valgrind
-          valgrind valgrind --help
-
-      - name: Run 2
-        continue-on-error: true  
-        run: valgrind --tool=callgrind valgrind --help
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git status
+          git add .
+          git commit -m "Releases: ${{ toJson(needs.publish-things.outputs.out) }}"
+          git push origin ${{ steps.checkout.outputs.ref }}
