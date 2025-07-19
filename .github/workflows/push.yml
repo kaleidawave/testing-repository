@@ -10,6 +10,10 @@ jobs:
   publish-things:
     runs-on: ubuntu-latest
 
+    permissions:
+      # Required for OIDC token exchange
+      id-token: write     
+
     steps:
       - id: checkout
         uses: actions/checkout@v4
