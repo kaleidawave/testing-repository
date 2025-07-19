@@ -1,6 +1,6 @@
 [package]
 name = "demo-crate-6154"
-version = "0.2.0"
+version = "0.2.1"
 description = "Testing crate 1"
 license = "MIT"
 homepage = "https://crates.io/crates/demo-crate-6154"
