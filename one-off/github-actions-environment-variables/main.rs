@@ -12,10 +12,11 @@ fn main() {
         let file = std::env::vars()
             .find_map(|(name, value)| (name == "GITHUB_OUTPUT").then_some(value));
         if let Some(file) = file {
-            let (name, value) = ("hi", "value");
+            println!("GITHUB_OUTPUT points to {file}");
+            let (name, value) = ("param", "10 second treats");
             writeln!(&mut File::options().append(true).open(file).unwrap(), "{name}={value}").unwrap();
         } else {
-            eprintln!("no GITHUB_OUTPUT variable");
+            println!("no GITHUB_OUTPUT variable");
         }
     }
  
@@ -23,10 +24,10 @@ fn main() {
         let file = std::env::vars()
             .find_map(|(name, value)| (name == "GITHUB_STEP_SUMMARY").then_some(value));
         if let Some(file) = file {
-            eprintln!("GITHUB_STEP_SUMMARY points to {file}");
+            println!("GITHUB_STEP_SUMMARY points to {file}");
             writeln!(&mut File::options().append(true).open(file).unwrap(), "Hello world").unwrap();
         } else {
-            eprintln!("no GITHUB_STEP_SUMMARY variable");
+            println!("no GITHUB_STEP_SUMMARY variable");
         }
     }
 

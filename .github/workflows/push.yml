@@ -20,23 +20,22 @@ jobs:
       - name: What is home?
         run: ls $HOME
 
-      - name: Run 1
+      - name: Run program
         id: run-1
         working-directory: one-off/github-actions-environment-variables
         run: cargo run
 
-      - name: Run 2
-        run: echo '${{ steps.run-1.outputs.hi }}'
+      - name: Echo param
+        run: echo 'Value = ${{ steps.run-1.outputs.param }}'
 
       - name: Run 3
         working-directory: one-off/github-actions-environment-variables
-        continue-on-error: true
         run: |
+          mkdir -p "$HOME/.local/bin"
           mv target/debug/github-actions-environment-variables/main "$HOME/.local/bin"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Run 4
-        continue-on-error: true
         run: main
 
       - name: Run 5
