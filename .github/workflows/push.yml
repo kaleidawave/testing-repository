@@ -32,8 +32,9 @@ jobs:
         working-directory: one-off/github-actions-environment-variables
         run: |
           mkdir -p "$HOME/.local/bin"
-          mv target/debug/github-actions-environment-variables/main "$HOME/.local/bin"
+          mv target/debug/main "$HOME/.local/bin"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          ls "$HOME/.local/bin"
 
       - name: Run 4
         run: main
