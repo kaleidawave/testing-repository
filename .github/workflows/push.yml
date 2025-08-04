@@ -7,47 +7,37 @@ on:
       - "one-off/**/*"
 
 jobs:
-  publish-things:
+  variables:
     runs-on: ubuntu-latest
 
-    permissions:
-      # Required for OIDC token exchange
-      id-token: write     
-
     steps:
-      - id: checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
 
-      - uses: rust-lang/crates-io-auth-action@v1
-        id: auth
+      - name: Working directory
+        run: pwd
 
-      - name: Crates publish 1
-        uses: kaleidawave/crates-release-gh-action@improvements
-        with:
-          version: patch
-          crates-token: ${{ steps.auth.outputs.token }}
-          working-directory: one-off/demo-crate-6154
+      - name: What is home?
+        run: ls $HOME
 
-      - name: Crates publish 2
-        uses: kaleidawave/crates-release-gh-action@improvements
-        with:
-          version: patch
-          crates-token: ${{ steps.auth.outputs.token }}
-          working-directory: one-off/demo-crate-6155
+      - name: Run 1
+        id: run-1
+        working-directory: one-off/github-actions-environment-variables
+        run: cargo run
 
-      - name: Crates publish 3
-        uses: kaleidawave/crates-release-gh-action@improvements
-        with:
-          version: patch
-          crates-token: ${{ steps.auth.outputs.token }}
-          working-directory: one-off/demo-crate-6156
+      - name: Run 2
+        run: echo '${{ steps.run-1.outputs.hi }}'
 
-      - name: Push
+      - name: Run 3
+        working-directory: one-off/github-actions-environment-variables
+        continue-on-error: true
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git status
-          git add .
-          git commit -m "Update `Cargo.toml`s"
-          git push origin ${{ steps.checkout.outputs.ref }}
+          mv target/debug/github-actions-environment-variables/main "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Run 4
+        continue-on-error: true
+        run: main
+
+      - name: Run 5
+        run: ls
