@@ -23,9 +23,11 @@ jobs:
       with:
         items: kaleidawave/crates-release-gh-action@assets[crates-release]
 
-    - name: Update field
-      id: update-field
-      run: crates-release change-version patch
+    - name: Update versions
+      id: update-versions
+      run: crates-release change-version patch --github-actions-outputs
       working-directory: general-parser
 
-    - run: echo ${{ toJson(steps.update-field.outputs) }}
+    - run: echo ${{ toJson(steps.update-versions.outputs) }}
+    - run: git diff
+
