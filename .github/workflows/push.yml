@@ -7,37 +7,22 @@ on:
       - "one-off/**/*"
 
 jobs:
-  variables:
+  test-version-thingy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+    - uses: actions/checkout@v4
+      with:
+        repository: kaleidawave/experiments
+        ref: general-parser
 
-      - name: Working directory
-        run: pwd
+    - uses: kaleidawave/release-downloader@main
+      with:
+        items: kaleidawave/crates-release-gh-action@assets[crates-release]
 
-      - name: What is home?
-        run: ls $HOME
+    - name: Update field
+      id: update-field
+      run: crates-release change-version patch
+      working-directory: general-parser
 
-      - name: Run program
-        id: run-1
-        working-directory: one-off/github-actions-environment-variables
-        run: cargo run
-
-      - name: Echo param
-        run: echo 'Value = ${{ steps.run-1.outputs.param }}'
-
-      - name: Run 3
-        working-directory: one-off/github-actions-environment-variables
-        run: |
-          mkdir -p "$HOME/.local/bin"
-          mv target/debug/main "$HOME/.local/bin"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-          ls "$HOME/.local/bin"
-
-      - name: Run 4
-        run: main
-
-      - name: Run 5
-        run: ls
+    - run: echo ${{ toJson(steps.update-field.outputs) }}
