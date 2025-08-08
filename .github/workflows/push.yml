@@ -28,6 +28,6 @@ jobs:
       run: crates-release change-version patch --github-actions-outputs
       working-directory: general-parser
 
-    - run: echo ${{ toJson(steps.update-versions.outputs) }}
+    - run: echo '${{ toJson(steps.update-versions.outputs) }}'
     - run: git diff
 
