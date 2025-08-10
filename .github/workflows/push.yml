@@ -18,13 +18,13 @@ jobs:
     steps:
     - id: run
       run: |
-        IFS=',' read -ra entries <<< 'kaleidawave/experiments@assets[spectra]'
+        IFS=',' read -ra entries <<< 'kaleidawave/experiments@assets[spectra],sharkdp/hyperfine@latest[hyperfine]'
         # IFS=',' read -ra entries <<< '$ { { inputs.items }}'
 
         BIN="$HOME/.local/bin"
         mkdir -p "$BIN"
 
-        ls "$HOME/.local"
+        ls -R "$HOME/.local"
 
         # Loop through each entry
         for entry in "${entries[@]}"; do
@@ -46,10 +46,10 @@ jobs:
           gh release download -R "$owner/$repository" $version -p $item -D $BIN
         done
 
-        gunzip "$BIN/*.gz"
-        tar -xf "$BIN/*.tar" -C $BIN --strip-components 1 --overwrite
+        gunzip "$BIN/**/*.gz"
+        tar -xf "$BIN/**/*.tar" -C $BIN --strip-components 1 --overwrite
 
-        for file in "$BIN/*"; do
+        for file in "$BIN/**/*"; do
           echo "$file"
           if [ -f "$file" ]; then 
             if head -c 4 "$file" | grep -q $'\x7fELF'; then
@@ -71,6 +71,9 @@ jobs:
     - name: Test
       run: cargo test
       working-directory: general-parser
+
+    - name: hypefine
+      run: hypefine --help
 
     - name: git
       run: git diff
