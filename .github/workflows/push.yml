@@ -18,7 +18,7 @@ jobs:
     steps:
     - id: run
       run: |
-        IFS=',' read -ra entries <<< 'kaleidawave/release-downloader@improvements'
+        IFS=',' read -ra entries <<< 'kaleidawave/experiments@assets[spectra]'
         # IFS=',' read -ra entries <<< '$ { { inputs.items }}'
 
         BIN="$HOME/.local/bin"
@@ -40,6 +40,8 @@ jobs:
           version="${rest%%[*}"
           item="${rest#*[}"
           item="${item%]}"  # remove trailing ]
+
+          echo "$owner/$repository @ $version get item $item"
 
           gh release download -R "$owner/$repository" $version -p $item -D $BIN
         done
@@ -72,7 +74,6 @@ jobs:
 
     - name: git
       run: git diff
-      working-directory: general-parser
 
   test-version-thingy:
     if: false
