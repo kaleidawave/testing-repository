@@ -7,7 +7,76 @@ on:
       - "one-off/**/*"
 
 jobs:
+  release-download1:
+    if: true
+
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+    - id: run
+      run: |
+        IFS=',' read -ra entries <<< 'kaleidawave/release-downloader@improvements'
+        # IFS=',' read -ra entries <<< '$ { { inputs.items }}'
+
+        BIN="$HOME/.local/bin"
+        mkdir -p "$BIN"
+
+        ls "$HOME/.local"
+
+        # Loop through each entry
+        for entry in "${entries[@]}"; do
+          # Extract owner and the rest
+          owner="${entry%%/*}"
+          rest="${entry#*/}"
+
+          # Extract repository and the rest
+          repository="${rest%%@*}"
+          rest="${rest#*@}"
+
+          # Extract version and item
+          version="${rest%%[*}"
+          item="${rest#*[}"
+          item="${item%]}"  # remove trailing ]
+
+          gh release download -R "$owner/$repository" $version -p $item -D $BIN
+        done
+
+        gunzip "$BIN/*.gz"
+        tar -xf "$BIN/*.tar" -C $BIN --strip-components 1 --overwrite
+
+        for file in "$BIN/*"; do
+          echo "$file"
+          if [ -f "$file" ]; then 
+            if head -c 4 "$file" | grep -q $'\x7fELF'; then
+              chmod +x "$file"
+            fi
+          fi
+        done
+
+        echo "$BIN" >> "$GITHUB_PATH"
+      shell: bash
+
+    # test
+    - uses: actions/checkout@v4
+      with:
+        repository: kaleidawave/experiments
+        ref: general-parser
+    - uses: dtolnay/rust-toolchain@stable
+
+    - name: Test
+      run: cargo test
+      working-directory: general-parser
+
+    - name: git
+      run: git diff
+      working-directory: general-parser
+
   test-version-thingy:
+    if: false
+
     runs-on: ubuntu-latest
 
     env:
