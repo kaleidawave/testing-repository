@@ -7,8 +7,28 @@ on:
       - "one-off/**/*"
 
 jobs:
-  release-download1:
+  build-exe-parser:
     if: true
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: N0fix/rpecli
+    - uses: dtolnay/rust-toolchain@stable
+
+    - name: Build
+      run: cargo build --bin
+
+    - id: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: result
+        path: target/debug/**/*.exe
+        retention-days: 3
+
+  release-download1:
+    if: false
 
     runs-on: ubuntu-latest
 
