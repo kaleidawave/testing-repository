@@ -30,18 +30,10 @@ jobs:
         shell: bash
     
     steps:
-    - name: download value
-      run: curl -L 'https://github.com/kaleidawave/release-downloader/releases/download/assets/release-downloader${{ matrix.extension }}' > 'out${{ matrix.extension }}'
-
-    - name: run prerequisite 1
-      run: echo "$HOME/.local/bin" > "$GITHUB_PATH"
-
-    - name: run prerequisite 2
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-      run: chmod +x 'out${{ matrix.extension }}'
-
-    - name: run tool
-      run: ./out${{ matrix.extension }} 'kaleidawave/experiments@assets[format-number],kaleidawave/experiments@assets[parse-number]'
+    - name: Download binaries
+      uses: kaleidawave/release-downloader@improvements
+      with:
+        items: kaleidawave/experiments@assets[format-number],kaleidawave/experiments@assets[parse-number]
 
     - name: run output
       run: |
