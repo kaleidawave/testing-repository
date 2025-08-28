@@ -7,6 +7,43 @@ on:
       - "one-off/**/*"
 
 jobs:
+  test-release-downloader:
+    # currently manually downloading binary, in future using action (which will do the above)
+    if: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+        - os: windows-latest
+          extension: '.exe'
+        - os: ubuntu-latest
+          extension: ''
+        exclude:
+          - os: ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash
+    
+    steps:
+    - name: download value
+      run: curl -L 'https://github.com/kaleidawave/release-downloader/releases/download/assets/release-downloader${{ matrix.extension }}' > 'out${{ matrix.extension }}'
+
+    - name: run prerequisite
+      run: echo "$HOME/.local/bin" > "$GITHUB_PATH"
+
+    - name: run tool
+      run: ./out${{ matrix.extension }} 'kaleidawave/experiements@assets[format-number],kaleidawave/experiements@assets[parse-number]'
+
+    - name: run output
+      run: |
+        format-number${{ matrix.extension }} 42 --english
+        parse-number${{ matrix.extension }} 'forty two' --english 
+
   build-exe-parser:
     if: true
     runs-on: windows-latest
