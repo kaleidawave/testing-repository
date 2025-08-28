@@ -33,16 +33,22 @@ jobs:
     - name: download value
       run: curl -L 'https://github.com/kaleidawave/release-downloader/releases/download/assets/release-downloader${{ matrix.extension }}' > 'out${{ matrix.extension }}'
 
-    - name: run prerequisite
+    - name: run prerequisite 1
       run: echo "$HOME/.local/bin" > "$GITHUB_PATH"
+
+    - name: run prerequisite 2
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: chmod +x 'out${{ matrix.extension }}'
 
     - name: run tool
       run: ./out${{ matrix.extension }} 'kaleidawave/experiments@assets[format-number],kaleidawave/experiments@assets[parse-number]'
 
     - name: run output
       run: |
+        format-number${{ matrix.extension }} --help
+        parse-number${{ matrix.extension }} --help
         format-number${{ matrix.extension }} 42 --english
-        parse-number${{ matrix.extension }} 'forty two' --english 
+        parse-number${{ matrix.extension }} 'fourty two' --english 
 
   build-exe-parser:
     if: false
