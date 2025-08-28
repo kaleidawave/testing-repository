@@ -37,7 +37,7 @@ jobs:
       run: echo "$HOME/.local/bin" > "$GITHUB_PATH"
 
     - name: run tool
-      run: ./out${{ matrix.extension }} 'kaleidawave/experiements@assets[format-number],kaleidawave/experiements@assets[parse-number]'
+      run: ./out${{ matrix.extension }} 'kaleidawave/experiments@assets[format-number],kaleidawave/experiments@assets[parse-number]'
 
     - name: run output
       run: |
@@ -45,7 +45,7 @@ jobs:
         parse-number${{ matrix.extension }} 'forty two' --english 
 
   build-exe-parser:
-    if: true
+    if: false
     runs-on: windows-latest
     
     steps:
