@@ -30,7 +30,7 @@ jobs:
         shell: bash
     
     steps:
-    - name: Download binaries
+    - name: Download binaries 1
       uses: kaleidawave/release-downloader@improvements
       with:
         items: kaleidawave/experiments@assets[format-number],kaleidawave/experiments@assets[parse-number]
@@ -41,6 +41,15 @@ jobs:
         parse-number${{ matrix.extension }} --help
         format-number${{ matrix.extension }} 42 --english
         parse-number${{ matrix.extension }} 'fourty two' --english 
+
+    - name: Download binaries 2
+      uses: kaleidawave/release-downloader@improvements
+      with:
+        items: kaleidawave/crates-release-gh-action@assets[crates-release]
+
+    - name: Update version
+      id: update-version
+      run: crates-release info
 
   build-exe-parser:
     if: false
