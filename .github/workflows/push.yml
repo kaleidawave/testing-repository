@@ -7,48 +7,7 @@ on:
       - "one-off/**/*"
 
 jobs:
-  test-release-downloader-action1:
-    if: true
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-        - os: windows-latest
-          extension: '.exe'
-        - os: ubuntu-latest
-          extension: ''
-        exclude:
-          - os: ubuntu-latest
-
-    runs-on: ${{ matrix.os }}
-
-    defaults:
-      run:
-        shell: bash
-
-    env:
-      GH_TOKEN: ${{ github.token }}
-    
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        repository: kaleidawave/release-downloader
-    - name: run binary
-      run: cargo run -- 'kaleidawave/experiments@assets[format-number],kaleidawave/experiments@assets[parse-number],kaleidawave/experiments@assets[spectra]' bin
-      working-directory: release-downloader
-
-    - name: run output
-      working-directory: release-downloader/bin
-      run: |
-        format-number${{ matrix.extension }} --help
-        parse-number${{ matrix.extension }} --help
-        format-number${{ matrix.extension }} 42 --english
-        parse-number${{ matrix.extension }} 'fourty two' --english 
-        spectra${{ matrix.extension }} --help
-      
-  test-release-downloader-action2:
+  test-release-downloader-action-reference:
     if: true
 
     strategy:
@@ -76,7 +35,7 @@ jobs:
     - name: Download binaries 1
       uses: kaleidawave/release-downloader@improvements
       with:
-        items: kaleidawave/experiments@assets[format-number],kaleidawave/experiments@assets[parse-number],kaleidawave/experiments@assets[spectra]
+        items: kaleidawave/experiments@assets[format-number|parse-number|spectra]
 
     - name: run output
       run: |
@@ -86,14 +45,26 @@ jobs:
         parse-number${{ matrix.extension }} 'fourty two' --english 
         spectra${{ matrix.extension }} --help
 
-    - name: Download binaries 2
+        which 'spectra${{ matrix.extension }}'
+
+  lines-of-code-on-ezno:
+    if: true
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: kaleidawave/ezno
+    - name: Download binaries 1
       uses: kaleidawave/release-downloader@improvements
       with:
-        items: kaleidawave/crates-release-gh-action@assets[crates-release]
+        items: kaleidawave/experiments@assets[lines-of-code]
 
-    - name: Update version
-      id: update-version
-      run: crates-release info
+    - name: lines of code in Ezno
+      run: | 
+        lines-of-code checker/**/*.rs
+        lines-of-code parser/**/*.rs
 
   build-exe-parser:
     if: false
