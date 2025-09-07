@@ -37,7 +37,6 @@ jobs:
         format-number 42 --english
         parse-number 'fourty two' --english 
         spectra --help
-
         which 'spectra'
 
   lines-of-code-on-ezno:
