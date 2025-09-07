@@ -14,13 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        include:
-        - os: windows-latest
-          extension: '.exe'
-        - os: ubuntu-latest
-          extension: ''
-        exclude:
-          - os: ubuntu-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -39,13 +32,13 @@ jobs:
 
     - name: run output
       run: |
-        format-number${{ matrix.extension }} --help
-        parse-number${{ matrix.extension }} --help
-        format-number${{ matrix.extension }} 42 --english
-        parse-number${{ matrix.extension }} 'fourty two' --english 
-        spectra${{ matrix.extension }} --help
+        format-number --help
+        parse-number --help
+        format-number 42 --english
+        parse-number 'fourty two' --english 
+        spectra --help
 
-        which 'spectra${{ matrix.extension }}'
+        which 'spectra'
 
   lines-of-code-on-ezno:
     if: true
@@ -60,6 +53,7 @@ jobs:
       uses: kaleidawave/release-downloader@improvements
       with:
         items: kaleidawave/experiments@assets[lines-of-code]
+        trace: true
 
     - name: lines of code in Ezno
       run: | 
