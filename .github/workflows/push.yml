@@ -7,8 +7,41 @@ on:
       - "one-off/**/*"
 
 jobs:
-  test-release-downloader-action-reference:
+  pin-linux:
     if: true
+
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Setup SDE binaries
+        uses: petarpetrovt/setup-sde@v3.0
+        with:
+          environmentVariableName: ${{ github.path }} # default value is `SDE_PATH`
+          sdeVersion: 9.58.0 # possible values: 9.58.0 (default), 9.33.0
+
+      - name: run
+        run: sde --help
+
+      - name: Download binaries 1
+        uses: kaleidawave/release-downloader@improvements
+        with:
+          items: kaleidawave/experiments@assets[format-number]
+
+      - name: run
+        run: sde -omix out -mix_filter_no_shared_libs -- format-number 42 --english
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: out
+          path: out
+          retention-days: 7
+
+  test-release-downloader-action-reference:
+    if: false
 
     strategy:
       fail-fast: false
@@ -40,7 +73,7 @@ jobs:
         which 'spectra'
 
   lines-of-code-on-ezno:
-    if: true
+    if: false
 
     runs-on: ubuntu-latest
 
@@ -58,6 +91,28 @@ jobs:
       run: | 
         lines-of-code checker/**/*.rs
         lines-of-code parser/**/*.rs
+
+  test-mkdir-on-windows-bash:
+    if: false
+
+    runs-on: windows-latest
+
+    steps:
+    - name: run 1
+      shell: bash
+      continue-on-error: true
+      run: |
+        mkdir -p "$HOME/test1"
+        ls $HOME
+
+    - name: run 2
+      shell: bash
+      continue-on-error: true
+      run: |
+        echo "hi" > "$HOME/test2/file1"
+        ls $HOME
+        ls '$HOME/test2'
+        cat '$HOME/test2/file1'
 
   build-exe-parser:
     if: false
