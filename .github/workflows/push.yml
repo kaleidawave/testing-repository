@@ -24,12 +24,10 @@ jobs:
           sdeVersion: 9.58.0 # possible values: 9.58.0 (default), 9.33.0
 
       - name: fix
-        run: |
-          echo "$SDE_PATH"
-          echo "$SDE_PATH" >> $GITHUB_PATH
-          ls $SDE_PATH
+        run: echo "$SDE_PATH" >> $GITHUB_PATH
 
-      - name: run
+      - name: run1
+        continue-on-error: true
         run: sde --help
 
       - name: Download binaries 1
@@ -37,14 +35,29 @@ jobs:
         with:
           items: kaleidawave/experiments@assets[format-number]
 
-      - name: run
-        run: sde -omix out -mix_filter_no_shared_libs -- format-number 42 --english
+      - name: run2
+        continue-on-error: true
+        run: sde -mix -mix_filter_no_shared_libs -- format-number 42 --english
 
       - uses: actions/upload-artifact@v4
         with:
           name: out
-          path: out
+          path: mix.out
           retention-days: 7
+
+      - name: Download binaries 2
+        uses: kaleidawave/release-downloader@improvements
+        with:
+          items: BurntSushi/ripgrep@latest
+
+      - name: run3
+        run: ripgrep --help
+
+      - name: run4
+        continue-on-error: true
+        run: |
+          sde -mix -mix_filter_no_shared_libs -- format-number 42 --english
+          cat mix.out | ripgrep -e "\*total"
 
   test-release-downloader-action-reference:
     if: false
