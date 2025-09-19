@@ -37,27 +37,34 @@ jobs:
 
       - name: run2
         continue-on-error: true
-        run: sde -mix -mix_filter_no_shared_libs -- format-number 42 --english
+        run: |
+          sde -mix -mix_filter_no_shared_libs -- format-number 42 --english
+          sde -omix out1.txt -mix_filter_no_shared_libs -- format-number 42 --english
+
+      - name: run2.1
+        continue-on-error: true
+        run: | 
+          ls
+          cat out1.txt
 
       - uses: actions/upload-artifact@v4
         with:
           name: out
-          path: mix.out
+          path: out1.txt
           retention-days: 7
 
-      - name: Download binaries 2
-        uses: kaleidawave/release-downloader@improvements
+      - uses: brndnmtthws/rust-action-cargo-binstall@v1
         with:
-          items: BurntSushi/ripgrep@latest
+          packages: ripgrep
 
       - name: run3
-        run: ripgrep --help
+        run: rg --help
 
       - name: run4
         continue-on-error: true
         run: |
-          sde -mix -mix_filter_no_shared_libs -- format-number 42 --english
-          cat mix.out | ripgrep -e "\*total"
+          sde -omix out2.txt -mix_filter_no_shared_libs -- format-number 42 --english
+          cat out2.txt | rg -e "\*total"
 
   test-release-downloader-action-reference:
     if: false
