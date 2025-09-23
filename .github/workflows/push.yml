@@ -15,36 +15,36 @@ jobs:
         shell: bash
 
     steps:
+      - uses: kaleidawave/release-downloader@improvements
+        with: { 'items': 'sharkdp/hyperfine@v1.19.0' }
+
       - name: download ezno
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh run download -R kaleidawave/ezno --pattern binary-LinuxX64-general-fixes-last
           mv binary-LinuxX64-general-fixes-last/binary-LinuxX64-general-fixes-last ezno
-          chmod +x ezno
+          chmod +x ./ezno
 
-          ezno --help
+          ./ezno --help
 
       - name: download tsgo
         run: |
           npm install @typescript/native-preview-linux-x64
           mv node_modules/@typescript/native-preview-linux-x64/lib/tsgo tsgo
-          tsgo --help
-
-      - uses: kaleidawave/release-downloader@improvements
-        with: { 'items': 'sharkdp/hyperfine@v1.19.0' }
+          ./tsgo --help
 
       - name: Build latest version of demo.tsx
         run: curl https://gist.githubusercontent.com/kaleidawave/81066f322ed574b3373e27770137013f/raw/b04dcc0bc60e6331008bdd578b98224cc07d5d42/all.tsx > demo.tsx
 
       - name: ezno
-        run: ezno check demo.ts --timings
+        run: ./ezno check demo.ts --timings
 
       - name: tsc
-        run: tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+        run: ./tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
 
       - name: run performance test
-        run: hyperfine -N -i 'ezno check demo.ts' 'tsgo --noEmit --jsx preserve --skipLibCheck demo.tsx'
+        run: hyperfine -N -i './ezno check demo.ts' './tsgo --noEmit --jsx preserve --skipLibCheck demo.tsx'
 
   sde-linux:
     if: false
