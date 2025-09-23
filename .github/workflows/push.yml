@@ -16,6 +16,8 @@ jobs:
 
     steps:
       - uses: kaleidawave/release-downloader@improvements
+        env:
+          GH_TOKEN: ${{ github.token }}
         with: { 'items': 'sharkdp/hyperfine@v1.19.0' }
 
       - name: download ezno
