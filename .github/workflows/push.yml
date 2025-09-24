@@ -55,11 +55,11 @@ jobs:
 
       - name: typescript (demo.tsx)
         continue-on-error: true
-        run: node .\node_modules\typescript\lib\_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+        run: node ./node_modules/typescript/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
 
       - name: typescript (large.tsx)
         continue-on-error: true
-        run: node .\node_modules\typescript\lib\_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+        run: node ./node_modules/typescript/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
 
       - name: tsgo (demo.tsx)
         continue-on-error: true
@@ -72,12 +72,12 @@ jobs:
       - name: run performance test (demo.tsx)
         continue-on-error: true
         run: |
-          hyperfine -N -i './ezno check demo.tsx' './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck demo.tsx' 'node .\node_modules\typescript\lib\_tsc.js --noEmit --jsx preserve --skipLibCheck demo.tsx'
+          hyperfine -N -i './ezno check demo.tsx' './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck demo.tsx' 'node ./node_modules/typescript/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck demo.tsx'
 
       - name: run performance test (large.tsx)
         continue-on-error: true
         run: |
-          hyperfine -N -i './ezno check large.tsx' './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck large.tsx' 'node .\node_modules\typescript\lib\_tsc.js --noEmit --jsx preserve --skipLibCheck large.tsx'
+          hyperfine -N -i './ezno check large.tsx' './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck large.tsx' 'node ./node_modules/typescript/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck large.tsx'
 
   sde-linux:
     if: false
