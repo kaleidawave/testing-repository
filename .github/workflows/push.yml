@@ -18,7 +18,7 @@ jobs:
       - uses: kaleidawave/release-downloader@improvements
         env:
           GH_TOKEN: ${{ github.token }}
-        with: { 'items': 'sharkdp/hyperfine@v1.19.0' }
+        with: { 'items': 'kaleidawave/experiments@assets[shell-language],sharkdp/hyperfine@v1.19.0' }
 
       - name: download ezno
         continue-on-error: true
@@ -30,26 +30,58 @@ jobs:
           chmod +x ./ezno
           ./ezno --help
 
+      - name: file 10
+        shell: shell-language {0}
+        run: |
+          let large = read "./demo.tsx" then repeat 10
+          write "./large.tsx" $large
+
       - name: download tsgo
         continue-on-error: true
         run: |
+          npm install typescript
           npm install @typescript/native-preview-linux-x64
-          mv node_modules/@typescript/native-preview-linux-x64/lib/tsgo
 
       - name: Build latest version of demo.tsx
         run: curl https://gist.githubusercontent.com/kaleidawave/81066f322ed574b3373e27770137013f/raw/b04dcc0bc60e6331008bdd578b98224cc07d5d42/all.tsx > demo.tsx
 
-      - name: ezno
+      - name: ezno (demo.tsx)
         continue-on-error: true
         run: ./ezno check demo.tsx --timings
 
-      - name: tsc
+      - name: ezno (large.tsx)
+        continue-on-error: true
+        run: ./ezno check large.tsx --timings
+
+      - name: typescript (demo.tsx)
+        continue-on-error: true
+        run: node .\node_modules\typescript\lib\_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+
+      - name: typescript (large.tsx)
+        continue-on-error: true
+        run: node .\node_modules\typescript\lib\_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+
+      - name: tsgo (demo.tsx)
         continue-on-error: true
         run: ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
-        
-      - name: run performance test
+
+      - name: tsgo (large.tsx)
         continue-on-error: true
-        run: hyperfine -N -i './ezno check demo.tsx' './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck demo.tsx'
+        run: ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics large.tsx
+        
+      - name: run performance test (demo.tsx)
+        continue-on-error: true
+        run: |
+          hyperfine -N -i './ezno check demo.tsx'\
+          './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck demo.tsx'\
+          'node .\node_modules\typescript\lib\_tsc.js --noEmit --jsx preserve --skipLibCheck demo.tsx'
+
+      - name: run performance test (large.tsx)
+        continue-on-error: true
+        run: |
+          hyperfine -N -i './ezno check large.tsx'\
+          './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck large.tsx'\
+          'node .\node_modules\typescript\lib\_tsc.js --noEmit --jsx preserve --skipLibCheck large.tsx'
 
   sde-linux:
     if: false
