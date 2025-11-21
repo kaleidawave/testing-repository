@@ -10,15 +10,28 @@ jobs:
       with: { repository: tree-sitter/tree-sitter-rust }
 
     - name: get tree sitter (should use below)
-      run: brew install tree-sitter
+      env: { name: 'tree-sitter-linux-x64.gz' }
+      run: |
+        curl -L https://github.com/tree-sitter/tree-sitter/releases/download/v0.25.10/${{ env.name }} --output ${{ env.name }}
+        gunzip --name ${{ env.name }}
 
     - name: compile
-      run: tree-sitter build
+      run: ./tree-sitter build
 
     - name: list
-      run: ls -R rust
+      run: |
+        ls
+        ls -R rust
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: rust
+        path: rust/**
+        retention-days: 7
     
   download-tree-sitter:
+    if: false
+
     runs-on: ubuntu-latest
     steps:
       - uses: kaleidawave/release-downloader@improvements
