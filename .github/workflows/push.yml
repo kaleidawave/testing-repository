@@ -1,42 +1,57 @@
 name: Testing things
 
-on:
-  push:
-    paths:
-      - ".github/workflows/push.yml"
-      - "one-off/**/*"
+on: { push: { paths: [".github/workflows/push.yml", "one-off/**/*"] } }
 
 jobs:
-  comparse-ezno-and-typescript:
+  generate-treesitter-language:
     runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with: { repository: tree-sitter/tree-sitter-rust }
 
-    defaults:
-      run:
-        shell: bash
+    - name: get tree sitter (should use below)
+      run: brew install tree-sitter
+
+    - name: compile
+      run: tree-sitter build
+
+    - name: list
+      run: ls -R rust
+    
+  download-tree-sitter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kaleidawave/release-downloader@improvements
+        env: { GH_TOKEN: "${{ github.token }}" }
+        with: { items: 'tree-sitter/tree-sitter@v0.25.10' }
+
+      - run: tree-sitter --help
+
+  comparse-ezno-and-typescript:
+    if: false
+
+    runs-on: ubuntu-latest
 
     steps:
       - uses: kaleidawave/release-downloader@improvements
-        env:
-          GH_TOKEN: ${{ github.token }}
-        with: { 'items': 'kaleidawave/experiments@assets[shell-language],sharkdp/hyperfine@v1.19.0' }
+        env: { GH_TOKEN: "${{ github.token }}" }
+        with: { items: 'kaleidawave/experiments@assets[shell-language],sharkdp/hyperfine@v1.19.0' }
 
       - name: download ezno
         continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        env: { GH_TOKEN: "${{ github.token }}" }
         run: |
           gh run download -R kaleidawave/ezno --pattern binary-LinuxX64-general-fixes-last
           mv binary-LinuxX64-general-fixes-last/binary-LinuxX64-general-fixes-last ezno
           chmod +x ./ezno
           ./ezno --help
 
-      - name: download tsgo
+      - name: download typescript (JS + tsgo)
         continue-on-error: true
-        run: |
-          npm install typescript
-          npm install @typescript/native-preview-linux-x64
+        run: npm install typescript && npm install @typescript/native-preview-linux-x64
 
-      - name: Build latest version of demo.tsx
+      - name: Get latest version of demo.tsx
         run: curl https://gist.githubusercontent.com/kaleidawave/81066f322ed574b3373e27770137013f/raw/b04dcc0bc60e6331008bdd578b98224cc07d5d42/all.tsx > demo.tsx
 
       - name: file 10
