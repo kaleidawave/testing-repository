@@ -14,6 +14,7 @@ jobs:
       run: |
         curl -L https://github.com/tree-sitter/tree-sitter/releases/download/v0.25.10/${{ env.name }} --output ${{ env.name }}
         gunzip --name ${{ env.name }}
+        chmod +x tree-sitter
 
     - name: compile
       run: ./tree-sitter build
