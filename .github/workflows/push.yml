@@ -3,7 +3,19 @@ name: Testing things
 on: { push: { paths: [".github/workflows/push.yml", "one-off/**/*"] } }
 
 jobs:
+  download-crates-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: kaleidawave/release-downloader@improvements
+        env: { GH_TOKEN: "${{ github.token }}" }
+        with: { items: 'kaleidawave/crates-release-gh-action@canary[crates-release*]' }
+        
+      - run: ls ~/.tools
+      - run: crates-release --help
+
   generate-treesitter-language:
+    if: false
     runs-on: macos-latest
 
     steps:
