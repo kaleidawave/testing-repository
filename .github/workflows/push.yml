@@ -9,9 +9,9 @@ jobs:
     steps:
       - uses: kaleidawave/release-downloader@improvements
         env: { GH_TOKEN: "${{ github.token }}" }
-        with: { items: 'kaleidawave/crates-release-gh-action@canary[crates-release*]' }
+        with: { items: 'kaleidawave/crates-release-gh-action@assets[crates-release]' }
         
-      - run: ls ~/.tools
+      # - run: ls ~/.tools
       - run: crates-release --help
 
   generate-treesitter-language:
