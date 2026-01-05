@@ -8,6 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with: { ref: unmain }
 
       - uses: kaleidawave/release-downloader@improvements
         env: { GH_TOKEN: "${{ github.token }}" }
@@ -19,7 +20,20 @@ jobs:
         env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
         run: |
           tag="my-tag"
-          ref="15c32701c6204eed00a0e3c89e4d8ce74c4a2ab0"
+          ref="unmain"
+
+          git commit -m 'for a release'
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # git add -u
+          # --allow-empty temp for this crate
+          git commit -m "example release '$tag'" --allow-empty
+          git tag -a $tag -m "example release"
+          git push origin main
+          git push origin tag $tag
+
           gh release create $tag --target $ref -t "test release"
           gh release upload $tag "$(which crates-release)#crates-release-unix" --clobber
 
