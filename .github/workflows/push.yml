@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v6
+
       - uses: kaleidawave/release-downloader@improvements
         env: { GH_TOKEN: "${{ github.token }}" }
         with: { items: 'kaleidawave/crates-release-gh-action@assets[crates-release]' }
