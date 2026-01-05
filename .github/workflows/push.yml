@@ -3,8 +3,10 @@ name: Testing things
 on: { push: { paths: [".github/workflows/push.yml", "one-off/**/*"] } }
 
 jobs:
-  download-crates-release:
+  download-crates-release-and-create-a-release-with-it:
     runs-on: ubuntu-latest
+
+    permissions: { contents: write }
 
     steps:
       - uses: actions/checkout@v6
