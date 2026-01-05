@@ -29,7 +29,7 @@ jobs:
           # --allow-empty temp for this crate
           git commit -m "example release '$tag'" --allow-empty
           git tag -a $tag -m "example release"
-          git push origin main
+          git push origin unmain
           git push origin tag $tag
 
           gh release create $tag --target $ref -t "test release"
