@@ -21,8 +21,6 @@ jobs:
         run: |
           tag="my-tag"
           ref="unmain"
-
-          git commit -m 'for a release'
           
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
