@@ -17,7 +17,7 @@ jobs:
         with: { repository: kaleidawave/ezno, ref: parser-fixes, path: ezno }
       - uses: kaleidawave/release-downloader@improvements
         env: { GH_TOKEN: '${{ env.GH_TOKEN }}' }
-        with: { items: sharkdp/hyperfine@v1.19.0 }
+        with: { items: 'kaleidawave/experiments@assets[shell-language],sharkdp/hyperfine@v1.19.0' }
 
       - name: Install depict
         working-directory: depict
@@ -28,15 +28,25 @@ jobs:
         run: cargo b --release
 
       - name: Run example
+        shell: shell-language {0}
         run: |
-          curl https://gist.githubusercontent.com/kaleidawave/81066f322ed574b3373e27770137013f/raw/b04dcc0bc60e6331008bdd578b98224cc07d5d42/all.tsx > demo.tsx
+          let path = "https://gist.githubusercontent.com/kaleidawave/81066f322ed574b3373e27770137013f/raw/b04dcc0bc60e6331008bdd578b98224cc07d5d42/all.tsx"
+          run curl $path -o demo.tsx
 
-          npm install @typescript/native-preview-linux-x64
+          run npm install @typescript/native-preview-linux-x64
 
-          ./depict/target/debug/depict count ./ezno/target/release/ezno check demo.tsx --timings
+          run ./depict/target/debug/depict count ./ezno/target/release/ezno check demo.tsx --timings
           
-          ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+          run ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
 
-          hyperfine -N -i \
+          run hyperfine -N -i \
+            './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx' \
+            './ezno/target/release/ezno check demo.tsx --timings'
+
+      - name: for those at the back
+        if: ${{ always() }}
+        shell: shell-language {0}
+        run: |
+          run hyperfine -N -i \
             './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx' \
             './ezno/target/release/ezno check demo.tsx --timings'
