@@ -6,15 +6,26 @@ jobs:
   sde:
     runs-on: ubuntu-latest
 
-    permissions: { contents: write }
+    # permissions: { contents: write }
+
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v6
         with: { repository: kaleidawave/depict, ref: cli-improvements, path: depict }
+      - uses: actions/checkout@v6
+        with: { repository: kaleidawave/ezno, ref: parser-fixes, path: ezno }
+      - uses: kaleidawave/release-downloader@improvements
+        env: { GH_TOKEN: '${{ env.GH_TOKEN }}' }
+        with: { items: sharkdp/hyperfine@v1.19.0 }
 
       - name: Install depict
         working-directory: depict
         run: cargo r -- install-sde
+
+      - name: Build ezno
+        working-directory: ezno
+        run: cargo b --release
 
       - name: Run example
         run: |
@@ -22,6 +33,10 @@ jobs:
 
           npm install @typescript/native-preview-linux-x64
 
-          # ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+          ./depict/target/debug/depict count ./ezno/target/release/ezno check demo.tsx --timings
+          
+          ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
 
-          ./depict/target/debug/depict sde ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+          hyperfine -N -i \
+            './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx' \
+            './ezno/target/release/ezno check demo.tsx --timings'
