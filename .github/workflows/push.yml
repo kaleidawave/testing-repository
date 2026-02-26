@@ -30,23 +30,26 @@ jobs:
       - name: Run example
         shell: shell-language {0}
         run: |
-          let path = "https://gist.githubusercontent.com/kaleidawave/81066f322ed574b3373e27770137013f/raw/b04dcc0bc60e6331008bdd578b98224cc07d5d42/all.tsx"
+          let path = literal 'https://gist.githubusercontent.com/kaleidawave/81066f322ed574b3373e27770137013f/raw/b04dcc0bc60e6331008bdd578b98224cc07d5d42/all.tsx'
           run curl $path -o demo.tsx
 
           run npm install @typescript/native-preview-linux-x64
 
-          run ./depict/target/debug/depict count ./ezno/target/release/ezno check demo.tsx --timings
+          let depict_ezno = run ./depict/target/debug/depict count --breakdown ./ezno/target/release/ezno check demo.tsx --timings
+          echo $depict_ezno
           
-          run ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+          let ts = run ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
+          let statistics = rafter $ts "Files:" then trim
+          echo $statistics
 
-          run hyperfine -N -i \
+          let out = run hyperfine -N -i \
             './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx' \
             './ezno/target/release/ezno check demo.tsx --timings'
+          echo $out
 
       - name: for those at the back
         if: ${{ always() }}
-        shell: shell-language {0}
         run: |
-          run hyperfine -N -i \
-            './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx' \
-            './ezno/target/release/ezno check demo.tsx --timings'
+          hyperfine -N -i \
+            './node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck demo.tsx' \
+            './ezno/target/release/ezno check demo.tsx'
