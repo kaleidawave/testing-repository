@@ -3,7 +3,7 @@ name: Testing things
 on: { push: { paths: [".github/workflows/push.yml", "one-off/**/*"] } }
 
 jobs:
-  sde:
+  ezno-perf:
     runs-on: ubuntu-latest
 
     # permissions: { contents: write }
@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-        with: { repository: kaleidawave/depict, ref: cli-improvements, path: depict }
+        with: { repository: kaleidawave/depict, path: depict }
       - uses: actions/checkout@v6
         with: { repository: kaleidawave/ezno, ref: parser-fixes, path: ezno }
       - uses: kaleidawave/release-downloader@improvements
@@ -35,7 +35,7 @@ jobs:
 
           run npm install @typescript/native-preview-linux-x64
 
-          let depict_ezno = run ./depict/target/debug/depict count --breakdown ./ezno/target/release/ezno check demo.tsx --timings
+          let depict_ezno = run ./depict/target/debug/depict count --breakdown ./ezno/target/release/ezno check demo.tsx
           echo $depict_ezno
           
           let ts = run ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
