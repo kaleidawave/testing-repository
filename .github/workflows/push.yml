@@ -22,12 +22,12 @@ jobs:
 
     env:
       PROFILE: dev
-      OUT: target/debug
+      OUT: target/release
       GH_TOKEN: ${{ github.token }}
 
     steps:
       - uses: actions/checkout@v6
-        with: { repository: kaleidawave/depict, path: depict }
+        with: { repository: kaleidawave/depict }
       - uses: dtolnay/rust-toolchain@stable
 
       # build dependents
