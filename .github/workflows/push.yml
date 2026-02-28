@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      PROFILE: dev
+      PROFILE: release
       OUT: target/release
       GH_TOKEN: ${{ github.token }}
 
