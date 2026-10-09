@@ -1,97 +1,75 @@
-NO_COLOR=1
-export NO_COLOR=1
+echo "tsc 6 demo with node"
+node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-ls
+echo "tsc 6 demo10 with node"
+node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
-echo "::group::Run tools"
+echo "tsc 7+ (native) demo"
+./node_modules/@typescript/typescript-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-function run_tool {
-    OUTPUT="$(eval "$2" 2>&1 | sed $'s/\e\\[[0-9;:]*[a-zA-Z]//g')"
-    echo "## $1
+echo "tsc 7+ (native) demo10"
+./node_modules/@typescript/typescript-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
-<details>
-<summary>Output</summary>
+echo "ezno demo"
+./ezno check demo.tsx --timings || true
 
-\`\`\`
-$OUTPUT
-\`\`\`
-</details>
+echo "ezno demo10"
+./ezno check demo10.tsx --timings || true
 
-" >> $GITHUB_STEP_SUMMARY
-} 
+echo "bun check demo"
+bun check --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-run_tool "Ezno" "./ezno/target/release/ezno check demo.ts --max-diagnostics 0 --timings"
-run_tool "TSC" "./node_modules/@typescript/native-preview-linux-x64/lib/tsgo -pretty -noEmit -skipLibCheck -diagnostics demo.ts"
+echo "bun check demo10"
+bun check --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
-echo "::endgroup::"
+echo "tsc-rs demo"
+./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
+
+echo "tsc-rs demo10"
+./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
+
+echo "tsrs demo"
+./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
+
+echo "tsrs demo10"
+./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
+
+echo "tsz demo"
+tsz --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
+
+echo "tsz demo10"
+tsz --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
 # ---
 
-echo "::group::Run benchmarks"
+echo "### Comparison with demo.tsx"
 
-echo "## Benchmark files" >> $GITHUB_STEP_SUMMARY
+echo "\`\`\`shell" >> "$GITHUB_STEP_SUMMARY"
+hyperfine -N -i \
+	'node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck demo.tsx' \
+	'./node_modules/@typescript/typescript-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck demo.tsx' \
+	'./ezno check demo.tsx' \
+	'bun check --noEmit --jsx preserve --skipLibCheck demo.tsx' \
+	'./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck demo.tsx' \
+	'./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck demo.tsx' \
+	'tsz --noEmit --jsx preserve --skipLibCheck demo.tsx' \
+	>> "$GITHUB_STEP_SUMMARY"
+echo "\`\`\`\n" >> "$GITHUB_STEP_SUMMARY"
 
-./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --help
+echo "### Comparison with demo10.tsx" >> "$GITHUB_STEP_SUMMARY"
 
-hyperfine -i \
-  './ezno/target/release/ezno check ./demo.ts' \
-  './node_modules/@typescript/native-preview-linux-x64/lib/tsgo -skipLibCheck ./demo.ts' \
-  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts'
+echo "\`\`\`shell" >> "$GITHUB_STEP_SUMMARY"
+hyperfine -N -i \
+	'node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
+	'./node_modules/@typescript/typescript-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
+	'./ezno check demo10.tsx' \
+	'bun check --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
+	'./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
+	'./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
+	'tsz --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
+	>> "$GITHUB_STEP_SUMMARY"
+echo "\`\`\`\n" >> "$GITHUB_STEP_SUMMARY"
 
-hyperfine -i \
-  './ezno/target/release/ezno check ./large.ts' \
-  './node_modules/@typescript/native-preview-linux-x64/lib/tsgo -skipLibCheck ./large.ts' \
-  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.ts'
+# cat benchmarks/ts-type-checkers/notes.md >> "$GITHUB_STEP_SUMMARY"
 
-# Ezno and TSC
-echo "##### `demo.ts`
-
-\`\`\`
-$(hyperfine -i \
-  './ezno/target/release/ezno check ./demo.ts' \
-  './node_modules/@typescript/native-preview-linux-x64/lib/tsgo -skipLibCheck ./demo.ts' \
-  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts'
-)
-\`\`\`
-
-##### `large.ts`
-
-\`\`\`
-$(hyperfine -i \
-  './ezno/target/release/ezno check ./large.ts' \
-  './node_modules/@typescript/native-preview-linux-x64/lib/tsgo -skipLibCheck ./large.ts' \
-  'tsc --pretty --skipLibCheck --noEmit --jsx preserve ./large.ts'
-)
-\`\`\`
-" >> $GITHUB_STEP_SUMMARY
-
-### Valgrind
-valgrind --log-file="ezno.txt" ./ezno/target/release/ezno check ./demo.ts
-
-echo "::group::Callgrind"
-{
-  valgrind --tool=callgrind --callgrind-out-file=./cpu-out ./ezno/target/release/ezno check ./demo.ts
-} || true
-# echo "::notice::CPU usage:$(rg "summary: (.*)" -or '$1' -N --color never cpu_out)"
-cat cpu_out
-echo "::endgroup::"
-# valgrind --log-file="tsc-go.txt" ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo -skipLibCheck ./demo.ts
-# valgrind --log-file="tsc.txt" tsc --pretty --skipLibCheck --noEmit --jsx preserve ./demo.ts
-
-echo "ezno
-\`\`\`
-$(cat ezno.txt)
-\`\`\`
-
-tsc-go
-\`\`\`
-$(cat tsc-go.txt)
-\`\`\`
-
-tsc
-\`\`\`
-$(cat tsc.txt)
-\`\`\`
-" >> $GITHUB_STEP_SUMMARY
-
-echo "::endgroup::"
+# TODO post to val.town

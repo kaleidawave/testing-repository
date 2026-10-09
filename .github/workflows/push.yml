@@ -4,7 +4,7 @@ on: { push: { paths: [".github/workflows/push.yml", "one-off/**/*"] } }
 
 jobs:
   build-depict-assets:
-    if: true
+    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -35,7 +35,7 @@ jobs:
       - uses: jwlawson/actions-setup-cmake@v2
         if: ${{ matrix.os == 'macos-latest' }}
         with: { cmake-version: '3.31.7' }
-      
+
       - name: Get QBDI (macos)
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
@@ -46,13 +46,15 @@ jobs:
       # end build dependents
 
       - name: Build binary
-        run: cargo build --profile ${{ env.PROFILE }}
+        run: |
+          cargo build --profile ${{ env.PROFILE }}
+          mv ${{ env.OUT }}/depict-${{ matrix.executable-extension }} ${{ env.OUT }}/depict-${{ matrix.platform-name }}${{ matrix.executable-extension }}
 
       - name: Add output
         uses: actions/upload-artifact@v4
         with:
           name: depict-${{ matrix.platform-name }}${{ matrix.executable-extension }}
-          path: ${{ env.OUT }}/depict${{ matrix.executable-extension }}
+          path: ${{ env.OUT }}/depict-${{ matrix.platform-name }}${{ matrix.executable-extension }}
 
       # - name: Publish binary
       #   shell: bash
@@ -98,7 +100,7 @@ jobs:
 
           let depict_ezno = run ./depict/target/debug/depict count --breakdown ./ezno/target/release/ezno check demo.tsx
           echo $depict_ezno
-          
+
           let ts = run ./node_modules/@typescript/native-preview-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx
           let statistics = rafter $ts "Files:" then trim
           echo $statistics
