@@ -5,6 +5,7 @@ on:
     paths:
       - "benchmarks/**"
       - ".github/workflows/benchmark-push.yml"
+      - ".github/workflows/benchmark.yml"
 
 jobs:
   find-changed-paths:
@@ -51,7 +52,7 @@ jobs:
   run-benchmarks:
     needs: find-changed-paths
     if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
-  
+
     uses: ./.github/workflows/benchmark.yml
     with:
       benchmarks: ${{ needs.find-changed-paths.outputs.paths }}
