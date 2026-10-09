@@ -15,7 +15,7 @@ jobs:
       paths: ${{ steps.read-change.outputs.paths }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Needs two versions to tell difference in change
           fetch-depth: 2
@@ -54,5 +54,4 @@ jobs:
     if: ${{ !contains(needs.find-changed-paths.outputs.paths, '[]') }}
 
     uses: ./.github/workflows/benchmark.yml
-    with:
-      benchmarks: ${{ needs.find-changed-paths.outputs.paths }}
+    with: { benchmarks: '${{ needs.find-changed-paths.outputs.paths }}' }

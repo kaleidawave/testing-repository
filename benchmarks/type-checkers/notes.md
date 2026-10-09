@@ -10,12 +10,12 @@ TypeScript/tsc 7+ is written in golang. [Started in late 2025](https://devblogs.
 
 ### Not included
 
-- oxc_checker: do not believe is at the stage to apply these cases to
+- [oxc_checker](https://github.com/camchenry/oxc_checker): do not believe is at the stage to apply these cases to
 - [tsrs](https://x.com/SidChatterjee/status/2026384939080421665) (the other one tsrs): unreleased
 - [some C++ port](https://x.com/jrysana/status/2104921420522270767): unreleased
-- typerunner: unsure how to compile
-- stc: archived
-- the other ones
+- [typerunner](https://github.com/marcj/TypeRunner): unsure how to compile
+- [stc](https://github.com/dudykr/stc): archived
+- the other ones?
 
 Non-checkers
 
