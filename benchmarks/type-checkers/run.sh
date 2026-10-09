@@ -1,14 +1,14 @@
 echo "tsc 6 demo with node"
 node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-echo "tsc 6 demo10 with node"
-node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
+# echo "tsc 6 demo10 with node"
+# node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
 echo "tsc 7+ (native) demo"
 ./node_modules/@typescript/typescript-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-echo "tsc 7+ (native) demo10"
-./node_modules/@typescript/typescript-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
+# echo "tsc 7+ (native) demo10"
+# ./node_modules/@typescript/typescript-linux-x64/lib/tsgo --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
 echo "ezno demo"
 ./ezno check demo.tsx --timings || true
@@ -19,30 +19,31 @@ echo "ezno demo10"
 echo "bun check demo"
 bun check --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-echo "bun check demo10"
-bun check --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
+# echo "bun check demo10"
+# bun check --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
 echo "tsc-rs demo"
 ./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-echo "tsc-rs demo10"
-./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
+# echo "tsc-rs demo10"
+# ./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
 echo "tsrs demo"
 ./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-echo "tsrs demo10"
-./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
+# echo "tsrs demo10"
+# ./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
 echo "tsz demo"
 tsz --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
-echo "tsz demo10"
-tsz --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
+# echo "tsz demo10"
+# tsz --noEmit --jsx preserve --skipLibCheck --diagnostics demo10.tsx || true
 
 # ---
 
-echo "### Comparison with demo.tsx"
+echo "### Comparison with demo.tsx" >> "$GITHUB_STEP_SUMMARY"
+echo "" >> "$GITHUB_STEP_SUMMARY"
 
 echo "\`\`\`shell" >> "$GITHUB_STEP_SUMMARY"
 hyperfine -N -i \
@@ -54,9 +55,11 @@ hyperfine -N -i \
 	'./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck demo.tsx' \
 	'tsz --noEmit --jsx preserve --skipLibCheck demo.tsx' \
 	>> "$GITHUB_STEP_SUMMARY"
-echo "\`\`\`\n" >> "$GITHUB_STEP_SUMMARY"
+echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
+echo "" >> "$GITHUB_STEP_SUMMARY"
 echo "### Comparison with demo10.tsx" >> "$GITHUB_STEP_SUMMARY"
+echo "" >> "$GITHUB_STEP_SUMMARY"
 
 echo "\`\`\`shell" >> "$GITHUB_STEP_SUMMARY"
 hyperfine -N -i \

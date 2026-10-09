@@ -11,11 +11,11 @@ done
 
 # TYPESCRIPT 5 (JS/NODE)
 npm install typescript5@npm:typescript@5
-node ./node_modules/typescript5/lib/_tsc.js --help || true
+node ./node_modules/typescript5/lib/_tsc.js -v || true
 
 # TYPESCRIPT 6+ (GOLANG)
 npm install typescript
-./node_modules/@typescript/typescript-linux-x64/lib/tsc --help || true
+./node_modules/@typescript/typescript-linux-x64/lib/tsc -v || true
 
 # EZNO
 curl https://github.com/kaleidawave/assets/releases/download/assets/ezno-feb-26-x86_64-unknown-linux > ezno
@@ -24,13 +24,14 @@ chmod +x ./ezno
 
 # Bun (TODO can canary be one step)
 curl -fsSL https://bun.com/install | bash
+source /home/runner/.bash_profile
 bun upgrade --canary
 bun check --help || true
 
 # ts-rust (https://github.com/pingdotgg/ts-rust)
 npm install -D tsc-rs
 npx tsc-rs -p tsconfig.json
-./node_modules/@tsc-rs/linux-x64/lib/tsgo --help || true
+./node_modules/@tsc-rs/linux-x64/lib/tsc --help || true
 
 # tsrs (https://github.com/maschwenk/tsrs)
 npm install -D @maschwenk/tsrs
