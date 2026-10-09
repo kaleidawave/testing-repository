@@ -18,7 +18,7 @@ npm install typescript
 ./node_modules/@typescript/typescript-linux-x64/lib/tsc -v || true
 
 # EZNO
-curl https://github.com/kaleidawave/assets/releases/download/assets/ezno-feb-26-x86_64-unknown-linux > ezno
+curl -L https://github.com/kaleidawave/assets/releases/download/assets/ezno-feb-26-x86_64-unknown-linux > ezno
 chmod +x ./ezno
 ./ezno --help || true
 
@@ -37,6 +37,7 @@ npx tsc-rs -p tsconfig.json
 npm install -D @maschwenk/tsrs
 ./node_modules/@maschwenk/tsrs-linux-x64/tsrs --help || true
 
+# TODO cannot get to work?
 # tsz (https://github.com/tsz-org/tsz)
-curl -fsSL https://tsz.dev/install | sh
-tsz --help || true
+# curl -fsSL https://tsz.dev/install | sh
+# tsz --help || true
