@@ -1,3 +1,8 @@
+source /home/runner/.bash_profile
+bun check --help
+
+# Temp
+
 echo "tsc 6 demo with node"
 node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck --diagnostics demo.tsx || true
 
@@ -45,8 +50,7 @@ echo "tsrs demo"
 echo "### Comparison with demo.tsx" >> "$GITHUB_STEP_SUMMARY"
 echo "" >> "$GITHUB_STEP_SUMMARY"
 
-echo "\`\`\`shell" >> "$GITHUB_STEP_SUMMARY"
-hyperfine -N -i --export-markdown="$GITHUB_STEP_SUMMARY" \
+hyperfine -N -i --export-markdown=out.md \
 	'node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck demo.tsx' \
 	'./node_modules/@typescript/typescript-linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck demo.tsx' \
 	'./ezno check demo.tsx' \
@@ -54,14 +58,13 @@ hyperfine -N -i --export-markdown="$GITHUB_STEP_SUMMARY" \
 	'./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck demo.tsx' \
 	'./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck demo.tsx'
 	# 'tsz --noEmit --jsx preserve --skipLibCheck demo.tsx' \
-echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
 
-echo "" >> "$GITHUB_STEP_SUMMARY"
+cat out.md >> "$GITHUB_STEP_SUMMARY"
+
 echo "### Comparison with demo10.tsx" >> "$GITHUB_STEP_SUMMARY"
 echo "" >> "$GITHUB_STEP_SUMMARY"
 
-echo "\`\`\`shell" >> "$GITHUB_STEP_SUMMARY"
-hyperfine -N -i --export-markdown="$GITHUB_STEP_SUMMARY" \
+hyperfine -N -i --export-markdown=out.md \
 	'node ./node_modules/typescript5/lib/_tsc.js --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
 	'./node_modules/@typescript/typescript-linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
 	'./ezno check demo10.tsx' \
@@ -69,7 +72,8 @@ hyperfine -N -i --export-markdown="$GITHUB_STEP_SUMMARY" \
 	'./node_modules/@tsc-rs/linux-x64/lib/tsc --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
 	'./node_modules/@maschwenk/tsrs-linux-x64/tsrs --noEmit --jsx preserve --skipLibCheck demo10.tsx'
 	# 'tsz --noEmit --jsx preserve --skipLibCheck demo10.tsx' \
-echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+
+cat out.md >> "$GITHUB_STEP_SUMMARY"
 
 # cat benchmarks/ts-type-checkers/notes.md >> "$GITHUB_STEP_SUMMARY"
 
