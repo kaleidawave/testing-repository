@@ -66,6 +66,10 @@ jobs:
         env: { ARTIFACTS_FOLDER: "${{ env.ARTIFACTS_FOLDER }}" }
         timeout-minutes: 10
 
+      - name: Append notes
+        shell: bash
+        run: cat notes.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload artifacts
         if: false
         uses: actions/upload-artifact@v4

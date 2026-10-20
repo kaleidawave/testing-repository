@@ -22,7 +22,7 @@ curl -L https://github.com/kaleidawave/assets/releases/download/assets/ezno-feb-
 chmod +x ./ezno
 ./ezno --help || true
 
-# Bun (TODO can canary be one step)
+# Bun (TODO can install canary be done in one step)
 curl -fsSL https://bun.com/install | bash
 source /home/runner/.bash_profile
 bun upgrade --canary
@@ -33,9 +33,9 @@ npm install -D tsc-rs
 npx tsc-rs -p tsconfig.json
 ./node_modules/@tsc-rs/linux-x64/lib/tsc --help || true
 
-# tsrs (https://github.com/maschwenk/tsrs)
-npm install -D @maschwenk/tsrs
-./node_modules/@maschwenk/tsrs-linux-x64/tsrs --help || true
+# tsrs (https://github.com/oxc-project/tsrs)
+npm install -D tsrs
+./node_modules/@tsrs/linux-x64-gnu/tsrs --help || true
 
 # TODO cannot get to work?
 # tsz (https://github.com/tsz-org/tsz)
